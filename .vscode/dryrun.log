@@ -1,6 +1,8 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory `/Users/audreyyang/Desktop/pirateGame'
+/Library/Developer/CommandLineTools/usr/bin/make pirateGame
+make[1]: Entering directory `/Users/audreyyang/Desktop/pirateGame'
+make[1]: `pirateGame' is up to date.
+make[1]: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
 make: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
  
-make: *** No targets specified and no makefile found.  Stop.
-
