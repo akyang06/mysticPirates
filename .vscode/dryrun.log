@@ -1,0 +1,8 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory `/Users/audreyyang/Desktop/pirateGame'
+/Library/Developer/CommandLineTools/usr/bin/make pirateGame
+make[1]: Entering directory `/Users/audreyyang/Desktop/pirateGame'
+make[1]: `pirateGame' is up to date.
+make[1]: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
+make: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
+ 

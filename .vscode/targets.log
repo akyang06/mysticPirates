@@ -1,0 +1,584 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+/Library/Developer/CommandLineTools/usr/bin/make pirateGame
+ 
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+
+# Make data base, printed on Mon Jun 27 15:53:17 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+VSCODE_LOG_NATIVE = false
+# makefile (from `Makefile', line 93)
+USE_WAYLAND_DISPLAY = FALSE
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile (from `Makefile', line 285)
+LDLIBS = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
+# makefile
+CURDIR := /Users/audreyyang/Desktop/pirateGame
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 162)
+CFLAGS = -s -O1
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# makefile (from `Makefile', line 151)
+ 
+CXXFLAGS = -framework IOKit -framework Cocoa -framework OpenGl 'pkg-config --libs --cflags raylib'
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# makefile (from `Makefile', line 315)
+PROJECT_SOURCE_FILES = main.cpp
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/vscode-ipc-dc5a004a-f7a0-4e4a-bead-0a693b818682.sock
+# makefile (from `Makefile', line 30)
+RAYLIB_INCLUDE_PATH = ../../../raylib/src
+# environment
+VSCODE_CWD = /
+# environment
+PATH = /Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+# makefile (from `Makefile', line 41)
+UNAMEOS = $(shell uname)
+# makefile (from `Makefile', line 18)
+PROJECT_VERSION = 1.0
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# makefile (from `Makefile', line 189)
+INCLUDE_PATHS = -I. -I$(RAYLIB_INCLUDE_PATH)
+# makefile (from `Makefile', line 211)
+LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.hFx7K3GyQ5/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_PIPE_LOGGING = true
+# makefile (from `Makefile', line 319)
+OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
+# makefile (from `Makefile', line 58)
+PLATFORM_OS = OSX
+# environment
+PWD = /Users/audreyyang/Desktop/pirateGame
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /Users/audreyyang
+# default
+MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+# environment
+LOGNAME = audreyyang
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# makefile (from `Makefile', line 31)
+RAYLIB_LIB_PATH = ../../../raylib/src
+# makefile (from `Makefile', line 327)
+MAKEFILE_PARAMS = $(PROJECT_NAME)
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := pirateGame
+# environment
+SHLVL = 2
+# makefile (from `Makefile', line 102)
+CC = clang
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = audreyyang
+# makefile
+.DEFAULT_GOAL := all
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# default
+MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.68.1-main.sock
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.77925403.77925409
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# makefile (from `Makefile', line 19)
+PROJECT_BUILD_MODE = RELEASE
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
+# makefile (from `Makefile', line 26)
+PLATFORM = PLATFORM_DESKTOP
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# makefile (from `Makefile', line 17)
+PROJECT_NAME = pirateGame
+# environment
+LC_ALL = C
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# makefile (from `Makefile', line 32)
+RAYLIB_LIBTYPE = STATIC
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 1
+# environment
+LANG = C
+# environment
+VSCODE_PID = 97477
+# variable set hash-table stats:
+# Load=81/1024=8%, Rehash=0, Collisions=10/188=5%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777221, inode 77119163): 12 files, no impossibilities.
+
+# 12 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+%.o: %.c
+#  commands to execute (from `Makefile', line 344):
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
+	
+
+# 1 implicit rules, 0 (0.0%) terminal.
+
+# Files
+
+pirateGame: main.cpp
+#  Command-line target.
+#  Implicit rule search has not been done.
+#  Last modified 2022-06-27 15:51:34
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 339):
+	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+	
+
+all:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 335):
+	$(MAKE) $(MAKEFILE_PARAMS)
+	
+
+.PHONY: all clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-06-27 15:52:26
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+main.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-06-27 12:46:35
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+#  File has not been updated.
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 357):
+	find . -type f -perm +ugo+x -delete
+	rm -f *.o
+	@echo Cleaning done
+	
+
+# files hash-table stats:
+# Load=8/1024=1%, Rehash=0, Collisions=0/24=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+
+# Finished Make data base on Mon Jun 27 15:53:17 2022
+
+ 
+
+# Make data base, printed on Mon Jun 27 15:53:17 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+VSCODE_LOG_NATIVE = false
+# makefile (from `Makefile', line 93)
+USE_WAYLAND_DISPLAY = FALSE
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile (from `Makefile', line 285)
+ 
+LDLIBS = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
+# makefile
+CURDIR := /Users/audreyyang/Desktop/pirateGame
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 162)
+CFLAGS = -s -O1
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# makefile (from `Makefile', line 151)
+CXXFLAGS = -framework IOKit -framework Cocoa -framework OpenGl 'pkg-config --libs --cflags raylib'
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# makefile (from `Makefile', line 315)
+PROJECT_SOURCE_FILES = main.cpp
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/vscode-ipc-dc5a004a-f7a0-4e4a-bead-0a693b818682.sock
+# makefile (from `Makefile', line 30)
+RAYLIB_INCLUDE_PATH = ../../../raylib/src
+# environment
+VSCODE_CWD = /
+# environment
+PATH = /Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+# makefile (from `Makefile', line 41)
+UNAMEOS = $(shell uname)
+# makefile (from `Makefile', line 18)
+PROJECT_VERSION = 1.0
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# makefile (from `Makefile', line 189)
+INCLUDE_PATHS = -I. -I$(RAYLIB_INCLUDE_PATH)
+# makefile (from `Makefile', line 211)
+LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.hFx7K3GyQ5/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_PIPE_LOGGING = true
+# makefile (from `Makefile', line 319)
+OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
+# makefile (from `Makefile', line 58)
+PLATFORM_OS = OSX
+# environment
+PWD = /Users/audreyyang/Desktop/pirateGame
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /Users/audreyyang
+# default
+MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+# environment
+LOGNAME = audreyyang
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# makefile (from `Makefile', line 31)
+RAYLIB_LIB_PATH = ../../../raylib/src
+# makefile (from `Makefile', line 327)
+MAKEFILE_PARAMS = $(PROJECT_NAME)
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 2
+# makefile (from `Makefile', line 102)
+CC = clang
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = audreyyang
+# makefile
+.DEFAULT_GOAL := all
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# default
+MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.68.1-main.sock
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.77925403.77925409
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# makefile (from `Makefile', line 19)
+PROJECT_BUILD_MODE = RELEASE
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
+# makefile (from `Makefile', line 26)
+PLATFORM = PLATFORM_DESKTOP
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# makefile (from `Makefile', line 17)
+PROJECT_NAME = pirateGame
+# environment
+LC_ALL = C
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# makefile (from `Makefile', line 32)
+RAYLIB_LIBTYPE = STATIC
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 0
+# environment
+LANG = C
+# environment
+VSCODE_PID = 97477
+# variable set hash-table stats:
+# Load=81/1024=8%, Rehash=0, Collisions=10/191=5%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777221, inode 77119163): 12 files, no impossibilities.
+
+# 12 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+%.o: %.c
+#  commands to execute (from `Makefile', line 344):
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
+	
+
+# 1 implicit rules, 0 (0.0%) terminal.
+
+# Files
+
+pirateGame: main.cpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 339):
+	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+	
+
+all:
+#  Phony target (prerequisite of .PHONY).
+#  Command-line target.
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `'
+#  File does not exist.
+#  File has been updated.
+#  Successfully updated.
+# automatic
+# @ := all
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := 
+# automatic
+# | := 
+# automatic
+# < := 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=4/14=29%
+#  commands to execute (from `Makefile', line 335):
+	$(MAKE) $(MAKEFILE_PARAMS)
+	
+
+.PHONY: all clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-06-27 15:52:26
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+main.cpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 357):
+	find . -type f -perm +ugo+x -delete
+	rm -f *.o
+	@echo Cleaning done
+	
+
+# files hash-table stats:
+# Load=8/1024=1%, Rehash=0, Collisions=0/25=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+
+# Finished Make data base on Mon Jun 27 15:53:17 2022
+
+ 
