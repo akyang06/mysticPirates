@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <math.h>
 
 #include "raylib.h"
 #include "rlgl.h"
+#include "raymath.h"
 
 /* Program main entry point ------------------------------------------------- */
 int main()

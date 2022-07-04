@@ -1,8 +1,8 @@
 
 # #########################################################
 # #                  pirateGame Makefile                  #
-# #       Authors:  Alexandar Savic and Audrey Yang       #
-# #				Date:	  25 June 2022		   		  	#
+# #       Authors:  Alex Savic and Audrey Yang            #
+# #				Date:	  25 June 2022		   		  	  #
 # #########################################################
 # ###
 # ###
