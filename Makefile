@@ -1,8 +1,8 @@
 
 # #########################################################
 # #                  pirateGame Makefile                  #
-# #       Authors:  Alexandar Savic and Audrey Yang       #
-# #				Date:	  25 June 2022		   		  	#
+# #       Authors:  Alex Savic and Audrey Yang            #
+# #				Date:	  25 June 2022		   		  	  #
 # #########################################################
 # ###
 # ###
@@ -99,11 +99,11 @@ CC = gcc
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),OSX)
         # OSX default compiler
-        CC = clang
+        CC = clang++
     endif
     ifeq ($(PLATFORM_OS),BSD)
         # FreeBSD, OpenBSD, NetBSD, DragonFly default compiler
-        CC = clang
+        CC = clang++
     endif
 endif
 ifeq ($(PLATFORM),PLATFORM_RPI)
@@ -313,7 +313,7 @@ endif
 
 # Define all source files required
 PROJECT_SOURCE_FILES ?= \
-    main.cpp
+    main.cpp homepage.cpp 
 
 # Define all object files from source files
 OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
