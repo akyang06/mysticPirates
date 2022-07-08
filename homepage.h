@@ -27,8 +27,11 @@ class homepage {
 
 
     private:
-        foo()
-}
+        int screenWidth;
+        int screenHeight;
+
+        void titleScreen();
+};
 
 
 #endif
