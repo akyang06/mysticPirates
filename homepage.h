@@ -20,6 +20,8 @@
 #include "raylib.h"
 #include "rlgl.h"
 
+#include "play.h"
+
 class homepage {
     public:
         homepage();
@@ -31,6 +33,9 @@ class homepage {
         int screenHeight;
 
         void titleScreen();
+        Rectangle drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor);
+
+        void unloadItems(Texture2D titleScreenTexture, Font pirateFont, Music titleMusic);
 };
 
 
