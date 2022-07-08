@@ -19,51 +19,19 @@ homepage::~homepage() {
 
 }
 
-// bool homepage::GuiButton(Rectangle bounds, const char *text, int forcedState)
-// // Gui button (immediate mode, update and draw)
-// {
-//     static const int textColor[4] = { 0xeff6ffff, 0x78e782ff, 0xb04d5fff, 0xd6d6d6ff };
-
-//     int state = (forcedState >= 0)? forcedState : 0;                // NORMAL
-//     bool pressed = false;
-//     Vector2 textSize = MeasureTextEx(font, text, font.baseSize, 1);
-
-//     // Update control
-//     //--------------------------------------------------------------------
-//     if ((state < 3) && (forcedState < 0))
-//     {
-//         Vector2 mousePoint = GetMousePosition();
-
-//         // Check button state
-//         if (CheckCollisionPointRec(mousePoint, bounds))
-//         {
-//             if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) state = 2;    // PRESSED
-//             else state = 1;                                         // FOCUSED
-
-//             if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) || IsGestureDetected(GESTURE_TAP))
-//             {
-//                 pressed = true;
-//                 PlaySound(fxCoin);
-//             }
-//         }
-//     }
-
-//     npInfo.source.x = 80*state;
-
-//     //--------------------------------------------------------------------
-
-//     // Draw control
-//     //--------------------------------------------------------------------
-//     //DrawRectangleRec(bounds, GREEN);
-//     //DrawRectangleLinesEx(bounds, 4, DARKGREEN);
-//     DrawTextureNPatch(texNPatch, npInfo, bounds, (Vector2){ 0.0f, 0.0f }, 0.0f, WHITE);
-//     DrawTextEx(font, text, (Vector2){ bounds.x + bounds.width/2 - textSize.x/2, bounds.y + bounds.height/2 - textSize.y/2 + 4 }, font.baseSize, 1, GetColor(textColor[state]));
-//     //------------------------------------------------------------------
-
-//     return pressed;
-// }
-
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: titleScreen
+ * @purpose: draws the title screen with buttons to access other parts of
+ *           the game (ie. play, settings, and creator sections)
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects:
+ * @notes:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void homepage::titleScreen() {
+    /* Initializes the screen and gets the respective height and width */
     InitWindow(0, 0, "Game Screen");
     MaximizeWindow();
     screenWidth = GetScreenWidth();
@@ -93,59 +61,67 @@ void homepage::titleScreen() {
             /* Draws background */
             DrawTexture(titleScreenTexture, 0, 0, (Color){255, 255, 255, 255});
 
-            /* Draws boxes and text */
-            int boxWidth = 300;
-            int boxHeight = 100;
-            Rectangle box = {screenWidth / 5, screenHeight / 10, boxWidth, boxHeight};
+            /* Sets the button roundness */
             float roundness = 0.45f;
             int segments = 8;
 
-            /* Draws title font and gets size of the text */
-            Vector2 textSize = MeasureTextEx(pirateFont, "The Mystic Pirates", 100, -1);
-            box.height +=  (textSize.y - box.height) + 20;
-            box.width += (textSize.x - box.width) + 70;
-            box.x = (screenWidth / 2) - (box.width / 2);
-            DrawRectangleRounded(box, roundness , segments, (Color){160, 67, 54, 255});
-            DrawTextEx(pirateFont, "The Mystic Pirates", (Vector2) {box.x + ((box.width - textSize.x) / 2) , box.y + ((box.height - textSize.y) / 2)}, 100, -1, (Color){0, 0, 0, 255});
+            /* Sets up text size */
+            // note: return memory of pointers
+            const char *mysticPirates = "The Mystic Pirates";
+            Rectangle titleBox = drawButton(mysticPirates, roundness, segments, pirateFont, 100, screenWidth, screenHeight, 10);
 
-            textSize = MeasureTextEx(pirateFont, "Play", 70, -1);
-            box.y = screenHeight / 2;
-            box.height +=  (textSize.y - box.height) + 20;
-            box.width += (textSize.x - box.width) + 70;
-            box.x = (screenWidth / 2) - (box.width / 2);
-            DrawRectangleRounded(box, roundness , segments, (Color){160, 67, 54, 255});
-            DrawTextEx(pirateFont, "Play", (Vector2) {box.x + ((box.width - textSize.x) / 2) , box.y + ((box.height - textSize.y) / 2)}, 70, -1, (Color){0, 0, 0, 255});
+            const char *playB = "Play";
+            Rectangle playBox = drawButton(playB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 2);
 
-            textSize = MeasureTextEx(pirateFont, "Settings", 70, -1);
-            box.y += 150;
-            box.width += (textSize.x - box.width) + 70;
-            box.x = (screenWidth / 2) - (box.width / 2);
-            DrawRectangleRounded(box, roundness , segments, (Color){160, 67, 54, 255});
-            DrawTextEx(pirateFont, "Settings", (Vector2) {box.x + ((box.width - textSize.x) / 2) , box.y + ((box.height - textSize.y) / 2)}, 70, -1, (Color){0, 0, 0, 255});
+            const char *settingsB = "Settings";
+            Rectangle settingsBox = drawButton(settingsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.6 );
 
-            textSize = MeasureTextEx(pirateFont, "Creators", 70, -1);
-            box.y += 150;
-            box.width += (textSize.x - box.width) + 70;
-            box.x = (screenWidth / 2) - (box.width / 2);
-            DrawRectangleRounded(box, roundness , segments, (Color){160, 67, 54, 255});
-            DrawTextEx(pirateFont, "Creators", (Vector2) {(box.x + ((box.width - textSize.x) / 2)) , box.y + ((box.height - textSize.y) / 2)}, 70, -1, (Color){0, 0, 0, 255});
-                
+            const char *creatorsB = "Creators";
+            Rectangle creatorsBox = drawButton(creatorsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.33 );
+
         EndDrawing();
 
-
         /* Check if Play Button is pressed */
-        if(IsMouseButtonPressed(int button) && CheckCollisionPointRec(Vector2 point, Rectangle rec)) {
-
+        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), playBox)) {
+            unloadItems(titleScreenTexture, pirateFont, titleMusic);
+            //CloseWindow();
+            play test(screenWidth, screenHeight);
         }
-            
-    
 
     }
 
+    unloadItems(titleScreenTexture, pirateFont, titleMusic);
+}
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: drawButton
+ * @purpose: 
+ *
+ * @parameters: 
+ *     
+ * @returns: box
+ * @effects:
+ * @notes:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+Rectangle homepage::drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor) {
+        Vector2 textSize = MeasureTextEx(pirateFont, text, fontSize, -1);
+                
+        int boxWidth = textSize.x + 70;
+        int boxHeight = textSize.y + 20;
+        int boxX = (screenWidth / 2) - (boxWidth / 2);
+        int boxY = screenHeight / divisor;
 
+        Rectangle box = {boxX, boxY, boxWidth, boxHeight};
+        
+        DrawRectangleRounded(box, roundness, segments, (Color){160, 67, 54, 255});
+        Vector2 textPos = {box.x + ((boxWidth - textSize.x) / 2) , box.y + ((boxHeight - textSize.y) / 2)};
+        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){0, 0, 0, 255});
+
+        return box;
+}
+
+void homepage::unloadItems(Texture2D titleScreenTexture, Font pirateFont, Music titleMusic) {
     UnloadTexture(titleScreenTexture);
     UnloadFont(pirateFont);
     UnloadMusicStream(titleMusic);
-
 }
