@@ -30,13 +30,13 @@ void play::playScreen() {
     InitWindow(screenW, screenH, "Game Screen");
 
     /* Creates background texture */
-    Image background = LoadImage("backgroundSheet.png");
+    Image background = LoadImage("./images/backgroundSheet.png");
     ImageResize(&background, screenW/2, screenH/2);
     Texture2D texture = LoadTextureFromImage(background); 
     UnloadImage(background);
 
     /* Creates sprite texture of player ship */
-    Image sprite = LoadImage("pirateShip.png");
+    Image sprite = LoadImage("./images/pirateShip.png");
     ImageResize(&sprite, 75, 100);
     ImageRotateCW(&sprite);
 
