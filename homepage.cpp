@@ -38,18 +38,18 @@ void homepage::titleScreen() {
     screenHeight = GetScreenHeight();
 
     /* Creates title screen texture */
-    Image titleScreen = LoadImage("titleScreen.png");
+    Image titleScreen = LoadImage("./images/titleScreen.png");
     ImageResize(&titleScreen, screenWidth, screenHeight);
     Texture2D titleScreenTexture = LoadTextureFromImage(titleScreen); 
     UnloadImage(titleScreen);
 
     /* Creates sound */
     InitAudioDevice();
-    Music titleMusic = LoadMusicStream("titleMusic.mp3");
+    Music titleMusic = LoadMusicStream("./soundtrack/titleMusic.mp3");
     PlayMusicStream(titleMusic);
 
     /* Creates font */
-    Font pirateFont = LoadFontEx("theDarkestPearl.ttf", 200, 0, 250);
+    Font pirateFont = LoadFontEx("./fonts/theDarkestPearl.ttf", 200, 0, 250);
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
