@@ -5,11 +5,12 @@
 #include "raylib.h"
 #include "rlgl.h"
 #include "raymath.h"
-#include "homepage.h"
+#include "screen.h"
 
 /* Program main entry point ------------------------------------------------- */
 int main()
 {
-    homepage game;
+    screen game;
+    game.titleScreen();
     return 0;
 }
