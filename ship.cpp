@@ -29,6 +29,7 @@ ship::ship(int screenWidth, int screenHeight) {
     shipHeight = this->screenHeight / 11;
     rotation = 0.0;
     velMag = 0.0;
+    collisionDrag = 0.01;
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("./images/starterShip.png");
@@ -186,19 +187,19 @@ bool ship::facingInBounds() {
  *     
  * @returns: None
  * @effects: Makes one component of velComp zero
- * @notes: 
+ * @notes: If collision happens then slow ship down extra
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::boundCollision() {
     /* Left and right boundaries */
     if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
         velComp.x = 0;
-        velMag = abs(velComp.y);
+        decelerateShip(collisionDrag);
     }
 
     /* Up and down boundaries */
     if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
         velComp.y = 0;
-        velMag = abs(velComp.x);
+        decelerateShip(collisionDrag);
     }
 }
 
@@ -213,13 +214,25 @@ void ship::boundCollision() {
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::accelerateShip(float amount){
-    if(velMag < velLimit + amount) {
+    if(velMag < velLimit - amount) {
         velMag += amount;
     }
 
-    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
-    
+    /* Deals with velocity updates when colliding with bounds */
+    if (outOfBounds() && !facingInBounds()) {
+        /* Left and right boundaries */
+        if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
+            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
+        }
 
+        /* Up and down boundaries */
+        if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
+            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
+        }
+        return;
+    }
+
+    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -239,6 +252,20 @@ void ship::decelerateShip(float amount){
     
     if (velMag < 0) {
         velMag = 0;
+    }
+
+    /* Deals with velocity updates when colliding with bounds */
+    if (outOfBounds() && !facingInBounds()) {
+        /* Left and right boundaries */
+        if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
+            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
+        }
+
+        /* Up and down boundaries */
+        if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
+            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
+        }
+        return;
     }
 
     velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
