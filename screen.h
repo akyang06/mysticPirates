@@ -21,6 +21,7 @@
 #include "rlgl.h"
 
 #include "player.h"
+#include "enemy.h"
 
 class screen {
     public:

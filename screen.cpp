@@ -91,13 +91,13 @@ void screen::titleScreen() {
             Rectangle titleBox = drawButton(mysticPirates, roundness, segments, pirateFont, 100, screenWidth, screenHeight, 10);
 
             const char *playB = "Play";
-            Rectangle playBox = drawButton(playB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 2);
+            Rectangle playBox = drawButton(playB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.6);
 
             const char *settingsB = "Settings";
-            Rectangle settingsBox = drawButton(settingsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.6 );
+            Rectangle settingsBox = drawButton(settingsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.35 );
 
             const char *creatorsB = "Creators";
-            Rectangle creatorsBox = drawButton(creatorsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.33 );
+            Rectangle creatorsBox = drawButton(creatorsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.158 );
 
         EndDrawing();
 
@@ -141,6 +141,7 @@ void screen::titleScreen() {
 
     /* Create player */
     player p1(screenWidth, screenHeight);
+    enemy e1(screenWidth, screenHeight);
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
@@ -152,8 +153,6 @@ void screen::titleScreen() {
             scrollingBack = 0;
         } 
 
-        
-
         BeginDrawing();
                 
             ClearBackground((Color){0, 0, 0, 255});
@@ -162,11 +161,13 @@ void screen::titleScreen() {
             DrawTextureEx(texture, (Vector2){ scrollingBack, 0 }, 0.0f, 2.0f, (Color){255,255,255,255});
             DrawTextureEx(texture, (Vector2){ background.width*2 + scrollingBack, 0 }, 0.0f, 2.0f, (Color){255,255,255,255});
 
-            /* Draws player on screen */
-            p1.drawPlayer();
+            /* Draws player and enemy on screen */
+            p1.drawShip();
+            e1.drawShip();
 
             /* Tracks player movement */
             p1.monitorPlayer();
+            e1.monitorEnemy(p1);
             
 
         EndDrawing();
