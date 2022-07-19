@@ -36,6 +36,8 @@ class screen {
 
         Rectangle drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor);
 
+        Texture2D drawMenu();
+
         void unloadItems(Texture2D currTexture, Font currFont, Music currMusic);
 
         int screenWidth;
