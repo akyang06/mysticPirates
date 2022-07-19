@@ -36,6 +36,7 @@ class ship {
         bool facingInBounds();
 
         void boundCollision();
+        bool inCorner();
 
         void accelerateShip(float amount);
         void decelerateShip(float amount);
@@ -65,6 +66,11 @@ class ship {
         int screenHeight;
 
         float collisionDrag;
+
+        float upBounds;
+        float downBounds;
+        float leftBounds;
+        float rightBounds;
 
 };
 

@@ -30,6 +30,7 @@ ship::ship(int screenWidth, int screenHeight) {
     rotation = 0.0;
     velMag = 0.0;
     collisionDrag = 0.01;
+    velComp = (Vector2){0, 0};
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("./images/starterShip.png");
@@ -48,6 +49,12 @@ ship::ship(int screenWidth, int screenHeight) {
 
     /* Origin of the texture (rotation/scale point) */
     origin = (Vector2){shipWidth / 2, shipHeight / 2};
+
+    /* Determines the boundary of the screen that the hsip should stay in */
+    upBounds = shipHeight / 4;
+    downBounds = screenHeight - (shipHeight / 2);
+    leftBounds = shipWidth / 4;
+    rightBounds = screenWidth - (shipWidth / 4);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -114,6 +121,74 @@ int ship::getY() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: accelerateEnemy
+ * @purpose: Increases the speed of the ship until it reaches it's velocity limit
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: velMag of ship increases
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::accelerateShip(float amount) {
+    if(velMag < velLimit - amount) {
+        velMag += amount;
+    }
+
+    /* Deals with velocity updates when colliding with bounds */
+    if (outOfBounds() && !facingInBounds()) {
+        /* Left and right boundaries */
+        if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
+            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
+        }
+
+        /* Up and down boundaries */
+        if ((getY() <= upBounds) || (getY() >= downBounds)) {
+            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
+        }
+        return;
+    }
+
+    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: decelerateShip
+ * @purpose: Decreases the speed of the enemy until it reaches 0
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: velMag of enemy decreases
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::decelerateShip(float amount) {
+    if(velMag > 0) {
+        velMag -= amount;
+    }  
+    
+    if (velMag < 0) {
+        velMag = 0;
+    }
+
+    /* Deals with velocity updates when colliding with bounds */
+    if (outOfBounds() && !facingInBounds()) {
+        /* Left and right boundaries */
+        if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
+            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
+        }
+
+        /* Up and down boundaries */
+        if ((getY() <= upBounds) || (getY() >=  downBounds)) {
+            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
+        }
+        return;
+    }
+
+    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: outOfBounds
  * @purpose: Determines if a ship has hit the boundary of the game or not
  *
@@ -125,12 +200,12 @@ int ship::getY() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool ship::outOfBounds() {
     /* Left and right boundaries */
-    if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
+    if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
         return true;
     }
 
     /* Up and down boundaries */
-    if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
+    if ((getY() <= upBounds) || (getY() >= downBounds)) {
         return true;
     }
 
@@ -149,28 +224,28 @@ bool ship::outOfBounds() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool ship::facingInBounds() {
     /* Left boundary */
-    if (destRec.x <= 0) {
+    if (getX() <= leftBounds) {
         if((rotation > 3 * M_PI_2) || (rotation < M_PI_2)) {
             return true;
         }
     }
 
     /* right boundary */
-    if (destRec.x >= screenWidth) {
+    if (getX() >= rightBounds) {
         if((rotation > M_PI_2) && (rotation < 3 * M_PI_2)) {
             return true;
         }
     }
 
     /* up boundary */
-    if (destRec.y <= 0) {
+    if (getY() <= upBounds) {
         if((rotation > 0) && (rotation < M_PI)) {
             return true;
         }
     }
 
     /* down boundary */
-    if (destRec.y >= screenHeight) {
+    if (getY() >= downBounds) {
         if((rotation > M_PI) && (rotation < 2 * M_PI)) {
             return true;
         }
@@ -191,83 +266,37 @@ bool ship::facingInBounds() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::boundCollision() {
     /* Left and right boundaries */
-    if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
+    if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
         velComp.x = 0;
         decelerateShip(collisionDrag);
     }
 
     /* Up and down boundaries */
-    if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
+    if ((getY() <= upBounds) || (getY() >= downBounds)) {
         velComp.y = 0;
         decelerateShip(collisionDrag);
     }
-}
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: accelerateEnemy
- * @purpose: Increases the speed of the ship until it reaches it's velocity limit
- *
- * @parameters: none
- *     
- * @returns: nothing
- * @effects: velMag of ship increases
- * @notes:   
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::accelerateShip(float amount){
-    if(velMag < velLimit - amount) {
-        velMag += amount;
-    }
-
-    /* Deals with velocity updates when colliding with bounds */
-    if (outOfBounds() && !facingInBounds()) {
-        /* Left and right boundaries */
-        if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
-            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
-        }
-
-        /* Up and down boundaries */
-        if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
-            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
-        }
-        return;
-    }
-
-    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: decelerateShip
- * @purpose: Decreases the speed of the enemy until it reaches 0
- *
- * @parameters: none
- *     
- * @returns: nothing
- * @effects: velMag of enemy decreases
- * @notes:   
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::decelerateShip(float amount){
-    if(velMag > 0) {
-        velMag -= amount;
-    }  
-    
-    if (velMag < 0) {
+    /* Corner collision between 2 boundaries */
+    if(inCorner() && !facingInBounds()) {
         velMag = 0;
     }
+}
 
-    /* Deals with velocity updates when colliding with bounds */
-    if (outOfBounds() && !facingInBounds()) {
-        /* Left and right boundaries */
-        if ((destRec.x <= 0) || (destRec.x >= screenWidth)) {
-            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
-        }
-
-        /* Up and down boundaries */
-        if ((destRec.y <= 0) || (destRec.y >= screenHeight)) {
-            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
-        }
-        return;
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: inCorner
+ * @purpose: Determines if the ship is in the corner of the map or not
+ *
+ * @parameters: none
+ *     
+ * @returns: a boolean represnting if ship is in corner or not
+ * @effects: Makes one component of velComp zero
+ * @notes: If collision happens then slow ship down extra
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+bool ship::inCorner() {
+    if ((getX() <= leftBounds && getY() <= upBounds) || (getX() >= rightBounds && getY() <= upBounds) || 
+       (getX() <= leftBounds && getY() >= downBounds) || (getX() >= rightBounds && (getY()) >= downBounds)) {
+        return true;
     }
-
-    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
-
+    return false;
 }
