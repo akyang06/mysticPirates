@@ -46,7 +46,7 @@ class ship {
         float velMag;
         float rotation;
 
-        double velLimit;
+        float velLimit;
         Vector2 velComp;
 
         float acceration;
@@ -63,6 +63,8 @@ class ship {
     private:
         int screenWidth;
         int screenHeight;
+
+        float collisionDrag;
 
 };
 

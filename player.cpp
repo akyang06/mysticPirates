@@ -26,7 +26,7 @@ player::player(int screenWidth, int screenHeight) : ship(screenWidth, screenHeig
     acceration = 0.015;
     deceleration = 0.01;
     turnDrag = 0.005;
-    drag = 0.0015;
+    drag = 0.0025;
     velLimit = 5;
 }
 
@@ -91,7 +91,6 @@ void player::movePlayer(){
     if (outOfBounds() && !facingInBounds()) {
         boundCollision();
     }
-
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
