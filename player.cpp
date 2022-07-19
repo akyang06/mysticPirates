@@ -60,6 +60,7 @@ void player::monitorPlayer() {
     rotatePlayer();
     movePlayer();
 
+    DrawText(TextFormat("rotation: %f", rotation), 0, 10, 20, (Color){255,255,255,255});
     DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
     DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
     DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});

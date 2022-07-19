@@ -88,7 +88,34 @@ void enemy::moveEnemy(){
     } 
     else if (distMag > 50 && distMag < 250) {
         decelerateShip(1.025);
-
+        /* Gets required angle to face player */
+        float angleReq = atan2(distToPlayer.y, distToPlayer.x);
+        angleReq = fmod(angleReq + (2 * M_PI), 2 * M_PI);
+        
+        /* Moves ship counter clockwise from 0 over to 2pi radians */
+        if ((2 * M_PI - angleReq) < angleReq) {
+        //if (rotation > 0.0 && rotation < 1.75) {
+            rotation -= 0.05;
+       // }
+        // else if (rotation > 1.75 && rotation < 3.5) {
+        //     rotation -= 0.045;
+        // }
+        // else if (rotation > 3.5 && rotation < 4.75) {
+        //     rotation += 0.045;
+        // }
+        // else{
+        //     rotation += 0.045;
+        // }
+        }
+        else if ((2 * M_PI - rotation) + angleReq < rotation - angleReq) {
+            rotation += 0.05;
+        }
+        // else if (angleReq - rotation > 0.01) {
+        //     rotation += 0.045;
+        // } /* Moves ship counterclockwise normally */
+        // else if (angleReq - rotation < -0.01) {
+        //     rotation -= 0.045;  
+        // }
     } 
     else {
         decelerateShip(deceleration);

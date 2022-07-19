@@ -99,6 +99,9 @@ void screen::titleScreen() {
             const char *creatorsB = "Creators";
             Rectangle creatorsBox = drawButton(creatorsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.158 );
 
+            // const char *creatorsB = "Map";
+            // Rectangle creatorsBox = drawButton(creatorsB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.158 );
+
         EndDrawing();
 
         /* Check if Play Button is pressed */
@@ -145,7 +148,7 @@ void screen::titleScreen() {
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
-        UpdateMusicStream(tutorialMusic);
+        // UpdateMusicStream(tutorialMusic);
 
         scrollingBack -= 1.0f;
         /* Allows texture to repeat when it gets to the end of the background */
@@ -160,6 +163,10 @@ void screen::titleScreen() {
             /* Draws background */
             DrawTextureEx(texture, (Vector2){ scrollingBack, 0 }, 0.0f, 2.0f, (Color){255,255,255,255});
             DrawTextureEx(texture, (Vector2){ background.width*2 + scrollingBack, 0 }, 0.0f, 2.0f, (Color){255,255,255,255});
+
+            /* Draws the menu for navigating between pages*/
+            Texture2D mapTexture = drawMenu();
+            DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
             /* Draws player and enemy on screen */
             p1.drawShip();
@@ -228,4 +235,13 @@ void screen::unloadItems(Texture2D currTexture, Font currFont, Music currMusic) 
     UnloadTexture(currTexture);
     UnloadFont(currFont);
     UnloadMusicStream(currMusic);
+}
+
+Texture2D screen::drawMenu()
+{
+    /* Loads in image and resizes it for texture */
+    Image map = LoadImage("./images/map.png");
+    Texture2D mapTexture = LoadTextureFromImage(map); 
+    UnloadImage(map);
+    return mapTexture;
 }
