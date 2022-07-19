@@ -31,7 +31,7 @@ ship::ship(int screenWidth, int screenHeight) {
     velMag = 0.0;
     collisionDrag = 0.01;
     velComp = (Vector2){0, 0};
-
+    //pls
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("./images/starterShip.png");
     ImageResize(&sprite, shipWidth, shipHeight);
