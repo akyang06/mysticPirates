@@ -29,9 +29,10 @@ ship::ship(int screenWidth, int screenHeight) {
     shipHeight = this->screenHeight / 11;
     rotation = 0.0;
     velMag = 0.0;
-    collisionDrag = 0.01;
     velComp = (Vector2){0, 0};
-    //pls
+    collisionDrag = 0.01;
+    enteredBounds = false;
+
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("./images/starterShip.png");
     ImageResize(&sprite, shipWidth, shipHeight);
@@ -45,7 +46,7 @@ ship::ship(int screenWidth, int screenHeight) {
     sourceRec = (Rectangle){0.0, 0.0, shipWidth, shipHeight};
 
     /* Destination rectangle (screen rectangle where drawing part of texture) */
-    destRec = (Rectangle){this->screenWidth / 2, this->screenHeight / 2, shipWidth, shipHeight};
+    destRec = (Rectangle){0, 0, shipWidth, shipHeight};
 
     /* Origin of the texture (rotation/scale point) */
     origin = (Vector2){shipWidth / 2, shipHeight / 2};

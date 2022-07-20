@@ -29,17 +29,22 @@ class ship {
         void drawShip();
         int getX();
         int getY();
+
+        bool enteredBounds;
         
     protected:
 
         bool outOfBounds();
         bool facingInBounds();
+        bool inCorner();
 
         void boundCollision();
-        bool inCorner();
 
         void accelerateShip(float amount);
         void decelerateShip(float amount);
+
+        int screenWidth;
+        int screenHeight;
 
         int shipWidth;
         int shipHeight;
@@ -54,6 +59,7 @@ class ship {
         float deceleration;
         float turnDrag;
         float drag;
+        float rotationSpeed;
 
         Texture2D shipTexture;
 
@@ -62,8 +68,6 @@ class ship {
         Vector2 origin;  
 
     private:
-        int screenWidth;
-        int screenHeight;
 
         float collisionDrag;
 
@@ -71,7 +75,6 @@ class ship {
         float downBounds;
         float leftBounds;
         float rightBounds;
-
 };
 
 

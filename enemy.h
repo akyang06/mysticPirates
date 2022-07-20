@@ -36,6 +36,7 @@ class enemy: public ship {
     private:
         void moveEnemy();
         void rotateEnemy();
+        void moveEnemyInBounds();
 
         int range;
         Vector2 distToPlayer;
