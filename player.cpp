@@ -21,7 +21,7 @@
  * @effects: sets the values of playerWidth and playerHeight, also defines the playerTexture
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-player::player(int screenWidth, int screenHeight) : ship(screenWidth, screenHeight) {
+player::player(int screenWidth, int screenHeight, const char* texturePath) : ship(screenWidth, screenHeight, texturePath) {
 
     acceration = 0.015;
     deceleration = 0.01;

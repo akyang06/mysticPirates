@@ -21,7 +21,7 @@
  * @effects: sets the values of shipWidth and shipHeight, also defines the shipTexture
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-ship::ship(int screenWidth, int screenHeight) {
+ship::ship(int screenWidth, int screenHeight, const char* texturePath) {
     this->screenWidth = screenWidth;
     this->screenHeight = screenHeight;
 
@@ -34,7 +34,7 @@ ship::ship(int screenWidth, int screenHeight) {
     enteredBounds = false;
 
     /* Loads in image and resizes it for texture */
-    Image sprite = LoadImage("./images/starterShip.png");
+    Image sprite = LoadImage(texturePath);
     ImageResize(&sprite, shipWidth, shipHeight);
     ImageRotateCW(&sprite);
     shipTexture = LoadTextureFromImage(sprite); 

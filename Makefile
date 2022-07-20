@@ -313,7 +313,7 @@ endif
 
 # Define all source files required
 PROJECT_SOURCE_FILES ?= \
-    main.cpp screen.cpp ship.cpp player.cpp enemy.cpp
+    main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 
 # Define all object files from source files
 OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))

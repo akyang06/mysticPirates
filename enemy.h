@@ -26,11 +26,13 @@
 
 class enemy: public ship {
     public:
-        enemy(int screenWidth, int screenHeight);
+        enemy(int screenWidth, int screenHeight, const char* texturePath);
         ~enemy();
 
         void monitorEnemy(player p1);
     protected:
+
+        int range;
         
 
     private:
@@ -38,7 +40,7 @@ class enemy: public ship {
         void rotateEnemy();
         void moveEnemyInBounds();
 
-        int range;
+        
         Vector2 distToPlayer;
         float distMag;
 };
