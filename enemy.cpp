@@ -21,30 +21,8 @@
  * @effects: sets the values of playerWidth and playerHeight, also defines the playerTexture
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-enemy::enemy(int screenWidth, int screenHeight) : ship(screenWidth, screenHeight) {
-    range = 100;
-    velLimit = 2.5;
-
-    acceration = 0.015;
-    deceleration = 0.0125;
-    turnDrag = 0.005;
-    drag = 0.0025;
-    rotationSpeed = 0.01;
-
-    int caseX = rand() % 2;
-    int caseY = rand() % 2;
-
-    if (caseX == 0) {
-        destRec.x = (rand() % 300) + screenWidth + 100;
-    } else {
-        destRec.x = -(rand() % 300) - 100;
-    }
-
-    if (caseY == 0) {
-        destRec.y = (rand() % 300) + screenHeight + 100;
-    } else {
-        destRec.y = -(rand() % 300) - 100;
-    }
+enemy::enemy(int screenWidth, int screenHeight, const char* texturePath) : ship(screenWidth, screenHeight, texturePath) {
+    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

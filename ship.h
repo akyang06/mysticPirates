@@ -23,7 +23,7 @@
 
 class ship {
     public:
-        ship(int screenWidth, int screenHeight);
+        ship(int screenWidth, int screenHeight, const char* texturePath);
         ~ship();
 
         void drawShip();
