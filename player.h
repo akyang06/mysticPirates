@@ -28,6 +28,7 @@ class player: public ship {
         player(int screenWidth, int screenHeight);
         ~player();
 
+        void enterPlayer();
         void monitorPlayer();
         
     protected:

@@ -28,6 +28,10 @@ player::player(int screenWidth, int screenHeight) : ship(screenWidth, screenHeig
     turnDrag = 0.005;
     drag = 0.0025;
     velLimit = 5;
+    rotationSpeed = 0.01;
+
+    destRec.x = -100;
+    destRec.y = screenHeight / 2;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -45,6 +49,24 @@ player::~player() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: enterPlayer
+ * @purpose: Player enters the game screen before the level starts
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: none
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void player::enterPlayer() {
+
+    destRec.x += 2;
+    if (destRec.x >= screenWidth / 2) {
+        enteredBounds = true;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: monitorPlayer
  * @purpose: Monitor the user for any keys being pressed to then move the ship
  *
@@ -57,13 +79,12 @@ player::~player() {
 void player::monitorPlayer() {
 
     /* move player and deal with kinematics */
-    rotatePlayer();
-    movePlayer();
-
-    DrawText(TextFormat("rotation: %f", rotation), 0, 10, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
+    if (!enteredBounds) {
+        enterPlayer();
+    } else {
+        rotatePlayer();
+        movePlayer();
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -106,12 +127,12 @@ void player::movePlayer(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::rotatePlayer(){
     if (IsKeyDown(KEY_RIGHT)) {
-        rotation += 0.01;
+        rotation += rotationSpeed;
         decelerateShip(turnDrag);
     }
 
     if (IsKeyDown(KEY_LEFT)) {
-        rotation -= 0.01;
+        rotation -= rotationSpeed;
         decelerateShip(turnDrag);
     }
 

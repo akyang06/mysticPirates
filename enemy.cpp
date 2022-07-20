@@ -23,13 +23,28 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 enemy::enemy(int screenWidth, int screenHeight) : ship(screenWidth, screenHeight) {
     range = 100;
-    velLimit = 1.5;
+    velLimit = 2.5;
 
     acceration = 0.015;
     deceleration = 0.0125;
     turnDrag = 0.005;
     drag = 0.0025;
+    rotationSpeed = 0.01;
 
+    int caseX = rand() % 2;
+    int caseY = rand() % 2;
+
+    if (caseX == 0) {
+        destRec.x = (rand() % 300) + screenWidth + 100;
+    } else {
+        destRec.x = -(rand() % 300) - 100;
+    }
+
+    if (caseY == 0) {
+        destRec.y = (rand() % 300) + screenHeight + 100;
+    } else {
+        destRec.y = -(rand() % 300) - 100;
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -47,6 +62,23 @@ enemy::~enemy() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: moveEnemyInBounds
+ * @purpose: Move the enemy in bounds when they spawn into the game
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: 
+ * @notes: after spawn, moves enemy into the bounds
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void enemy::moveEnemyInBounds() {
+    accelerateShip(acceration);
+    if (!outOfBounds()) {
+        enteredBounds = true;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: monitorEnemy
  * @purpose: Monitor the distance between the enemy ship and the players ship to move the enemy towards the player
  *
@@ -55,14 +87,22 @@ enemy::~enemy() {
  * @returns: nothing
  * @effects: none
  * @notes:   Calls rotateEnemy() and moveEnemy() function to move the enemy
+ *           Moves enemy into the screen after they spawn
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemy::monitorEnemy(player p1) {
 
     distToPlayer = (Vector2) {p1.getX() - getX(), p1.getY() - getY()};
     distMag = sqrt(pow(distToPlayer.x, 2) + pow(distToPlayer.y, 2));
-    /* move enemy and deal with kinematics */
+
+    /* Rotates enemy to face player */
     rotateEnemy();
-    moveEnemy();
+
+    /* Moves enemy into the bounds after they spawn and continue to move after */
+    if (!enteredBounds) {
+        moveEnemyInBounds();
+    } else {
+        moveEnemy();
+    } 
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -74,13 +114,13 @@ void enemy::monitorEnemy(player p1) {
  * @returns: nothing
  * @effects: Enemy position and orientation changes
  * @notes:   The enemy moves closer to the ship until it gets into a certain radius of it
- *           Calls the accelerateEnemy and slowDownEnemy
+ *           Calls the accelerateShip and decelerateShip
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemy::moveEnemy(){
     DrawText(TextFormat("distMag: %f", distMag), 20, 50, 20, (Color){255,255,255,255});
 
-    if (outOfBounds()) {
-        velMag = 0;
+    if (outOfBounds() && !facingInBounds()) {
+        boundCollision();
     }
 
     if (distMag > 1.5 * range) {
@@ -141,19 +181,19 @@ void enemy::rotateEnemy() {
     
     /* Moves ship counter clockwise from 0 over to 2pi radians */
     if ((2 * M_PI - angleReq) + rotation < angleReq - rotation) {
-        rotation -= 0.01;
+        rotation -= rotationSpeed;
         decelerateShip(turnDrag);      
     } /* Moves ship clockwise from 2pi over to 0 radians */
     else if ((2 * M_PI - rotation) + angleReq < rotation - angleReq) {
-        rotation += 0.01;
+        rotation += rotationSpeed;
         decelerateShip(turnDrag);
     } /* Moves ship clockwise normally */
-    else if (angleReq - rotation > 0.01) {
-        rotation += 0.01; 
+    else if (angleReq - rotation > rotationSpeed) {
+        rotation += rotationSpeed; 
         decelerateShip(turnDrag);
     } /* Moves ship counterclockwise normally */
-    else if (angleReq - rotation < -0.01) {
-        rotation -= 0.01;  
+    else if (angleReq - rotation < rotationSpeed) {
+        rotation -= rotationSpeed;  
         decelerateShip(turnDrag); 
     }
 
