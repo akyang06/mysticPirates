@@ -133,6 +133,9 @@ void screen::titleScreen() {
     Texture2D texture = LoadTextureFromImage(background); 
     UnloadImage(background);
 
+    /* Loading menu */
+    Texture2D mapTexture = drawMenu();
+
     /* Sets up music */
     Music tutorialMusic = LoadMusicStream("./soundtrack/tutorialMusic.mp3");
     PlayMusicStream(tutorialMusic);
@@ -165,7 +168,6 @@ void screen::titleScreen() {
             DrawTextureEx(texture, (Vector2){ background.width*2 + scrollingBack, 0 }, 0.0f, 2.0f, (Color){255,255,255,255});
 
             /* Draws the menu for navigating between pages*/
-            Texture2D mapTexture = drawMenu();
             DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
             /* Draws player and enemy on screen */
@@ -175,7 +177,6 @@ void screen::titleScreen() {
             /* Tracks player movement */
             p1.monitorPlayer();
             e1.monitorEnemy(p1);
-            
 
         EndDrawing();
     }

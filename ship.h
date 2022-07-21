@@ -41,6 +41,8 @@ class ship {
         void accelerateShip(float amount);
         void decelerateShip(float amount);
 
+        void playerShoot();
+
         int shipWidth;
         int shipHeight;
 
