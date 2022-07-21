@@ -66,6 +66,7 @@ player::player() : ship() {
     shipHeight = screenHeight / 11;
     ImageResize(&sprite, shipWidth, shipHeight);
     ImageRotateCW(&sprite);
+
     shipTexture = LoadTextureFromImage(sprite); 
     UnloadImage(sprite);
     shipWidth = shipTexture.width;
@@ -210,9 +211,9 @@ void player::playerShoot(){
             {
                 shoot[i].position = (Vector2){ getX(), getY() };
                 shoot[i].active = true;
-                shoot[i].speed.x = 1.5*sin(rotation)*7;
-                shoot[i].speed.y = 1.5*cos(rotation)*7;
-                shoot[i].rot = rotation;
+                shoot[i].speed.x = 1.5*sin(rotation + ((3 * M_PI)/2)) *7;
+                shoot[i].speed.y = 1.5*cos(rotation + ((3* M_PI)/ 2)) *7;
+                shoot[i].rot = (rotation);
                 break;
             }
         }

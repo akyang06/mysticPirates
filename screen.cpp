@@ -179,7 +179,7 @@ void screen::titleScreen() {
 
             /* Tracks player movement */
             p1.monitorPlayer();
-            e1.monitorEnemy(p1);
+            // e1.monitorEnemy(p1);
             if (p1.enteredBounds) {
                 e1.monitorEnemyRed(p1);
             }
