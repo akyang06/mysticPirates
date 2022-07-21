@@ -21,41 +21,16 @@
  * @effects: sets the values of shipWidth and shipHeight, also defines the shipTexture
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-ship::ship(int screenWidth, int screenHeight, const char* texturePath) {
-    this->screenWidth = screenWidth;
-    this->screenHeight = screenHeight;
+ship::ship() {
+    screenWidth = GetScreenWidth();
+    screenHeight = GetScreenHeight();
 
-    shipWidth = this->screenWidth / 22;
-    shipHeight = this->screenHeight / 11;
+    /* Sets up universal values */
     rotation = 0.0;
     velMag = 0.0;
     velComp = (Vector2){0, 0};
     collisionDrag = 0.01;
     enteredBounds = false;
-
-    /* Loads in image and resizes it for texture */
-    Image sprite = LoadImage(texturePath);
-    ImageResize(&sprite, shipWidth, shipHeight);
-    ImageRotateCW(&sprite);
-    shipTexture = LoadTextureFromImage(sprite); 
-    UnloadImage(sprite);
-    shipWidth = shipTexture.width;
-    shipHeight = shipTexture.height;
-
-    /* Source rectangle (part of the texture to use for drawing) */
-    sourceRec = (Rectangle){0.0, 0.0, shipWidth, shipHeight};
-
-    /* Destination rectangle (screen rectangle where drawing part of texture) */
-    destRec = (Rectangle){0, 0, shipWidth, shipHeight};
-
-    /* Origin of the texture (rotation/scale point) */
-    origin = (Vector2){shipWidth / 2, shipHeight / 2};
-
-    /* Determines the boundary of the screen that the hsip should stay in */
-    upBounds = shipHeight / 4;
-    downBounds = screenHeight - (shipHeight / 2);
-    leftBounds = shipWidth / 4;
-    rightBounds = screenWidth - (shipWidth / 4);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

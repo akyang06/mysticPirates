@@ -127,10 +127,6 @@ void screen::titleScreen() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
  void screen::tutorialScreen() {
 
-    /* Ship images */
-    const char* playerTexture  = "./images/starterShip.png";
-    const char* enemyRedTexture  = "./images/enemyRed.png";
-
     /* Creates background texture */
     Image background = LoadImage("./images/backgroundSheet.png");
     ImageResize(&background, screenWidth/2, screenHeight/2);
@@ -147,8 +143,8 @@ void screen::titleScreen() {
     float scrollingBack = 0.0f;
 
     /* Create player */
-    player p1(screenWidth, screenHeight, playerTexture);
-    enemyRed e1(screenWidth, screenHeight, enemyRedTexture);
+    player p1;
+    enemyRed e1;
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
@@ -179,7 +175,7 @@ void screen::titleScreen() {
             /* Tracks player movement */
             p1.monitorPlayer();
             if (p1.enteredBounds) {
-                e1.monitorEnemy(p1);
+                e1.monitorEnemyRed(p1);
             }
 
         EndDrawing();
