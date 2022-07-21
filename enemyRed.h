@@ -1,16 +1,16 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *  player.h
+ *  enemyRed.h
  *  Authors: Alex Savic & Audrey Yang
  *  07/16/22
  *
  *  
  *
- *  Function definitions of player class
+ *  Function definitions of enemy red class
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#ifndef __ENEMYRED_H__
+#define __ENEMYRED_H__
 
 #include <iostream>
 #include <fstream>
@@ -21,25 +21,25 @@
 #include "rlgl.h"
 
 #include "ship.h"
+#include "enemy.h"
 
 
-class player: public ship {
+class enemyRed: public enemy {
     public:
-        player();
-        ~player();
+        enemyRed();
+        ~enemyRed();
 
-        void enterPlayer();
-        void monitorPlayer();
-        
+        void monitorEnemyRed(player p1);
+
     protected:
         
 
     private:
-        int screenWidth;
-        int screenHeight;
-        void rotatePlayer();
-        void movePlayer();
-        void playerShoot();
+        void moveEnemyRed();
+        // void moveToPlayer();
+        // void alignWithPlayer();
+        // void attackPlayer();
+        
 };
 
 

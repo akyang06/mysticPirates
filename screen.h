@@ -22,6 +22,7 @@
 
 #include "player.h"
 #include "enemy.h"
+#include "enemyRed.h"
 
 class screen {
     public:

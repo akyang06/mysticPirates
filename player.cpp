@@ -36,8 +36,9 @@ static Shoot shoot[PLAYER_MAX_SHOOTS] = { 0 };
  * @effects: sets the values of playerWidth and playerHeight, also defines the playerTexture
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-player::player(int screenWidth, int screenHeight) : ship(screenWidth, screenHeight) {
+player::player() : ship() {
 
+    /* Player ship initial stats */
     acceration = 0.015;
     deceleration = 0.01;
     turnDrag = 0.005;
@@ -57,6 +58,33 @@ player::player(int screenWidth, int screenHeight) : ship(screenWidth, screenHeig
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
+    rotationSpeed = 0.01;
+
+    /* Loads in image and resizes it for texture */
+    Image sprite = LoadImage("images/starterShip.png");
+    shipWidth = screenWidth / 22;
+    shipHeight = screenHeight / 11;
+    ImageResize(&sprite, shipWidth, shipHeight);
+    ImageRotateCW(&sprite);
+    shipTexture = LoadTextureFromImage(sprite); 
+    UnloadImage(sprite);
+    shipWidth = shipTexture.width;
+    shipHeight = shipTexture.height;
+
+    /* Source rectangle (part of the texture to use for drawing) */
+    sourceRec = (Rectangle){0.0, 0.0, shipWidth, shipHeight};
+
+    /* Destination rectangle (screen rectangle where drawing part of texture) */
+    destRec = (Rectangle){-150, screenHeight / 2, shipWidth, shipHeight};
+
+    /* Origin of the texture (rotation/scale point) */
+    origin = (Vector2){shipWidth / 2, shipHeight / 2};
+
+    /* Determines the boundary of the screen that the ship should stay in */
+    upBounds = shipHeight / 4;
+    downBounds = screenHeight - (shipHeight / 2);
+    leftBounds = shipWidth / 4;
+    rightBounds = screenWidth - (shipWidth / 4);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -71,6 +99,24 @@ player::player(int screenWidth, int screenHeight) : ship(screenWidth, screenHeig
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 player::~player() {
 
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: enterPlayer
+ * @purpose: Player enters the game screen before the level starts
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: none
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void player::enterPlayer() {
+
+    destRec.x += 2;
+    if (destRec.x >= screenWidth / 2) {
+        enteredBounds = true;
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -94,6 +140,12 @@ void player::monitorPlayer() {
     DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
     DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
     DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
+    if (!enteredBounds) {
+        enterPlayer();
+    } else {
+        rotatePlayer();
+        movePlayer();
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -136,12 +188,12 @@ void player::movePlayer(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::rotatePlayer(){
     if (IsKeyDown(KEY_RIGHT)) {
-        rotation += 0.01;
+        rotation += rotationSpeed;
         decelerateShip(turnDrag);
     }
 
     if (IsKeyDown(KEY_LEFT)) {
-        rotation -= 0.01;
+        rotation -= rotationSpeed;
         decelerateShip(turnDrag);
     }
 

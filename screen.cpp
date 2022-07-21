@@ -146,16 +146,16 @@ void screen::titleScreen() {
     float scrollingBack = 0.0f;
 
     /* Create player */
-    player p1(screenWidth, screenHeight);
-    enemy e1(screenWidth, screenHeight);
+    player p1;
+    enemyRed e1;
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
-        // UpdateMusicStream(tutorialMusic);
+        UpdateMusicStream(tutorialMusic);
 
         scrollingBack -= 1.0f;
         /* Allows texture to repeat when it gets to the end of the background */
-        if (scrollingBack <= -background.width*2) {
+        if (scrollingBack <= -background.width * 2) {
             scrollingBack = 0;
         } 
 
@@ -169,6 +169,9 @@ void screen::titleScreen() {
 
             /* Draws the menu for navigating between pages*/
             DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
+            // /* Draws the menu for navigating between pages*/
+            // Texture2D mapTexture = drawMenu();
+            // DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
             /* Draws player and enemy on screen */
             p1.drawShip();
@@ -177,6 +180,9 @@ void screen::titleScreen() {
             /* Tracks player movement */
             p1.monitorPlayer();
             e1.monitorEnemy(p1);
+            if (p1.enteredBounds) {
+                e1.monitorEnemyRed(p1);
+            }
 
         EndDrawing();
     }

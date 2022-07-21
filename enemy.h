@@ -26,20 +26,21 @@
 
 class enemy: public ship {
     public:
-        enemy(int screenWidth, int screenHeight);
+        enemy();
         ~enemy();
 
-        void monitorEnemy(player p1);
-    protected:
         
+    protected:
 
-    private:
-        void moveEnemy();
-        void rotateEnemy();
+        void facePlayer();
+        void moveEnemyInBounds();
 
         int range;
         Vector2 distToPlayer;
         float distMag;
+        
+    private:
+           
 };
 
 
