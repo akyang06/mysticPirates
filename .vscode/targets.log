@@ -18,7 +18,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Tue Jul 19 14:04:56 2022
+# Make data base, printed on Thu Jul 21 13:05:18 2022
 
 # Variables
 
@@ -65,8 +65,6 @@ UNAMEOS = $(shell uname)
 # makefile (from `Makefile', line 18)
 PROJECT_VERSION = 1.0
 # environment
-LaunchInstanceID = DDB0BBFC-9798-4A2E-9EE6-1E6BFECDE8AF
-# environment
 ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 189)
 INCLUDE_PATHS = -I. -I$(RAYLIB_INCLUDE_PATH)
@@ -97,7 +95,7 @@ VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/Cach
 # environment
 LOGNAME = audreyyang
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # makefile (from `Makefile', line 31)
 RAYLIB_LIB_PATH = ../../../raylib/src
 # makefile (from `Makefile', line 327)
@@ -164,8 +162,6 @@ MAKEFILES :=
 PROJECT_NAME = pirateGame
 # environment
 LC_ALL = C
-# environment
-SECURITYSESSIONID = 186a3
 # automatic
 ^F = $(notdir $^)
 # default
@@ -179,9 +175,9 @@ MAKELEVEL := 1
 # environment
 LANG = C
 # environment
-VSCODE_PID = 662
+VSCODE_PID = 58643
 # variable set hash-table stats:
-# Load=79/1024=8%, Rehash=0, Collisions=10/186=5%
+# Load=77/1024=8%, Rehash=0, Collisions=14/198=7%
 
 # Pattern-specific Variable Values
 
@@ -207,11 +203,28 @@ VSCODE_PID = 662
 pirateGame: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp
 #  Command-line target.
 #  Implicit rule search has not been done.
-#  Last modified 2022-07-19 01:49:28
+#  Implicit/static pattern stem: `'
+#  Last modified 2022-07-20 00:36:19
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := pirateGame
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := main.cpp screen.cpp ship.cpp player.cpp enemy.cpp
+# automatic
+# | := 
+# automatic
+# < := main.cpp
+# automatic
+# ^ := main.cpp screen.cpp ship.cpp player.cpp enemy.cpp
+# automatic
+# ? := ship.cpp player.cpp
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+# Load=8/32=25%, Rehash=0, Collisions=5/22=23%
 #  commands to execute (from `Makefile', line 339):
 	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	
@@ -257,7 +270,7 @@ main.cpp:
 # Not a target:
 ship.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-19 00:24:42
+#  Last modified 2022-07-21 13:05:18
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -266,7 +279,7 @@ ship.cpp:
 # Not a target:
 player.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-19 01:25:32
+#  Last modified 2022-07-20 00:36:49
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -290,7 +303,7 @@ enemy.cpp:
 # Not a target:
 screen.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-19 00:46:16
+#  Last modified 2022-07-19 23:31:53
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -308,7 +321,7 @@ clean:
 	
 
 # files hash-table stats:
-# Load=12/1024=1%, Rehash=0, Collisions=0/32=0%
+# Load=12/1024=1%, Rehash=0, Collisions=0/33=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -316,15 +329,15 @@ clean:
 # No general (`VPATH' variable) search path.
 
 # # of strings in strcache: 1
+ 
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Tue Jul 19 14:04:56 2022
+# Finished Make data base on Thu Jul 21 13:05:18 2022
 
- 
 
-# Make data base, printed on Tue Jul 19 14:04:56 2022
+# Make data base, printed on Thu Jul 21 13:05:18 2022
 
 # Variables
 
@@ -371,8 +384,6 @@ UNAMEOS = $(shell uname)
 # makefile (from `Makefile', line 18)
 PROJECT_VERSION = 1.0
 # environment
-LaunchInstanceID = DDB0BBFC-9798-4A2E-9EE6-1E6BFECDE8AF
-# environment
 ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 189)
 INCLUDE_PATHS = -I. -I$(RAYLIB_INCLUDE_PATH)
@@ -403,7 +414,7 @@ VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/Cach
 # environment
 LOGNAME = audreyyang
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # makefile (from `Makefile', line 31)
 RAYLIB_LIB_PATH = ../../../raylib/src
 # makefile (from `Makefile', line 327)
@@ -431,6 +442,9 @@ USER = audreyyang
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # default
+ 
+make: *** [all] Error 1
+
 MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
 # default
 .VARIABLES := 
@@ -470,14 +484,11 @@ MAKEFILES :=
 PROJECT_NAME = pirateGame
 # environment
 LC_ALL = C
-# environment
-SECURITYSESSIONID = 186a3
 # automatic
 ^F = $(notdir $^)
 # default
 SUFFIXES := 
 # makefile (from `Makefile', line 32)
- 
 RAYLIB_LIBTYPE = STATIC
 # default
 .INCLUDE_DIRS = /usr/local/include
@@ -486,9 +497,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 662
+VSCODE_PID = 58643
 # variable set hash-table stats:
-# Load=79/1024=8%, Rehash=0, Collisions=10/189=5%
+# Load=77/1024=8%, Rehash=0, Collisions=10/187=5%
 
 # Pattern-specific Variable Values
 
@@ -526,7 +537,7 @@ all:
 #  Implicit/static pattern stem: `'
 #  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # automatic
 # @ := all
 # automatic
@@ -617,7 +628,7 @@ clean:
 	
 
 # files hash-table stats:
-# Load=12/1024=1%, Rehash=0, Collisions=0/33=0%
+# Load=12/1024=1%, Rehash=0, Collisions=0/34=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -629,6 +640,6 @@ clean:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Tue Jul 19 14:04:56 2022
+# Finished Make data base on Thu Jul 21 13:05:18 2022
 
  
