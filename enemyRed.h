@@ -26,13 +26,20 @@
 
 class enemyRed: public enemy {
     public:
-        enemyRed(int screenWidth, int screenHeight, const char* texturePath);
+        enemyRed();
         ~enemyRed();
+
+        void monitorEnemyRed(player p1);
 
     protected:
         
 
     private:
+        void moveEnemyRed();
+        // void moveToPlayer();
+        // void alignWithPlayer();
+        // void attackPlayer();
+        
 };
 
 

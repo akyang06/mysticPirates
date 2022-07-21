@@ -25,7 +25,7 @@
 
 class player: public ship {
     public:
-        player(int screenWidth, int screenHeight, const char* texturePath);
+        player();
         ~player();
 
         void enterPlayer();

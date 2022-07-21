@@ -23,7 +23,7 @@
 
 class ship {
     public:
-        ship(int screenWidth, int screenHeight, const char* texturePath);
+        ship();
         ~ship();
 
         void drawShip();
@@ -67,14 +67,15 @@ class ship {
         Rectangle destRec;
         Vector2 origin;  
 
-    private:
-
-        float collisionDrag;
-
         float upBounds;
         float downBounds;
         float leftBounds;
         float rightBounds;
+
+    private:
+
+        float collisionDrag;
+        
 };
 
 
