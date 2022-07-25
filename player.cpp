@@ -43,7 +43,9 @@ player::player() : ship() {
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
-    velLimit = 5;
+    velLimit = 3;
+    rotationSpeed = 0.015;
+    range = 300;
 
     // Initialization shoot
     for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
@@ -58,7 +60,7 @@ player::player() : ship() {
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
-    rotationSpeed = 0.01;
+   
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/starterShip.png");
@@ -133,19 +135,12 @@ void player::enterPlayer() {
 void player::monitorPlayer() {
 
     /* move player and deal with kinematics */
-    rotatePlayer();
-    movePlayer();
-    playerShoot();
-
-    DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
     if (!enteredBounds) {
         enterPlayer();
     } else {
         rotatePlayer();
         movePlayer();
+        playerShoot();
     }
 }
 
