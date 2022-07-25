@@ -28,11 +28,13 @@ player::player() : ship() {
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
-    velLimit = 5;
+    velLimit = 3;
+    rotationSpeed = 0.015;
+    range = 300;
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
-    rotationSpeed = 0.01;
+   
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/starterShip.png");

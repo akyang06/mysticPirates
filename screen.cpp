@@ -151,6 +151,7 @@ void screen::titleScreen() {
     /* Create player */
     player p1;
     enemyRed e1;
+    enemyRed e2;
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {

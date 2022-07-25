@@ -94,6 +94,7 @@ void ship::drawShip() {
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
     DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
+    DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
     
 }
 
@@ -123,6 +124,20 @@ int ship::getX() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 int ship::getY() {
     return destRec.y;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: getRotatio 
+ * @purpose: Returns the rotation value of the ship
+ *
+ * @parameters: none
+ *     
+ * @returns: the rotation of the ship
+ * @effects: 
+ * @notes:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+float ship::getRotation() {
+    return rotation;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
