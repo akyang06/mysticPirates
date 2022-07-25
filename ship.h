@@ -42,8 +42,9 @@ class ship {
 
         void accelerateShip(float amount);
         void decelerateShip(float amount);
+        void shipShoot();
+        void checkCollision();
 
-        void playerShoot();
         int screenWidth;
         int screenHeight;
 
@@ -66,6 +67,7 @@ class ship {
 
         Rectangle sourceRec;
         Rectangle destRec;
+        Rectangle targetRec;
         Vector2 origin;  
 
         float upBounds;
@@ -73,8 +75,10 @@ class ship {
         float leftBounds;
         float rightBounds;
 
-    private:
+        int healthBar;
 
+    private:
+        int attackType;
         float collisionDrag;
         
 };

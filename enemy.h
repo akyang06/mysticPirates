@@ -38,6 +38,7 @@ class enemy: public ship {
         int range;
         Vector2 distToPlayer;
         float distMag;
+        Rectangle targetRec;
         
     private:
            

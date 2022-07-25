@@ -23,7 +23,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 enemy::enemy() : ship() {
 
-    /* Determines random positon for enemy ship to spawn in */
+    /* Determines random position for enemy ship to spawn in */
 
     int caseX = rand() % 2;
     int caseY = rand() % 2;

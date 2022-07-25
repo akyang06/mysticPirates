@@ -48,7 +48,10 @@ enemyRed::enemyRed() : enemy() {
 
     /* Destination rectangle (screen rectangle where drawing part of texture) */
     destRec.width = shipWidth;
-    destRec.height = shipHeight;
+    destRec.height = shipHeight; 
+
+    targetRec.width = destRec.width;
+    targetRec.height = destRec.height;
 
     /* Origin of the texture (rotation/scale point) */
     origin = (Vector2){shipWidth / 2, shipHeight / 2};
@@ -57,7 +60,9 @@ enemyRed::enemyRed() : enemy() {
     upBounds = shipHeight / 4;
     downBounds = screenHeight - (shipHeight / 2);
     leftBounds = shipWidth / 4;
-    rightBounds = screenWidth - (shipWidth / 4);    
+    rightBounds = screenWidth - (shipWidth / 4);   
+
+    healthBar = 100;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -95,6 +100,7 @@ void enemyRed::monitorEnemyRed(player p1) {
     if (!enteredBounds) {
         moveEnemyInBounds();
     } else {
+        checkCollision();
         moveEnemyRed();
     } 
 }
@@ -121,6 +127,12 @@ void enemyRed::moveEnemyRed(){
         facePlayer();
         accelerateShip(acceration);
     }
+    targetRec.x = destRec.x - destRec.width/2;
+    targetRec.y = destRec.y - destRec.height/2;
+
+    /* Health bar status */
+    DrawRectangle(targetRec.x, (targetRec.y - 20), healthBar, 7, (Color){ 0, 228, 48, 255 });
+
     // } else if (distMag > range) {
     //     alignWithPlayer();
     // } else {

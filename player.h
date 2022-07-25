@@ -39,7 +39,6 @@ class player: public ship {
         int screenHeight;
         void rotatePlayer();
         void movePlayer();
-        void playerShoot();
 };
 
 

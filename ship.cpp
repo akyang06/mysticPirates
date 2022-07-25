@@ -11,6 +11,20 @@
 
 #include "ship.h"
 
+#define PLAYER_MAX_SHOOTS   10
+
+typedef struct Shoot {
+    Vector2 position;
+    Vector2 speed;
+    float radius;
+    float rot;
+    int lifeSpawn;
+    bool active;
+    Color color;
+} Shoot;
+
+static Shoot shoot[PLAYER_MAX_SHOOTS] = { 0 };
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: constructor
  * @purpose: Initializes a ship object and loads in the base image of a ship with correct dimensions
@@ -31,6 +45,18 @@ ship::ship() {
     velComp = (Vector2){0, 0};
     collisionDrag = 0.01;
     enteredBounds = false;
+
+    /* Initializes the shooting component */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        shoot[i].position = (Vector2){0, 0};
+        shoot[i].speed = (Vector2){0, 0};
+        shoot[i].radius = 5;
+        shoot[i].active = false;
+        shoot[i].lifeSpawn = 0;
+        shoot[i].color = (Color){ 80, 80, 80, 255 };
+    }
+
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -61,6 +87,9 @@ void ship::drawShip() {
 
     destRec.x += velComp.x;
     destRec.y += velComp.y;
+
+    targetRec.x = destRec.x;
+    targetRec.y = destRec.y;
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
@@ -275,4 +304,88 @@ bool ship::inCorner() {
         return true;
     }
     return false;
+}
+
+void ship::shipShoot(){
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+        {
+            if (!shoot[i].active)
+            {
+                shoot[i].position = (Vector2){ getX(), getY()};
+                shoot[i].active = true;
+                /* Angle is based on the direction of the ship */
+                shoot[i].speed.x = 1.5*sin(rotation + ((3 * M_PI)/2)) *7;
+                shoot[i].speed.y = 1.5*cos(rotation + ((3* M_PI)/ 2)) *7;
+                shoot[i].rot = (rotation);
+                break;
+            }
+        }
+    }
+
+    /* Cannon ball timer */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        if (shoot[i].active) shoot[i].lifeSpawn++;
+    }
+
+    /* Logic for shooting */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        if (shoot[i].active)
+        {
+            /* Moving the "cannon ball" */
+            shoot[i].position.x -= shoot[i].speed.x;
+            shoot[i].position.y += shoot[i].speed.y;
+             // Collision logic: shoot vs walls
+            if  (shoot[i].position.x > screenWidth + shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            else if (shoot[i].position.x < 0 - shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            if (shoot[i].position.y > screenHeight + shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            else if (shoot[i].position.y < 0 - shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            /* How long the "cannon ball" appears for */
+            if (shoot[i].lifeSpawn >= 60)
+            {
+                shoot[i].position = (Vector2){0, 0};
+                shoot[i].speed = (Vector2){0, 0};
+                shoot[i].lifeSpawn = 0;
+                shoot[i].active = false;
+            }
+        }
+    }
+    /* Drawing the cannon ball */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, (Color){ 80, 80, 80, 255 });
+    }
+}
+
+void ship::checkCollision(){
+    /* Collision logic between the cannons and enemy ships */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++) {
+        if ((shoot[i].active)) {
+            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, targetRec)){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+                // DrawText(TextFormat("bam"), 30, 100, 200, (Color){255,255,255,255});
+                healthBar -= 10;
+            }
+        }
+    }
 }
