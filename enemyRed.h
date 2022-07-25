@@ -29,16 +29,28 @@ class enemyRed: public enemy {
         enemyRed();
         ~enemyRed();
 
-        void monitorEnemyRed(player p1);
+        void monitorEnemyRed(player &p1);
 
     protected:
         
 
     private:
         void moveEnemyRed();
-        // void moveToPlayer();
-        // void alignWithPlayer();
-        // void attackPlayer();
+        void getInRange();
+        void trajectoryInRange();
+        void rotateToGetInRange(float upperAngle, float lowerAngle);
+        void attackPlayer();
+        void rotateToAttackPlayer(float shootingAngle);
+        void circleAround();
+        void monitorCoolDown();
+
+        bool aboveOrBelowPlayer();
+
+        bool shotFired;
+
+        float cooldownDuration;
+        float cooldown;
+
         
 };
 

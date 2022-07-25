@@ -148,6 +148,7 @@ void screen::titleScreen() {
     /* Create player */
     player p1;
     enemyRed e1;
+    enemyRed e2;
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
@@ -169,19 +170,17 @@ void screen::titleScreen() {
 
             /* Draws the menu for navigating between pages*/
             DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
-            // /* Draws the menu for navigating between pages*/
-            // Texture2D mapTexture = drawMenu();
-            // DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
             /* Draws player and enemy on screen */
             p1.drawShip();
             e1.drawShip();
+            e2.drawShip();
 
             /* Tracks player movement */
             p1.monitorPlayer();
-            // e1.monitorEnemy(p1);
             if (p1.enteredBounds) {
                 e1.monitorEnemyRed(p1);
+                e2.monitorEnemyRed(p1);
             }
 
         EndDrawing();

@@ -16,6 +16,7 @@
 #include <fstream>
 #include <string>
 #include <math.h>
+#include <time.h>
 
 #include "raylib.h"
 #include "rlgl.h"
@@ -29,6 +30,7 @@ class ship {
         void drawShip();
         int getX();
         int getY();
+        float getRotation();
 
         bool enteredBounds;
         
@@ -61,6 +63,7 @@ class ship {
         float turnDrag;
         float drag;
         float rotationSpeed;
+        int range;
 
         Texture2D shipTexture;
 
