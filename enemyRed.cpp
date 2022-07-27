@@ -64,8 +64,6 @@ enemyRed::enemyRed() : enemy() {
     downBounds = screenHeight - (shipHeight / 2);
     leftBounds = shipWidth / 4;
     rightBounds = screenWidth - (shipWidth / 4);   
-
-    healthBar = 100;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -365,14 +363,5 @@ void enemyRed::monitorCoolDown() {
     }
     targetRec.x = destRec.x - destRec.width/2;
     targetRec.y = destRec.y - destRec.height/2;
-
-    /* Health bar status */
-    DrawRectangle(targetRec.x, (targetRec.y - 20), healthBar, 7, (Color){ 0, 228, 48, 255 });
-
-    // } else if (distMag > range) {
-    //     alignWithPlayer();
-    // } else {
-    //     attackPlayer();
-    // }
 }
 
