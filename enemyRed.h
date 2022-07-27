@@ -47,6 +47,7 @@ class enemyRed: public enemy {
         bool aboveOrBelowPlayer();
 
         bool shotFired;
+        bool circleAroundCC;
 
         float cooldownDuration;
         float cooldown;
