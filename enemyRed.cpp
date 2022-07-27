@@ -282,9 +282,18 @@ void enemyRed::attackPlayer() {
     shootingAngle = fmod(shootingAngle + (2 * M_PI), 2 * M_PI);
 
     /* If angle between enemy and player is just over PI/2 then attack, otherwise rotate slightly */
-    if((abs(shootingAngle - rotation) >= (80 * (M_PI / 180))) && (abs(shootingAngle - rotation) <= (100 * (M_PI / 180)))) {
+    if ((abs(shootingAngle - rotation) >= (80 * (M_PI / 180))) && (abs(shootingAngle - rotation) <= (100 * (M_PI / 180)))) {
         DrawText("I'm firing at the player", 20, 300, 20, (Color){255,255,255,255});
         shotFired = true;
+
+         /* Determines if enemy should rotate clockwise or counter-clockwise */
+        int random = rand() % 2;
+        if (random == 0) {
+            circleAroundCC = true;
+        } else {
+            circleAroundCC = false;
+        }
+
         cooldown = cooldownDuration;
     } else {
         rotateToAttackPlayer(shootingAngle);
@@ -334,10 +343,16 @@ void enemyRed::rotateToAttackPlayer(float shootingAngle) {
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemyRed::circleAround() {
+
+    /* Has enemy circle around the player */
     if (distMag <= range) {
         accelerateShip(acceration);
     } else {
-        rotation -= rotationSpeed;
+        if (circleAroundCC) {
+            rotation -= rotationSpeed;
+        } else {
+            rotation+= rotationSpeed;
+        }
         accelerateShip(acceration);
         decelerateShip(turnDrag);
     }
