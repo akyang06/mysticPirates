@@ -60,6 +60,7 @@ ship::ship() {
 
     /* Initializes the attack type to cannon */
     shootType = 1;
+    isAlive = true;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -91,14 +92,22 @@ void ship::drawShip() {
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
-    targetRec.x = destRec.x;
-    targetRec.y = destRec.y;
+    targetRec.x = destRec.x - destRec.width/2;
+    targetRec.y = destRec.y - destRec.height/2;
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
-    DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
-    DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
-    
+
+    if (healthBar > 0) {
+        DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
+        DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
+        isAlive = false;
+
+        // DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
+
+        /* Health bar status */
+        DrawRectangle(targetRec.x, targetRec.y, healthBar, 7, (Color){ 0, 228, 48, 255 });
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -348,7 +357,7 @@ void ship::attackType(){
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: frontShipShoot
+ * @function: shipShoot
  * @purpose: Shoots cannons from the front of the ship
  *
  * @parameters: none
@@ -357,7 +366,7 @@ void ship::attackType(){
  * @effects: Inflicts damage on the opponent with front-facing cannons
  * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::frontShipShoot(){
+void ship::shipShoot(){
     if ((IsKeyPressed(KEY_SPACE))){
         for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
         {
@@ -525,7 +534,4 @@ void ship::checkCollision(){
             }
         }
     }
-    DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
-        /* Health bar status */
-    DrawRectangle((targetRec.x - 50), (targetRec.y - 50), healthBar, 7, (Color){ 0, 228, 48, 255 });
 }

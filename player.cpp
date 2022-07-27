@@ -119,10 +119,10 @@ void player::enterPlayer() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::monitorPlayer() {
 
-    DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
 
     /* move player and deal with kinematics */
     if (!enteredBounds) {
@@ -132,8 +132,7 @@ void player::monitorPlayer() {
         attackType();
         rotatePlayer();
         movePlayer();
-        frontShipShoot();
-        //sideShipShoot();
+        shipShoot();
     }
 }
 

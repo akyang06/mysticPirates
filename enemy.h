@@ -35,13 +35,11 @@ class enemy: public ship {
         void facePlayer();
         void moveEnemyInBounds();
 
-        
-
         float playerRotation;
         Vector2 playerPos;
         Vector2 distToPlayer;
         float distMag;
-        Rectangle targetRec;
+        //Rectangle targetRec;
         
         
     private:

@@ -28,7 +28,8 @@ enemyRed::enemyRed() : enemy() {
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
-    velLimit = 2.5;
+    //changed for debugging
+    velLimit = 0.5;
     rotationSpeed = 0.01;
     range = 250;
     shotFired = false;
@@ -137,8 +138,12 @@ void enemyRed::moveEnemyRed(){
     } else {
         circleAround();
         monitorCoolDown();
+        // if (isAlive) {
+        //     DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
+        //     targetRec.x = destRec.x - destRec.width/2;
+        //     targetRec.y = destRec.y - destRec.height/2;
+        // }
     }
-    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -376,7 +381,5 @@ void enemyRed::monitorCoolDown() {
         cooldown = 0;
         shotFired = false;
     }
-    targetRec.x = destRec.x - destRec.width/2;
-    targetRec.y = destRec.y - destRec.height/2;
 }
 
