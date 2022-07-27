@@ -66,7 +66,7 @@ void screen::titleScreen() {
     /* Creates sound */
     InitAudioDevice();
     Music titleMusic = LoadMusicStream("./soundtrack/titleMusic.mp3");
-    //PlayMusicStream(titleMusic);
+    PlayMusicStream(titleMusic);
 
     /* Creates font */
     Font pirateFont = LoadFontEx("./fonts/theDarkestPearl.ttf", 200, 0, 250);
@@ -141,7 +141,7 @@ void screen::titleScreen() {
 
     /* Sets up music */
     Music tutorialMusic = LoadMusicStream("./soundtrack/tutorialMusic.mp3");
-    //PlayMusicStream(tutorialMusic);
+    PlayMusicStream(tutorialMusic);
 
     /* Set our game to run at 60 frames-per-second */
     SetTargetFPS(60);         
@@ -190,8 +190,10 @@ void screen::titleScreen() {
                 /* Tracks player movement */
                 p1.monitorPlayer();
                 e1.drawShip();
+                e2.drawShip();
                 if (p1.enteredBounds) {
                     e1.monitorEnemyRed(p1);
+                    e2.monitorEnemyRed(p1);
                 }
             }
             

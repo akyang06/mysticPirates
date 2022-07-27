@@ -45,6 +45,7 @@ ship::ship() {
     velComp = (Vector2){0, 0};
     collisionDrag = 0.01;
     enteredBounds = false;
+    healthBar = 100;
 
     /* Initializes the shooting component */
     for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
@@ -57,6 +58,8 @@ ship::ship() {
         shoot[i].color = (Color){ 80, 80, 80, 255 };
     }
 
+    /* Initializes the attack type to cannon */
+    shootType = 1;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -321,9 +324,41 @@ bool ship::inCorner() {
     return false;
 }
 
-void ship::shipShoot(){
-    if (IsKeyPressed(KEY_SPACE))
-    {
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: attackType
+ * @purpose: Sets the attack type based on the user's choice (1 = shoot cannons 
+ *           from the front, 2 = shoot cannons from the sides, 3 = leave bombs)
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Changes the attack type for the player
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::attackType(){
+    if (IsKeyPressed(KEY_ONE)){
+        shootType = 1;
+    }
+    else if (IsKeyPressed(KEY_TWO)){
+        shootType = 2;
+    }
+    else if (IsKeyPressed(KEY_THREE)){
+        shootType = 3;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: frontShipShoot
+ * @purpose: Shoots cannons from the front of the ship
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Inflicts damage on the opponent with front-facing cannons
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::frontShipShoot(){
+    if ((IsKeyPressed(KEY_SPACE))){
         for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
         {
             if (!shoot[i].active)
@@ -331,8 +366,95 @@ void ship::shipShoot(){
                 shoot[i].position = (Vector2){ getX(), getY()};
                 shoot[i].active = true;
                 /* Angle is based on the direction of the ship */
-                shoot[i].speed.x = 1.5*sin(rotation + ((3 * M_PI)/2)) *7;
-                shoot[i].speed.y = 1.5*cos(rotation + ((3* M_PI)/ 2)) *7;
+                if (shootType == 1) {
+                    shoot[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
+                    shoot[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
+                }
+                else if (shootType == 2) {
+                    shoot[i].speed.x = 3*sin(rotation + (3 * M_PI) * 7);
+                    shoot[i].speed.y = 3*cos(rotation + (3 * M_PI) * 7);
+                }
+                
+                shoot[i].rot = (rotation);
+                break;
+            }
+        }
+    }
+
+    /* Cannon ball timer */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        if (shoot[i].active) shoot[i].lifeSpawn++;
+    }
+
+    /* Logic for shooting */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        if (shoot[i].active)
+        {
+            /* Moving the "cannon ball" */
+            shoot[i].position.x -= shoot[i].speed.x;
+            shoot[i].position.y += shoot[i].speed.y;
+             // Collision logic: shoot vs walls
+            if  (shoot[i].position.x > screenWidth + shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            else if (shoot[i].position.x < 0 - shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            if (shoot[i].position.y > screenHeight + shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            else if (shoot[i].position.y < 0 - shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+            }
+
+            /* How long the "cannon ball" appears for */
+            if (shoot[i].lifeSpawn >= 60)
+            {
+                shoot[i].position = (Vector2){0, 0};
+                shoot[i].speed = (Vector2){0, 0};
+                shoot[i].lifeSpawn = 0;
+                shoot[i].active = false;
+            }
+        }
+    }
+    /* Drawing the cannon ball */
+    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    {
+        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, (Color){ 80, 80, 80, 255 });
+    }
+    sideShipShoot();
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: sideShipShoot
+ * @purpose: Shoots cannons from the front of the ship
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Inflicts damage on the opponent with front-facing cannons
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::sideShipShoot(){
+    if ((IsKeyPressed(KEY_SPACE)) && shootType == 2){
+        for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+        {
+            if (!shoot[i].active)
+            {
+                shoot[i].position = (Vector2){ getX(), getY()};
+                shoot[i].active = true;
+                /* Angle is based on the direction of the ship */
+                shoot[i].speed.x = 3*sin(rotation + (3*(2 * M_PI)) * 7);
+                shoot[i].speed.y = 3*cos(rotation + (3*(2*M_PI)) * 7);
                 shoot[i].rot = (rotation);
                 break;
             }
@@ -403,4 +525,7 @@ void ship::checkCollision(){
             }
         }
     }
+    DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
+        /* Health bar status */
+    DrawRectangle((targetRec.x - 50), (targetRec.y - 50), healthBar, 7, (Color){ 0, 228, 48, 255 });
 }

@@ -129,9 +129,11 @@ void player::monitorPlayer() {
         enterPlayer();
 
     } else {
+        attackType();
         rotatePlayer();
         movePlayer();
-        shipShoot();
+        frontShipShoot();
+        //sideShipShoot();
     }
 }
 
