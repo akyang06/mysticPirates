@@ -66,7 +66,7 @@ void screen::titleScreen() {
     /* Creates sound */
     InitAudioDevice();
     Music titleMusic = LoadMusicStream("./soundtrack/titleMusic.mp3");
-    PlayMusicStream(titleMusic);
+    //PlayMusicStream(titleMusic);
 
     /* Creates font */
     Font pirateFont = LoadFontEx("./fonts/theDarkestPearl.ttf", 200, 0, 250);
@@ -126,6 +126,9 @@ void screen::titleScreen() {
  * @notes: Creates a player object
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
  void screen::tutorialScreen() {
+    /* Condition to pause */
+    bool pause = 0;
+    int framesCounter = 0;
 
     /* Creates background texture */
     Image background = LoadImage("./images/backgroundSheet.png");
@@ -138,7 +141,7 @@ void screen::titleScreen() {
 
     /* Sets up music */
     Music tutorialMusic = LoadMusicStream("./soundtrack/tutorialMusic.mp3");
-    PlayMusicStream(tutorialMusic);
+    //PlayMusicStream(tutorialMusic);
 
     /* Set our game to run at 60 frames-per-second */
     SetTargetFPS(60);         
@@ -152,16 +155,18 @@ void screen::titleScreen() {
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
-        UpdateMusicStream(tutorialMusic);
-
-        scrollingBack -= 1.0f;
-        /* Allows texture to repeat when it gets to the end of the background */
-        if (scrollingBack <= -background.width * 2) {
-            scrollingBack = 0;
-        } 
+        if (IsKeyPressed(KEY_P)) pause = !pause;
+        if (!pause) {
+            UpdateMusicStream(tutorialMusic);
+            scrollingBack -= 1.0f;
+            /* Allows texture to repeat when it gets to the end of the background */
+            if (scrollingBack <= -background.width * 2) {
+                scrollingBack = 0;
+            } 
+        }
+        else framesCounter++;
 
         BeginDrawing();
-                
             ClearBackground((Color){0, 0, 0, 255});
 
             /* Draws background */
@@ -170,21 +175,29 @@ void screen::titleScreen() {
 
             /* Draws the menu for navigating between pages*/
             DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
+            
+            if (pause && ((framesCounter/30)%2)) DrawText("PAUSED", 350, 200, 30, (Color){ 130, 130, 130, 255 });
+
+            // /* Draws the menu for navigating between pages*/
+            // Texture2D mapTexture = drawMenu();
+            // DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
             /* Draws player and enemy on screen */
             p1.drawShip();
-            e1.drawShip();
-            e2.drawShip();
-
-            /* Tracks player movement */
-            p1.monitorPlayer();
-            if (p1.enteredBounds) {
-                e1.monitorEnemyRed(p1);
-                e2.monitorEnemyRed(p1);
+            
+            /* Note: working pause for player and background, not enemies yet */
+            if (!pause) {
+                /* Tracks player movement */
+                p1.monitorPlayer();
+                e1.drawShip();
+                if (p1.enteredBounds) {
+                    e1.monitorEnemyRed(p1);
+                }
             }
-
+            
         EndDrawing();
-    }
+        }
+    
     UnloadMusicStream(tutorialMusic);
 }
 

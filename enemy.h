@@ -41,6 +41,7 @@ class enemy: public ship {
         Vector2 playerPos;
         Vector2 distToPlayer;
         float distMag;
+        Rectangle targetRec;
         
         
     private:

@@ -11,21 +11,6 @@
 
 #include "player.h"
 
-#define PLAYER_MAX_SHOOTS   10
-
-typedef struct Shoot {
-    Vector2 position;
-    Vector2 speed;
-    float radius;
-    float rot;
-    int lifeSpawn;
-    bool active;
-    Color color;
-} Shoot;
-
-static Shoot shoot[PLAYER_MAX_SHOOTS] = { 0 };
-
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: constructor
  * @purpose: Initializes a player object and loads in the base image of the player's ship with correct dimensins
@@ -46,17 +31,6 @@ player::player() : ship() {
     velLimit = 3;
     rotationSpeed = 0.015;
     range = 300;
-
-    // Initialization shoot
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
-    {
-        shoot[i].position = (Vector2){0, 0};
-        shoot[i].speed = (Vector2){0, 0};
-        shoot[i].radius = 5;
-        shoot[i].active = false;
-        shoot[i].lifeSpawn = 0;
-        shoot[i].color = (Color){ 80, 80, 80, 255 };
-    }
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
@@ -79,6 +53,10 @@ player::player() : ship() {
 
     /* Destination rectangle (screen rectangle where drawing part of texture) */
     destRec = (Rectangle){-150, screenHeight / 2, shipWidth, shipHeight};
+
+    /* Draws the target rectangle based on the destRec */
+    targetRec = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
+
 
     /* Origin of the texture (rotation/scale point) */
     origin = (Vector2){shipWidth / 2, shipHeight / 2};
@@ -115,10 +93,17 @@ player::~player() {
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::enterPlayer() {
-
     destRec.x += 2;
     if (destRec.x >= screenWidth / 2) {
         enteredBounds = true;
+    }
+    
+    /* Display text for the start of each level */
+    /* Note to self: need to update for when more levels are implemented */
+    if (destRec.x <= screenWidth / 5) {
+        const char *levelStr = "LEVEL 1";
+        int levelInt = MeasureText(levelStr, 20);
+        DrawText(TextFormat("LEVEL 1"), ((screenWidth / 2) - (levelInt)), ((screenHeight / 2) - 25), 50, (Color){255,255,255,255});
     }
 }
 
@@ -134,13 +119,19 @@ void player::enterPlayer() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::monitorPlayer() {
 
+    DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
+
     /* move player and deal with kinematics */
     if (!enteredBounds) {
         enterPlayer();
+
     } else {
         rotatePlayer();
         movePlayer();
-        playerShoot();
+        shipShoot();
     }
 }
 
@@ -195,53 +186,4 @@ void player::rotatePlayer(){
 
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
-}
-
-void player::playerShoot(){
-    if (IsKeyPressed(KEY_SPACE))
-    {
-        for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
-        {
-            if (!shoot[i].active)
-            {
-                shoot[i].position = (Vector2){ getX(), getY() };
-                shoot[i].active = true;
-                shoot[i].speed.x = 1.5*sin(rotation + ((3 * M_PI)/2)) *7;
-                shoot[i].speed.y = 1.5*cos(rotation + ((3* M_PI)/ 2)) *7;
-                shoot[i].rot = (rotation);
-                break;
-            }
-        }
-    }
-
-    // Shoot life timer
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
-    {
-        if (shoot[i].active) shoot[i].lifeSpawn++;
-    }
-
-    // Shot logic
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
-    {
-        if (shoot[i].active)
-        {
-            // Movement
-            shoot[i].position.x -= shoot[i].speed.x;
-            shoot[i].position.y += shoot[i].speed.y;
-            
-            // Life of shoot
-            if (shoot[i].lifeSpawn >= 60)
-            {
-                shoot[i].position = (Vector2){0, 0};
-                shoot[i].speed = (Vector2){0, 0};
-                shoot[i].lifeSpawn = 0;
-                shoot[i].active = false;
-            }
-        }
-    }
-    // Draw shoot
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
-    {
-        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, (Color){ 80, 80, 80, 255 });
-    }
 }
