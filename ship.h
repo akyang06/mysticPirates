@@ -44,12 +44,17 @@ class ship {
 
         void accelerateShip(float amount);
         void decelerateShip(float amount);
-        void shipShoot();
-        void sideShipShoot();
-        void checkCollision();
-        void attackType();
-        void dropFireBarrel();
 
+        void sideCannonAttack();
+        void frontCannonAttack();
+        void fireBarrelAttack();
+        
+        void monitorCanonballs();
+        void monitorFirebarrel();
+
+        void checkCollision();
+        void monitorCoolDown();
+        
         int screenWidth;
         int screenHeight;
 
@@ -85,6 +90,23 @@ class ship {
         int shootType;
         bool isAlive;
 
+        bool frontCannonUnlocked;
+        bool sideCannonsUnlocked;
+        bool fireBarrelUnlocked;
+
+        bool frontCannonAvailable;
+        bool sideCannonsAvailable;
+        bool fireBarrelAvailable;
+
+        float frontCannonCooldownDuration;
+        float frontCannonCooldown;
+
+        float sideCannonsCooldownDuration;
+        float sideCannonsCooldown;
+
+        float fireBarrelCooldownDuration;
+        float fireBarrelCooldown;
+        
     private:
         float collisionDrag;
         

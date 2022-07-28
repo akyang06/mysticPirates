@@ -40,6 +40,10 @@ class player: public ship {
         void rotatePlayer();
         void movePlayer();
         void playerAttack();
+        void attackType();
+        void monitorPlayerAttack();
+        
+
 
 };
 

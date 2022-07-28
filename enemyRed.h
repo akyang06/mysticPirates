@@ -42,17 +42,10 @@ class enemyRed: public enemy {
         void attackPlayer();
         void rotateToAttackPlayer(float shootingAngle);
         void circleAround();
-        void monitorCoolDown();
 
         bool aboveOrBelowPlayer();
 
-        bool shotFired;
         bool circleAroundCC;
-
-        float cooldownDuration;
-        float cooldown;
-
-        
 };
 
 

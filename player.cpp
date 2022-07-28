@@ -34,7 +34,12 @@ player::player() : ship() {
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
-   
+
+    /*Initial values for attacks */
+    frontCannonAvailable = true;
+    sideCannonsAvailable = true;
+    fireBarrelAvailable = true;
+    shootType = 1;
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/starterShip.png");
@@ -100,7 +105,7 @@ void player::enterPlayer() {
     
     /* Display text for the start of each level */
     /* Note to self: need to update for when more levels are implemented */
-    if (destRec.x <= screenWidth / 5) {
+    if (destRec.x <= screenWidth / 3) {
         const char *levelStr = "LEVEL 1";
         int levelInt = MeasureText(levelStr, 20);
         DrawText(TextFormat("LEVEL 1"), ((screenWidth / 2) - (levelInt)), ((screenHeight / 2) - 25), 50, (Color){255,255,255,255});
@@ -129,12 +134,9 @@ void player::monitorPlayer() {
         enterPlayer();
 
     } else {
-        attackType();
         rotatePlayer();
         movePlayer();
         playerAttack();
-        // shipShoot();
-        // dropFireBarrel();
     }
 }
 
@@ -177,11 +179,13 @@ void player::movePlayer(){
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::rotatePlayer(){
+    /* Rotate CW */
     if (IsKeyDown(KEY_RIGHT)) {
         rotation += rotationSpeed;
         decelerateShip(turnDrag);
     }
 
+    /* Rotate CCW */
     if (IsKeyDown(KEY_LEFT)) {
         rotation -= rotationSpeed;
         decelerateShip(turnDrag);
@@ -191,7 +195,65 @@ void player::rotatePlayer(){
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: playerAttack
+ * @purpose: Calls other functions to deal with player attacks
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: None
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::playerAttack(){
-    shipShoot();
-    dropFireBarrel();
+    attackType();
+    monitorPlayerAttack();
+
+    monitorCanonballs();
+    monitorFirebarrel();
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: attackType
+ * @purpose: Sets the attack type based on the user's choice (1 = shoot cannons 
+ *           from the front, 2 = shoot cannons from the sides, 3 = leave bombs)
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Changes the attack type for the player
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void player::attackType(){
+    if (IsKeyPressed(KEY_ONE)){
+        shootType = 1;
+    }
+    else if (IsKeyPressed(KEY_TWO)){
+        shootType = 2;
+    }
+    else if (IsKeyPressed(KEY_THREE)){
+        shootType = 3;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorPlayerAttack
+ * @purpose: Monitors if the player presses the spacebar to attack and calls the respective attack function
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: None
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void player::monitorPlayerAttack() {
+    if (IsKeyPressed(KEY_SPACE)) { 
+        if (shootType == 1) {
+            sideCannonAttack();
+        } else if (shootType == 2) {
+            frontCannonAttack();
+        } else if (shootType == 3) {
+            fireBarrelAttack();
+        }
+    }
 }
