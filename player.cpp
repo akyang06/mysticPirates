@@ -132,7 +132,9 @@ void player::monitorPlayer() {
         attackType();
         rotatePlayer();
         movePlayer();
-        shipShoot();
+        playerAttack();
+        // shipShoot();
+        // dropFireBarrel();
     }
 }
 
@@ -187,4 +189,9 @@ void player::rotatePlayer(){
 
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+void player::playerAttack(){
+    shipShoot();
+    dropFireBarrel();
 }

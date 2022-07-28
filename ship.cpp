@@ -103,10 +103,8 @@ void ship::drawShip() {
         DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
         isAlive = false;
 
-        // DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
-
         /* Health bar status */
-        DrawRectangle(targetRec.x, targetRec.y, healthBar, 7, (Color){ 0, 228, 48, 255 });
+        DrawRectangle(targetRec.x - 7, targetRec.y - 17, healthBar, 7, (Color){ 0, 228, 48, 255 });
     }
 }
 
@@ -367,7 +365,7 @@ void ship::attackType(){
  * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::shipShoot(){
-    if ((IsKeyPressed(KEY_SPACE))){
+    if ((IsKeyPressed(KEY_SPACE)) && (shootType == 1 || shootType == 2)){
         for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
         {
             if (!shoot[i].active)
@@ -533,5 +531,22 @@ void ship::checkCollision(){
                 healthBar -= 10;
             }
         }
+    }
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: sideShipShoot
+ * @purpose: Shoots cannons from the front of the ship
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Inflicts damage on the opponent with front-facing cannons
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::dropFireBarrel(){
+    if ((IsKeyPressed(KEY_SPACE)) && shootType == 3){
+        DrawRectangle(getX(), getY(), shipWidth, shipHeight, (Color){ 190, 33, 55, 255 });
     }
 }

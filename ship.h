@@ -48,6 +48,7 @@ class ship {
         void sideShipShoot();
         void checkCollision();
         void attackType();
+        void dropFireBarrel();
 
         int screenWidth;
         int screenHeight;
