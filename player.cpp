@@ -34,7 +34,12 @@ player::player() : ship() {
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
-   
+
+    /*Initial values for attacks */
+    frontCannonAvailable = true;
+    sideCannonsAvailable = true;
+    fireBarrelAvailable = true;
+    shootType = 1;
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/starterShip.png");
@@ -119,17 +124,16 @@ void player::enterPlayer() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::monitorPlayer() {
 
-    DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
+    // DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
 
     /* move player and deal with kinematics */
     if (!enteredBounds) {
         enterPlayer();
 
     } else {
-        attackType();
         rotatePlayer();
         movePlayer();
         frontShipShoot();
@@ -175,11 +179,13 @@ void player::movePlayer(){
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::rotatePlayer(){
+    /* Rotate CW */
     if (IsKeyDown(KEY_RIGHT)) {
         rotation += rotationSpeed;
         decelerateShip(turnDrag);
     }
 
+    /* Rotate CCW */
     if (IsKeyDown(KEY_LEFT)) {
         rotation -= rotationSpeed;
         decelerateShip(turnDrag);

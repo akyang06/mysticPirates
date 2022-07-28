@@ -28,12 +28,11 @@ enemyRed::enemyRed() : enemy() {
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
+    //changed for debugging
     velLimit = 2.5;
     rotationSpeed = 0.01;
     range = 250;
-    shotFired = false;
-    cooldownDuration = 5.0f;
-    cooldown = cooldownDuration;
+    sideCannonsAvailable = true;
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/enemyRed.png");
@@ -129,7 +128,7 @@ void enemyRed::moveEnemyRed(){
     DrawText(TextFormat("rotation: %f", rotation), 20, 140, 20, (Color){255,255,255,255});
 
     /* Enemy movement AI */
-    if (!shotFired) {
+    if (sideCannonsAvailable) {
         if (distMag > range) {
             getInRange();
         } else {
@@ -137,9 +136,13 @@ void enemyRed::moveEnemyRed(){
         }
     } else {
         circleAround();
-        monitorCoolDown();
+        //monitorCoolDown();
+        // if (isAlive) {
+        //     DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
+        //     targetRec.x = destRec.x - destRec.width/2;
+        //     targetRec.y = destRec.y - destRec.height/2;
+        // }
     }
-    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -283,7 +286,7 @@ void enemyRed::attackPlayer() {
     /* If angle between enemy and player is just over PI/2 then attack, otherwise rotate slightly */
     if ((abs(shootingAngle - rotation) >= (80 * (M_PI / 180))) && (abs(shootingAngle - rotation) <= (100 * (M_PI / 180)))) {
         DrawText("I'm firing at the player", 20, 300, 20, (Color){255,255,255,255});
-        shotFired = true;
+        sideCannonsAvailable = false;
 
          /* Determines if enemy should rotate clockwise or counter-clockwise */
         int random = rand() % 2;
@@ -293,7 +296,7 @@ void enemyRed::attackPlayer() {
             circleAroundCC = false;
         }
 
-        cooldown = cooldownDuration;
+        //cooldown = cooldownDuration;
     } else {
         rotateToAttackPlayer(shootingAngle);
     }

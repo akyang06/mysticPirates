@@ -11,6 +11,28 @@
 
 #include "ship.h"
 
+#define MAX_SHOTS   10
+
+typedef struct Shoot {
+    Vector2 position;
+    Vector2 speed;
+    float radius;
+    float rot;
+    int lifeSpawn;
+    bool active;
+} Shoot;
+
+typedef struct Firebarrel {
+    float fireBarrelExplosionTimer;
+    int fireBarrelX;
+    int fireBarrelY;
+    bool firebarrelInizialized;
+    bool active;
+} Firebarrel;
+
+static Shoot shoot[MAX_SHOTS] = { 0 };
+static Firebarrel barrel[MAX_SHOTS] = { 0 };
+ 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: constructor
  * @purpose: Initializes a ship object and loads in the base image of a ship with correct dimensions
@@ -38,16 +60,16 @@ ship::ship() {
     /* Initializes the shooting component */
     for (int i = 0; i < MAX_SHOTS; i++)
     {
-       allCannonballs[i].position = (Vector2){0, 0};
-       allCannonballs[i].speed = (Vector2){0, 0};
-       allCannonballs[i].radius = 5;
-       allCannonballs[i].active = false;
-       allCannonballs[i].lifeSpawn = 0;
-       allCannonballs[i].color = (Color){ 80, 80, 80, 255 };
+        shoot[i].position = (Vector2){0, 0};
+        shoot[i].speed = (Vector2){0, 0};
+        shoot[i].radius = 5;
+        shoot[i].active = false;
+        shoot[i].lifeSpawn = 0;
+        //shoot[i].color = (Color){ 80, 80, 80, 255 };
     }
 
     /* Initializes the attack type to cannon */
-    shootType = 1;
+    isAlive = true;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -84,13 +106,15 @@ void ship::drawShip() {
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
-    DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
-    DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
 
-    DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
+    if (healthBar > 0) {
+        DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
+        DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
+        isAlive = false;
 
-    /* Health bar status */
-    DrawRectangle((targetRec.x), (targetRec.y - 50), healthBar, 7, (Color){ 0, 228, 48, 255 });
+        /* Health bar status */
+        DrawRectangle(targetRec.x - 7, targetRec.y - 17, healthBar, 7, (Color){ 0, 228, 48, 255 });
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -331,9 +355,8 @@ bool ship::inCorner() {
     return false;
 }
 
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: frontShipShoot
+ * @function: sideCannonAttack
  * @purpose: Shoots cannons from the front of the ship
  *
  * @parameters: none
@@ -342,85 +365,34 @@ bool ship::inCorner() {
  * @effects: Inflicts damage on the opponent with front-facing cannons
  * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::frontShipShoot(){
-    if ((IsKeyPressed(KEY_SPACE))){
-        for (int i = 0; i < MAX_SHOTS; i++)
-        {
-            if (!allCannonballs[i].active)
-            {
-               allCannonballs[i].position = (Vector2){ getX(), getY()};
-               allCannonballs[i].active = true;
-                /* Angle is based on the direction of the ship */
-                if (shootType == 1) {
-                   allCannonballs[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
-                   allCannonballs[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
-                }
-                else if (shootType == 2) {
-                   allCannonballs[i].speed.x = 3*sin(rotation + (3 * M_PI) * 7);
-                   allCannonballs[i].speed.y = 3*cos(rotation + (3 * M_PI) * 7);
-                }
-                
-               allCannonballs[i].rot = (rotation);
+void ship::sideCannonAttack(){
+    int canonballCounter = 0;
+    
+    for (int i = 0; i < MAX_SHOTS; i++){
+        if (!shoot[i].active){
+            shoot[i].position = (Vector2){ getX(), getY()};
+            shoot[i].active = true;
+            /* Angle is based on the direction of the ship */
+            if(canonballCounter == 0) {
+                shoot[i].speed.x = 3*sin(rotation + (3*(2 * M_PI)) * 7);
+                shoot[i].speed.y = 3*cos(rotation + (3*(2 * M_PI)) * 7);
+            }
+            if (canonballCounter == 1) {
+                shoot[i].speed.x = 3*sin(rotation + (3 * M_PI) * 7);
+                shoot[i].speed.y = 3*cos(rotation + (3 * M_PI) * 7);
+            }
+            shoot[i].rot = (rotation);
+            canonballCounter++;
+
+            if (canonballCounter == 2) {
                 break;
-            }
+            }  
         }
     }
-
-    /* Cannon ball timer */
-    for (int i = 0; i < MAX_SHOTS; i++)
-    {
-        if (allCannonballs[i].active)allCannonballs[i].lifeSpawn++;
-    }
-
-    /* Logic for shooting */
-    for (int i = 0; i < MAX_SHOTS; i++)
-    {
-        if (allCannonballs[i].active)
-        {
-            /* Moving the "cannon ball" */
-           allCannonballs[i].position.x -=allCannonballs[i].speed.x;
-           allCannonballs[i].position.y +=allCannonballs[i].speed.y;
-             // Collision logic: shoot vs walls
-            if  (allCannonballs[i].position.x > screenWidth +allCannonballs[i].radius){
-               allCannonballs[i].active = false;
-               allCannonballs[i].lifeSpawn = 0;
-            }
-
-            else if (allCannonballs[i].position.x < 0 -allCannonballs[i].radius){
-               allCannonballs[i].active = false;
-               allCannonballs[i].lifeSpawn = 0;
-            }
-
-            if (allCannonballs[i].position.y > screenHeight +allCannonballs[i].radius){
-                allCannonballs[i].active = false;
-                allCannonballs[i].lifeSpawn = 0;
-            }
-
-            else if (allCannonballs[i].position.y < 0 - allCannonballs[i].radius){
-                allCannonballs[i].active = false;
-                allCannonballs[i].lifeSpawn = 0;
-            }
-
-            /* How long the "cannon ball" appears for */
-            if (allCannonballs[i].lifeSpawn >= 60)
-            {
-               allCannonballs[i].position = (Vector2){0, 0};
-               allCannonballs[i].speed = (Vector2){0, 0};
-               allCannonballs[i].lifeSpawn = 0;
-               allCannonballs[i].active = false;
-            }
-        }
-    }
-    /* Drawing the cannon ball */
-    for (int i = 0; i < MAX_SHOTS; i++)
-    {
-        if (allCannonballs[i].active) DrawCircleV(allCannonballs[i].position, allCannonballs[i].radius, (Color){ 80, 80, 80, 255 });
-    }
-    sideShipShoot();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: sideShipShoot
+ * @function: shipShoot
  * @purpose: Shoots cannons from the front of the ship
  *
  * @parameters: none
@@ -429,42 +401,61 @@ void ship::frontShipShoot(){
  * @effects: Inflicts damage on the opponent with front-facing cannons
  * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::sideShipShoot(){
-    if ((IsKeyPressed(KEY_SPACE)) && shootType == 2){
-        for (int i = 0; i < MAX_SHOTS; i++)
-        {
-            if (!allCannonballs[i].active)
-            {
-              
-                allCannonballs[i].position = (Vector2){ getX(), getY()};
-                allCannonballs[i].active = true;
-                /* Angle is based on the direction of the ship */
-                allCannonballs[i].speed.x = 3*sin(rotation + (3*(2 * M_PI)) * 7);
-                allCannonballs[i].speed.y = 3*cos(rotation + (3*(2*M_PI)) * 7);
-                allCannonballs[i].rot = (rotation);
-                break;
-            }
+void ship::frontCannonAttack(){
+    /* Initializes a canonball and populates space in array with values */
+    for (int i = 0; i < MAX_SHOTS; i++) {
+        if (!shoot[i].active) {
+            shoot[i].position = (Vector2){ getX(), getY()};
+            shoot[i].active = true;
+            shoot[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
+            shoot[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
+            shoot[i].rot = (rotation);
+            break;
         }
     }
+}
 
-    /* Cannon ball timer */
-    for (int i = 0; i < MAX_SHOTS; i++)
-    {
-        if (allCannonballs[i].active)allCannonballs[i].lifeSpawn++;
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: fireBarrelAttack
+ * @purpose: Drops fire barrels in the water with set times of explosion
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Inflicts damage on the opponent with timed fire barrels
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::fireBarrelAttack() {
+    for (int i = 0; i < MAX_SHOTS; i++){
+        if (!barrel[i].active) {
+            barrel[i].active = true;
+            barrel[i].fireBarrelExplosionTimer = 5.0f;
+            barrel[i].fireBarrelX = getX();
+            barrel[i].fireBarrelY = getY();
+            DrawRectangle(barrel[i].fireBarrelX, barrel[i].fireBarrelY, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
+            fireBarrelAvailable = false;
+            barrel[i].firebarrelInizialized = true;
+            break;
+        }
     }
+}
 
-    /* Logic for shooting */
-    for (int i = 0; i < MAX_SHOTS; i++)
-    {
-        if (allCannonballs[i].active)
-        {
-            /* Moving the "cannon ball" */
-            allCannonballs[i].position.x -= allCannonballs[i].speed.x;
-            allCannonballs[i].position.y += allCannonballs[i].speed.y;
-             // Collision logic: shoot vs walls
-            if  (allCannonballs[i].position.x > screenWidth + allCannonballs[i].radius){
-                allCannonballs[i].active = false;
-                allCannonballs[i].lifeSpawn = 0;
+void ship::monitorCanonballs() {
+    
+    for (int i = 0; i < MAX_SHOTS; i++){
+        if (shoot[i].active) {
+
+            /* Cannon ball timer */
+            shoot[i].lifeSpawn++;
+
+            /* Moving the cannonball */
+            shoot[i].position.x -= shoot[i].speed.x;
+            shoot[i].position.y += shoot[i].speed.y;
+            
+            /* Collision logic: shoot vs walls */
+            if  (shoot[i].position.x > screenWidth + shoot[i].radius){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
             }
 
             else if (allCannonballs[i].position.x < 0 - allCannonballs[i].radius){
@@ -482,19 +473,65 @@ void ship::sideShipShoot(){
                 allCannonballs[i].lifeSpawn = 0;
             }
 
-            /* How long the "cannon ball" appears for */
-            if (allCannonballs[i].lifeSpawn >= 60)
-            {
-                allCannonballs[i].position = (Vector2){0, 0};
-                allCannonballs[i].speed = (Vector2){0, 0};
-                allCannonballs[i].lifeSpawn = 0;
-                allCannonballs[i].active = false;
+            /* How long the cannonball appears for */
+            if (shoot[i].lifeSpawn >= 60){
+                shoot[i].position = (Vector2){0, 0};
+                shoot[i].speed = (Vector2){0, 0};
+                shoot[i].lifeSpawn = 0;
+                shoot[i].active = false;
+            }
+
+            /* Drawing the cannon ball */
+            DrawCircleV(shoot[i].position, shoot[i].radius, (Color){ 80, 80, 80, 255 });
+        }
+    }
+}
+
+void ship::monitorFirebarrel() {
+    for (int i = 0; i < MAX_SHOTS; i++) {
+        if (barrel[i].firebarrelInizialized) {
+            barrel[i].fireBarrelExplosionTimer -= GetFrameTime();
+            if (barrel[i].fireBarrelExplosionTimer > 0) {
+                DrawRectangle(barrel[i].fireBarrelX, barrel[i].fireBarrelY, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
+            }
+            else {
+                fireBarrelAvailable = true;
             }
         }
     }
-    /* Drawing the cannon ball */
-    for (int i = 0; i < MAX_SHOTS; i++)
-    {
-        if (allCannonballs[i].active) DrawCircleV(allCannonballs[i].position, allCannonballs[i].radius, (Color){ 80, 80, 80, 255 });
+}
+
+void ship::checkCollision(){
+    /* Collision logic between the cannons and enemy ships */
+    for (int i = 0; i < MAX_SHOTS; i++) {
+        if ((shoot[i].active)) {
+            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, targetRec)){
+                shoot[i].active = false;
+                shoot[i].lifeSpawn = 0;
+                healthBar -= 10;
+            }
+        }
     }
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorCoolDown
+ * @purpose: Monitors the cooldown time 
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::monitorCoolDown() {
+    // cooldown -= GetFrameTime();
+
+    // if(cooldown <= 0) {
+    //     cooldown = 0;
+    //         frontCannonAvailable = false;
+    //         sideCannonsAvailable = false;
+    //         fireBarrelAvailable = false;
+    // }
 }
