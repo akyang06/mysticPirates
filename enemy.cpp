@@ -111,17 +111,3 @@ void enemy::facePlayer() {
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
 }
-
-void enemy::checkCannonBallCollision(){
-    /* Collision logic between the cannons and enemy ships */
-    for (int i = 0; i < MAX_SHOTS; i++) {
-        if ((playerShots[i].active)) {
-            if(CheckCollisionCircleRec(playerShots[i].position, playerShots[i].radius, targetRec)){
-                allCannonballs[i].active = false;
-                allCannonballs[i].lifeSpawn = 0;
-                // DrawText(TextFormat("bam"), 30, 100, 200, (Color){255,255,255,255});
-                healthBar -= 10;
-            }
-        }
-    }  
-}

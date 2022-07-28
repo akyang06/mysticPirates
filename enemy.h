@@ -34,13 +34,13 @@ class enemy: public ship {
 
         void facePlayer();
         void moveEnemyInBounds();
-        void checkCannonBallCollision();
 
         float playerRotation;
         Vector2 playerPos;
         Vector2 distToPlayer;
         float distMag;
-        Cannonballs* playerShots;  
+        //Rectangle targetRec;
+        
         
     private:
            
