@@ -105,7 +105,7 @@ void player::enterPlayer() {
     
     /* Display text for the start of each level */
     /* Note to self: need to update for when more levels are implemented */
-    if (destRec.x <= screenWidth / 3) {
+    if (destRec.x <= screenWidth / 2) {
         const char *levelStr = "LEVEL 1";
         int levelInt = MeasureText(levelStr, 20);
         DrawText(TextFormat("LEVEL 1"), ((screenWidth / 2) - (levelInt)), ((screenHeight / 2) - 25), 50, (Color){255,255,255,255});
@@ -136,7 +136,7 @@ void player::monitorPlayer() {
     } else {
         rotatePlayer();
         movePlayer();
-        playerAttack();
+        frontShipShoot();
     }
 }
 
@@ -196,24 +196,6 @@ void player::rotatePlayer(){
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: playerAttack
- * @purpose: Calls other functions to deal with player attacks
- *
- * @parameters: none
- *     
- * @returns: Nothing
- * @effects: None
- * @notes: n/a
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void player::playerAttack(){
-    attackType();
-    monitorPlayerAttack();
-
-    monitorCanonballs();
-    monitorFirebarrel();
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: attackType
  * @purpose: Sets the attack type based on the user's choice (1 = shoot cannons 
  *           from the front, 2 = shoot cannons from the sides, 3 = leave bombs)
@@ -233,27 +215,5 @@ void player::attackType(){
     }
     else if (IsKeyPressed(KEY_THREE)){
         shootType = 3;
-    }
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: monitorPlayerAttack
- * @purpose: Monitors if the player presses the spacebar to attack and calls the respective attack function
- *
- * @parameters: none
- *     
- * @returns: Nothing
- * @effects: None
- * @notes: n/a
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void player::monitorPlayerAttack() {
-    if (IsKeyPressed(KEY_SPACE)) { 
-        if (shootType == 1) {
-            sideCannonAttack();
-        } else if (shootType == 2) {
-            frontCannonAttack();
-        } else if (shootType == 3) {
-            fireBarrelAttack();
-        }
     }
 }

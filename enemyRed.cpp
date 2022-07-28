@@ -97,12 +97,13 @@ void enemyRed::monitorEnemyRed(player &p1) {
     distToPlayer = (Vector2) {p1.getX() - getX(), p1.getY() - getY()};
     distMag = sqrt(pow(distToPlayer.x, 2) + pow(distToPlayer.y, 2));
     playerRotation = p1.getRotation();
+    playerShots = p1.getCannonballs();
 
     /* Moves enemy into the bounds after they spawn and continue to move after */
     if (!enteredBounds) {
         moveEnemyInBounds();
     } else {
-        checkCollision();
+        checkCannonBallCollision();
         moveEnemyRed();
     } 
 }
@@ -361,3 +362,23 @@ void enemyRed::circleAround() {
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
 }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorCoolDown
+ * @purpose: Monitors the cooldown time 
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void enemyRed::monitorCoolDown() {
+    cooldown -= GetFrameTime();
+
+    if(cooldown <= 0) {
+        cooldown = 0;
+        shotFired = false;
+    }
+}
+

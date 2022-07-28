@@ -55,6 +55,8 @@ ship::ship() {
     enteredBounds = false;
     healthBar = 100;
 
+    Cannonballs allCannonballs[MAX_SHOTS] = { 0 };
+
     /* Initializes the shooting component */
     for (int i = 0; i < MAX_SHOTS; i++)
     {
@@ -144,7 +146,7 @@ int ship::getY() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: getRotatio 
+ * @function: getRotation
  * @purpose: Returns the rotation value of the ship
  *
  * @parameters: none
@@ -155,6 +157,21 @@ int ship::getY() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 float ship::getRotation() {
     return rotation;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: getCannonballs 
+ * @purpose: Returns a pointer to the array of cannonballs of the ship
+ *
+ * @parameters: none
+ *     
+ * @returns: a pointer to the array of cannonballs of the ship
+ * @effects: 
+ * @notes:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+Cannonballs* ship::getCannonballs() {
+    Cannonballs *cannonballsPtr = allCannonballs;
+    return cannonballsPtr;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -441,19 +458,19 @@ void ship::monitorCanonballs() {
                 shoot[i].lifeSpawn = 0;
             }
 
-            else if (shoot[i].position.x < 0 - shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            else if (allCannonballs[i].position.x < 0 - allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
-            if (shoot[i].position.y > screenHeight + shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            if (allCannonballs[i].position.y > screenHeight + allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
-            else if (shoot[i].position.y < 0 - shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            else if (allCannonballs[i].position.y < 0 - allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
             /* How long the cannonball appears for */

@@ -16,10 +16,21 @@
 #include <fstream>
 #include <string>
 #include <math.h>
-#include <time.h>
 
 #include "raylib.h"
 #include "rlgl.h"
+
+#define MAX_SHOTS   10
+
+typedef struct Cannonballs {
+    Vector2 position;
+    Vector2 speed;
+    float radius;
+    float rot;
+    int lifeSpawn;
+    bool active;
+    Color color;
+} Cannonballs;
 
 
 class ship {
@@ -31,6 +42,7 @@ class ship {
         int getX();
         int getY();
         float getRotation();
+        Cannonballs* getCannonballs();
 
         bool enteredBounds;
         
