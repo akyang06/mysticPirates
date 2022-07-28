@@ -98,12 +98,13 @@ void enemyRed::monitorEnemyRed(player &p1) {
     distToPlayer = (Vector2) {p1.getX() - getX(), p1.getY() - getY()};
     distMag = sqrt(pow(distToPlayer.x, 2) + pow(distToPlayer.y, 2));
     playerRotation = p1.getRotation();
+    playerShots = p1.getCannonballs();
 
     /* Moves enemy into the bounds after they spawn and continue to move after */
     if (!enteredBounds) {
         moveEnemyInBounds();
     } else {
-        checkCollision();
+        checkCannonBallCollision();
         moveEnemyRed();
     } 
 }
@@ -376,7 +377,5 @@ void enemyRed::monitorCoolDown() {
         cooldown = 0;
         shotFired = false;
     }
-    targetRec.x = destRec.x - destRec.width/2;
-    targetRec.y = destRec.y - destRec.height/2;
 }
 

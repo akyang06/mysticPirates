@@ -100,7 +100,7 @@ void player::enterPlayer() {
     
     /* Display text for the start of each level */
     /* Note to self: need to update for when more levels are implemented */
-    if (destRec.x <= screenWidth / 5) {
+    if (destRec.x <= screenWidth / 2) {
         const char *levelStr = "LEVEL 1";
         int levelInt = MeasureText(levelStr, 20);
         DrawText(TextFormat("LEVEL 1"), ((screenWidth / 2) - (levelInt)), ((screenHeight / 2) - 25), 50, (Color){255,255,255,255});
@@ -133,7 +133,6 @@ void player::monitorPlayer() {
         rotatePlayer();
         movePlayer();
         frontShipShoot();
-        //sideShipShoot();
     }
 }
 
@@ -188,4 +187,27 @@ void player::rotatePlayer(){
 
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: attackType
+ * @purpose: Sets the attack type based on the user's choice (1 = shoot cannons 
+ *           from the front, 2 = shoot cannons from the sides, 3 = leave bombs)
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: Changes the attack type for the player
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void player::attackType(){
+    if (IsKeyPressed(KEY_ONE)){
+        shootType = 1;
+    }
+    else if (IsKeyPressed(KEY_TWO)){
+        shootType = 2;
+    }
+    else if (IsKeyPressed(KEY_THREE)){
+        shootType = 3;
+    }
 }

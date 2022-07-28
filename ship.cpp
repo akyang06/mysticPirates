@@ -11,20 +11,6 @@
 
 #include "ship.h"
 
-#define PLAYER_MAX_SHOOTS   10
-
-typedef struct Shoot {
-    Vector2 position;
-    Vector2 speed;
-    float radius;
-    float rot;
-    int lifeSpawn;
-    bool active;
-    Color color;
-} Shoot;
-
-static Shoot shoot[PLAYER_MAX_SHOOTS] = { 0 };
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: constructor
  * @purpose: Initializes a ship object and loads in the base image of a ship with correct dimensions
@@ -47,15 +33,17 @@ ship::ship() {
     enteredBounds = false;
     healthBar = 100;
 
+    Cannonballs allCannonballs[MAX_SHOTS] = { 0 };
+
     /* Initializes the shooting component */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        shoot[i].position = (Vector2){0, 0};
-        shoot[i].speed = (Vector2){0, 0};
-        shoot[i].radius = 5;
-        shoot[i].active = false;
-        shoot[i].lifeSpawn = 0;
-        shoot[i].color = (Color){ 80, 80, 80, 255 };
+       allCannonballs[i].position = (Vector2){0, 0};
+       allCannonballs[i].speed = (Vector2){0, 0};
+       allCannonballs[i].radius = 5;
+       allCannonballs[i].active = false;
+       allCannonballs[i].lifeSpawn = 0;
+       allCannonballs[i].color = (Color){ 80, 80, 80, 255 };
     }
 
     /* Initializes the attack type to cannon */
@@ -91,14 +79,18 @@ void ship::drawShip() {
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
-    targetRec.x = destRec.x;
-    targetRec.y = destRec.y;
+    targetRec.x = destRec.x - destRec.width/2;
+    targetRec.y = destRec.y - destRec.height/2;
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
     DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
     DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
-    
+
+    DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
+
+    /* Health bar status */
+    DrawRectangle((targetRec.x), (targetRec.y - 50), healthBar, 7, (Color){ 0, 228, 48, 255 });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -130,7 +122,7 @@ int ship::getY() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: getRotatio 
+ * @function: getRotation
  * @purpose: Returns the rotation value of the ship
  *
  * @parameters: none
@@ -141,6 +133,21 @@ int ship::getY() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 float ship::getRotation() {
     return rotation;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: getCannonballs 
+ * @purpose: Returns a pointer to the array of cannonballs of the ship
+ *
+ * @parameters: none
+ *     
+ * @returns: a pointer to the array of cannonballs of the ship
+ * @effects: 
+ * @notes:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+Cannonballs* ship::getCannonballs() {
+    Cannonballs *cannonballsPtr = allCannonballs;
+    return cannonballsPtr;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -324,28 +331,6 @@ bool ship::inCorner() {
     return false;
 }
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: attackType
- * @purpose: Sets the attack type based on the user's choice (1 = shoot cannons 
- *           from the front, 2 = shoot cannons from the sides, 3 = leave bombs)
- *
- * @parameters: none
- *     
- * @returns: Nothing
- * @effects: Changes the attack type for the player
- * @notes: n/a
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::attackType(){
-    if (IsKeyPressed(KEY_ONE)){
-        shootType = 1;
-    }
-    else if (IsKeyPressed(KEY_TWO)){
-        shootType = 2;
-    }
-    else if (IsKeyPressed(KEY_THREE)){
-        shootType = 3;
-    }
-}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: frontShipShoot
@@ -359,77 +344,77 @@ void ship::attackType(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::frontShipShoot(){
     if ((IsKeyPressed(KEY_SPACE))){
-        for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+        for (int i = 0; i < MAX_SHOTS; i++)
         {
-            if (!shoot[i].active)
+            if (!allCannonballs[i].active)
             {
-                shoot[i].position = (Vector2){ getX(), getY()};
-                shoot[i].active = true;
+               allCannonballs[i].position = (Vector2){ getX(), getY()};
+               allCannonballs[i].active = true;
                 /* Angle is based on the direction of the ship */
                 if (shootType == 1) {
-                    shoot[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
-                    shoot[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
+                   allCannonballs[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
+                   allCannonballs[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
                 }
                 else if (shootType == 2) {
-                    shoot[i].speed.x = 3*sin(rotation + (3 * M_PI) * 7);
-                    shoot[i].speed.y = 3*cos(rotation + (3 * M_PI) * 7);
+                   allCannonballs[i].speed.x = 3*sin(rotation + (3 * M_PI) * 7);
+                   allCannonballs[i].speed.y = 3*cos(rotation + (3 * M_PI) * 7);
                 }
                 
-                shoot[i].rot = (rotation);
+               allCannonballs[i].rot = (rotation);
                 break;
             }
         }
     }
 
     /* Cannon ball timer */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        if (shoot[i].active) shoot[i].lifeSpawn++;
+        if (allCannonballs[i].active)allCannonballs[i].lifeSpawn++;
     }
 
     /* Logic for shooting */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        if (shoot[i].active)
+        if (allCannonballs[i].active)
         {
             /* Moving the "cannon ball" */
-            shoot[i].position.x -= shoot[i].speed.x;
-            shoot[i].position.y += shoot[i].speed.y;
+           allCannonballs[i].position.x -=allCannonballs[i].speed.x;
+           allCannonballs[i].position.y +=allCannonballs[i].speed.y;
              // Collision logic: shoot vs walls
-            if  (shoot[i].position.x > screenWidth + shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            if  (allCannonballs[i].position.x > screenWidth +allCannonballs[i].radius){
+               allCannonballs[i].active = false;
+               allCannonballs[i].lifeSpawn = 0;
             }
 
-            else if (shoot[i].position.x < 0 - shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            else if (allCannonballs[i].position.x < 0 -allCannonballs[i].radius){
+               allCannonballs[i].active = false;
+               allCannonballs[i].lifeSpawn = 0;
             }
 
-            if (shoot[i].position.y > screenHeight + shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            if (allCannonballs[i].position.y > screenHeight +allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
-            else if (shoot[i].position.y < 0 - shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            else if (allCannonballs[i].position.y < 0 - allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
             /* How long the "cannon ball" appears for */
-            if (shoot[i].lifeSpawn >= 60)
+            if (allCannonballs[i].lifeSpawn >= 60)
             {
-                shoot[i].position = (Vector2){0, 0};
-                shoot[i].speed = (Vector2){0, 0};
-                shoot[i].lifeSpawn = 0;
-                shoot[i].active = false;
+               allCannonballs[i].position = (Vector2){0, 0};
+               allCannonballs[i].speed = (Vector2){0, 0};
+               allCannonballs[i].lifeSpawn = 0;
+               allCannonballs[i].active = false;
             }
         }
     }
     /* Drawing the cannon ball */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, (Color){ 80, 80, 80, 255 });
+        if (allCannonballs[i].active) DrawCircleV(allCannonballs[i].position, allCannonballs[i].radius, (Color){ 80, 80, 80, 255 });
     }
     sideShipShoot();
 }
@@ -446,86 +431,70 @@ void ship::frontShipShoot(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::sideShipShoot(){
     if ((IsKeyPressed(KEY_SPACE)) && shootType == 2){
-        for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+        for (int i = 0; i < MAX_SHOTS; i++)
         {
-            if (!shoot[i].active)
+            if (!allCannonballs[i].active)
             {
-                shoot[i].position = (Vector2){ getX(), getY()};
-                shoot[i].active = true;
+              
+                allCannonballs[i].position = (Vector2){ getX(), getY()};
+                allCannonballs[i].active = true;
                 /* Angle is based on the direction of the ship */
-                shoot[i].speed.x = 3*sin(rotation + (3*(2 * M_PI)) * 7);
-                shoot[i].speed.y = 3*cos(rotation + (3*(2*M_PI)) * 7);
-                shoot[i].rot = (rotation);
+                allCannonballs[i].speed.x = 3*sin(rotation + (3*(2 * M_PI)) * 7);
+                allCannonballs[i].speed.y = 3*cos(rotation + (3*(2*M_PI)) * 7);
+                allCannonballs[i].rot = (rotation);
                 break;
             }
         }
     }
 
     /* Cannon ball timer */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        if (shoot[i].active) shoot[i].lifeSpawn++;
+        if (allCannonballs[i].active)allCannonballs[i].lifeSpawn++;
     }
 
     /* Logic for shooting */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        if (shoot[i].active)
+        if (allCannonballs[i].active)
         {
             /* Moving the "cannon ball" */
-            shoot[i].position.x -= shoot[i].speed.x;
-            shoot[i].position.y += shoot[i].speed.y;
+            allCannonballs[i].position.x -= allCannonballs[i].speed.x;
+            allCannonballs[i].position.y += allCannonballs[i].speed.y;
              // Collision logic: shoot vs walls
-            if  (shoot[i].position.x > screenWidth + shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            if  (allCannonballs[i].position.x > screenWidth + allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
-            else if (shoot[i].position.x < 0 - shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            else if (allCannonballs[i].position.x < 0 - allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
-            if (shoot[i].position.y > screenHeight + shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            if (allCannonballs[i].position.y > screenHeight + allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
-            else if (shoot[i].position.y < 0 - shoot[i].radius){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
+            else if (allCannonballs[i].position.y < 0 - allCannonballs[i].radius){
+                allCannonballs[i].active = false;
+                allCannonballs[i].lifeSpawn = 0;
             }
 
             /* How long the "cannon ball" appears for */
-            if (shoot[i].lifeSpawn >= 60)
+            if (allCannonballs[i].lifeSpawn >= 60)
             {
-                shoot[i].position = (Vector2){0, 0};
-                shoot[i].speed = (Vector2){0, 0};
-                shoot[i].lifeSpawn = 0;
-                shoot[i].active = false;
+                allCannonballs[i].position = (Vector2){0, 0};
+                allCannonballs[i].speed = (Vector2){0, 0};
+                allCannonballs[i].lifeSpawn = 0;
+                allCannonballs[i].active = false;
             }
         }
     }
     /* Drawing the cannon ball */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++)
+    for (int i = 0; i < MAX_SHOTS; i++)
     {
-        if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, (Color){ 80, 80, 80, 255 });
+        if (allCannonballs[i].active) DrawCircleV(allCannonballs[i].position, allCannonballs[i].radius, (Color){ 80, 80, 80, 255 });
     }
-}
-
-void ship::checkCollision(){
-    /* Collision logic between the cannons and enemy ships */
-    for (int i = 0; i < PLAYER_MAX_SHOOTS; i++) {
-        if ((shoot[i].active)) {
-            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, targetRec)){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
-                // DrawText(TextFormat("bam"), 30, 100, 200, (Color){255,255,255,255});
-                healthBar -= 10;
-            }
-        }
-    }
-    DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
-        /* Health bar status */
-    DrawRectangle((targetRec.x - 50), (targetRec.y - 50), healthBar, 7, (Color){ 0, 228, 48, 255 });
 }
