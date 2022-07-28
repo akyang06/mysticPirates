@@ -35,13 +35,16 @@ class player: public ship {
         
 
     private:
-        
-        void rotatePlayer();
-        void movePlayer();
-        void attackType();
-
         int screenWidth;
         int screenHeight;
+        void rotatePlayer();
+        void movePlayer();
+        void playerAttack();
+        void attackType();
+        void monitorPlayerAttack();
+        
+
+
 };
 
 
