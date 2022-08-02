@@ -17,6 +17,7 @@
 #include <string>
 #include <math.h>
 #include <time.h>
+#include <vector>
 
 #include "raylib.h"
 #include "rlgl.h"
@@ -51,6 +52,7 @@ class ship {
         
         void monitorCanonballs();
         void monitorFirebarrel();
+        void drawExplosion();
 
         void checkCollision();
         void monitorCoolDown();

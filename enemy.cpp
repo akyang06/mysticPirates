@@ -39,6 +39,7 @@ enemy::enemy() : ship() {
     } else {
         destRec.y = -(rand() % 300) - 100;
     }
+
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -56,7 +57,7 @@ enemy::~enemy() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: moveEnemyInBounds
+ * @function: moveEnemyInBoundsStart
  * @purpose: Move the enemy in bounds when they spawn into the game
  *
  * @parameters: none
@@ -65,7 +66,7 @@ enemy::~enemy() {
  * @effects: 
  * @notes: after spawn, moves enemy into the bounds
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void enemy::moveEnemyInBounds() {
+void enemy::moveEnemyInBoundsStart() {
     facePlayer();
     accelerateShip(acceration);
     if (!outOfBounds()) {
@@ -110,4 +111,67 @@ void enemy::facePlayer() {
 
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: moveEnemyInBounds
+ * @purpose: Move the enemy in bounds when are on the edge of the boundaries
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: 
+ * @notes: 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void enemy::moveEnemyInBounds() {
+    /* left boundary */
+    if (getX() <= leftBounds) {
+        if(rotation > M_PI) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* right boundary */
+    if (getX() >= rightBounds) {
+        if(rotation > 3 * M_PI_2) {
+            rotation -= rotationSpeed;
+        } else {
+            rotation += rotationSpeed;
+        }
+    }
+
+    /* up boundary */
+    if (getY() <= upBounds) {
+        if(rotation > 3 * M_PI_2) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* down boundary */
+    if (getY() >= downBounds) {
+        if(rotation > M_PI_2) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* Keeps the speed of the enemy at 40% of top speed when trying to get out back in bounds */
+    if (velMag <= 0.4 * velLimit) {
+        accelerateShip(acceration);
+    }
+
+    /* Keeps the rotation between 0 and 2pi radians */
+    rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+void enemy::storePlayerInfo() {
+    playerPos = (Vector2) {allShips.front()->getX(), allShips.front()->getY()};
+    distToPlayer = (Vector2) {allShips.front()->getX() - getX(), allShips.front()->getY() - getY()};
+    distMag = sqrt(pow(distToPlayer.x, 2) + pow(distToPlayer.y, 2));
+    playerRotation = allShips.front()->getRotation();
 }

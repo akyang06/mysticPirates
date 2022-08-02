@@ -10,6 +10,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include "screen.h"
+#include <vector>
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: constructor
@@ -148,10 +149,14 @@ void screen::titleScreen() {
 
     float scrollingBack = 0.0f;
 
-    /* Create player */
-    player p1;
-    enemyRed e1;
-    enemyRed e2;
+    /* Create player and enemies */
+    player *p1 = new player;
+    enemyRed *e1 = new enemyRed;
+    enemyRed *e2 = new enemyRed;
+    std::vector<ship*> allShips;
+    allShips.push_back(p1);
+    allShips.push_back(e1);
+    allShips.push_back(e2);
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
@@ -183,23 +188,25 @@ void screen::titleScreen() {
             // DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
             /* Draws player and enemy on screen */
-            p1.drawShip();
+            p1->drawShip();
             
             /* Note: working pause for player and background, not enemies yet */
             if (!pause) {
                 /* Tracks player movement */
-                p1.monitorPlayer();
-                e1.drawShip();
-                e2.drawShip();
-                if (p1.enteredBounds) {
-                    e1.monitorEnemyRed(p1);
-                    e2.monitorEnemyRed(p1);
+                p1->monitorPlayer();
+                e1->drawShip();
+                e2->drawShip();
+                if (p1->enteredBounds) {
+                    e1->monitorEnemyRed(allShips);
+                    e2->monitorEnemyRed(allShips);
                 }
             }
-            
         EndDrawing();
         }
-    
+    delete p1;
+    delete e1;
+    delete e2;
+
     UnloadMusicStream(tutorialMusic);
 }
 
