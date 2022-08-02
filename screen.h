@@ -20,6 +20,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 
+#include "ship.h"
 #include "player.h"
 #include "enemy.h"
 #include "enemyRed.h"

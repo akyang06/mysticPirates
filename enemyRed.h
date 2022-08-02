@@ -29,7 +29,7 @@ class enemyRed: public enemy {
         enemyRed();
         ~enemyRed();
 
-        void monitorEnemyRed(player &p1);
+        void monitorEnemyRed(std::vector<ship*> &allShips);
 
     protected:
         

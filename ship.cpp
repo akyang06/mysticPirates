@@ -12,6 +12,9 @@
 #include "ship.h"
 
 #define MAX_SHOTS   10
+#define EXPLOSION_RADIUS 50
+#define EXPLOSION_INCREASE_TIME     90          // In frames
+#define EXPLOSION_TOTAL_TIME        210         // In frames
 
 typedef struct Shoot {
     Vector2 position;
@@ -23,11 +26,12 @@ typedef struct Shoot {
 } Shoot;
 
 typedef struct Firebarrel {
+    Vector2 position;
     float fireBarrelExplosionTimer;
-    int fireBarrelX;
-    int fireBarrelY;
+    float radiusMultiplier;
+    int frame;
     bool firebarrelInizialized;
-    bool active;
+    bool active;    
 } Firebarrel;
 
 static Shoot shoot[MAX_SHOTS] = { 0 };
@@ -413,9 +417,9 @@ void ship::fireBarrelAttack() {
         if (!barrel[i].active) {
             barrel[i].active = true;
             barrel[i].fireBarrelExplosionTimer = 5.0f;
-            barrel[i].fireBarrelX = getX();
-            barrel[i].fireBarrelY = getY();
-            DrawRectangle(barrel[i].fireBarrelX, barrel[i].fireBarrelY, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
+            barrel[i].frame = 0;
+            barrel[i].position = (Vector2){ getX(), getY()};
+            DrawRectangle(barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
             fireBarrelAvailable = false;
             barrel[i].firebarrelInizialized = true;
             break;
@@ -471,15 +475,45 @@ void ship::monitorCanonballs() {
 }
 
 void ship::monitorFirebarrel() {
+    for (int i = 0; i < MAX_SHOTS; i++){
+        if (barrel[i].active){
+            barrel[i].frame++;
+            if (barrel[i].frame <= EXPLOSION_INCREASE_TIME) {
+                barrel[i].radiusMultiplier = barrel[i].frame/(float)EXPLOSION_INCREASE_TIME;
+            }
+            else if (barrel[i].frame <= EXPLOSION_TOTAL_TIME) {
+                barrel[i].radiusMultiplier = 1 - (barrel[i].frame - (float)EXPLOSION_INCREASE_TIME)/(float)EXPLOSION_TOTAL_TIME;
+            }
+            else {
+                barrel[i].frame = 0;
+                barrel[i].active = false;
+            }
+        }
+    }
+
     for (int i = 0; i < MAX_SHOTS; i++) {
         if (barrel[i].firebarrelInizialized) {
             barrel[i].fireBarrelExplosionTimer -= GetFrameTime();
             if (barrel[i].fireBarrelExplosionTimer > 0) {
-                DrawRectangle(barrel[i].fireBarrelX, barrel[i].fireBarrelY, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
+                DrawRectangle(barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
             }
             else {
                 fireBarrelAvailable = true;
+                drawExplosion();
+                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, targetRec)){
+                    healthBar -= 10 * barrel[i].radiusMultiplier;
+                }
+                
+                barrel[i].active = false;
             }
+        }
+    }
+}
+
+void ship::drawExplosion(){
+    for (int i = 0; i < MAX_SHOTS; i++) {
+        if (barrel[i].active) {
+            DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*barrel[i].radiusMultiplier, (Color){ 230, 41, 55, 255 });
         }
     }
 }
@@ -509,12 +543,31 @@ void ship::checkCollision(){
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorCoolDown() {
-    // cooldown -= GetFrameTime();
 
-    // if(cooldown <= 0) {
-    //     cooldown = 0;
-    //         frontCannonAvailable = false;
-    //         sideCannonsAvailable = false;
-    //         fireBarrelAvailable = false;
-    // }
+    /* Side cannon cooldown */
+    if (sideCannonsUnlocked) {
+        sideCannonsCooldown -= GetFrameTime();
+        if (sideCannonsCooldown <= 0) {
+            sideCannonsCooldown = 0;
+            sideCannonsAvailable = true;
+        }
+    }
+
+    /* Front cannon cooldown */
+    if (frontCannonUnlocked) {
+        frontCannonCooldown -= GetFrameTime();
+        if (frontCannonCooldown <= 0) {
+            frontCannonCooldown = 0;
+            frontCannonAvailable = true;
+        }
+    }
+    
+    /* Fire barrel cooldown */
+    if (fireBarrelUnlocked) {
+        fireBarrelCooldown -= GetFrameTime();
+        if (fireBarrelCooldown <= 0) {
+            fireBarrelCooldown = 0;
+            fireBarrelAvailable = true;
+        }
+    }
 }

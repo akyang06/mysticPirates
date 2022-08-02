@@ -33,12 +33,20 @@ class enemy: public ship {
     protected:
 
         void facePlayer();
+        void moveEnemyInBoundsStart();
         void moveEnemyInBounds();
+
+        void storePlayerInfo();
+
+        bool goingToCollide();
+        void stopCollision();
 
         float playerRotation;
         Vector2 playerPos;
         Vector2 distToPlayer;
-        float distMag;        
+        float distMag;
+
+        std::vector<ship*> allShips;        
         
     private:
            
