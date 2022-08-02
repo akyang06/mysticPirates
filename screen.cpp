@@ -232,9 +232,9 @@ Rectangle screen::drawButton(const char *text, float roundness, int segments, Fo
         Rectangle box = {boxX, boxY, boxWidth, boxHeight};
         
         /* Draws box and text on screen */
-        DrawRectangleRounded(box, roundness, segments, (Color){160, 67, 54, 255});
+        DrawRectangleRounded(box, roundness, segments, (Color){ 94, 14, 14, 255 });
         Vector2 textPos = {box.x + ((boxWidth - textSize.x) / 2) , box.y + ((boxHeight - textSize.y) / 2)};
-        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){0, 0, 0, 255});
+        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){255, 255, 255, 255});
 
         return box;
 }
