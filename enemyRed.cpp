@@ -28,11 +28,22 @@ enemyRed::enemyRed() : enemy() {
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
-    //changed for debugging
     velLimit = 2.5;
     rotationSpeed = 0.01;
     range = 250;
+   
+
+    /* Sets up cooldown and weapons available */
+    sideCannonsUnlocked = true;
+    frontCannonUnlocked = false;
+    fireBarrelUnlocked = false;
+
     sideCannonsAvailable = true;
+    frontCannonAvailable = false;
+    fireBarrelAvailable = false;
+
+    sideCannonsCooldownDuration = 5;
+    sideCannonsCooldown = 0;
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/enemyRed.png");
@@ -90,17 +101,16 @@ enemyRed::~enemyRed() {
  * @notes:   Calls rotateEnemy() and moveEnemy() function to move the enemy
  *           Moves enemy into the screen after they spawn
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void enemyRed::monitorEnemyRed(player &p1) {
+void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
+
+    this->allShips = allShips;
 
     /* Tracks current location and positon of the player */
-    playerPos = (Vector2) {p1.getX(), p1.getY()};
-    distToPlayer = (Vector2) {p1.getX() - getX(), p1.getY() - getY()};
-    distMag = sqrt(pow(distToPlayer.x, 2) + pow(distToPlayer.y, 2));
-    playerRotation = p1.getRotation();
+    storePlayerInfo();
 
     /* Moves enemy into the bounds after they spawn and continue to move after */
     if (!enteredBounds) {
-        moveEnemyInBounds();
+        moveEnemyInBoundsStart ();
     } else {
         checkCollision();
         moveEnemyRed();
@@ -119,29 +129,25 @@ void enemyRed::monitorEnemyRed(player &p1) {
  *           Calls the accelerateShip and decelerateShip
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemyRed::moveEnemyRed(){
-    /* Deals with boundary condition */
-    if (outOfBounds() && !facingInBounds()) {
-        boundCollision();
-    }
-
-    DrawText(TextFormat("rotation: %f", rotation), 20, 140, 20, (Color){255,255,255,255});
-
+    
     /* Enemy movement AI */
-    if (sideCannonsAvailable) {
-        if (distMag > range) {
-            getInRange();
-        } else {
-            attackPlayer();
-        }
+    if (outOfBounds() && !facingInBounds()) {
+        /* Deals with boundary condition */
+        boundCollision();
+        moveEnemyInBounds();
     } else {
-        circleAround();
-        //monitorCoolDown();
-        // if (isAlive) {
-        //     DrawRectangleRec(targetRec, (Color){ 0, 82, 172, 255 });
-        //     targetRec.x = destRec.x - destRec.width/2;
-        //     targetRec.y = destRec.y - destRec.height/2;
-        // }
+        /* Enemy movement and attack AI*/
+        if (sideCannonsAvailable) {
+            if (distMag > range) {
+                getInRange();
+            } else {
+                attackPlayer();
+            }
+        } else {
+            circleAround();
+        }
     }
+    monitorCoolDown();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -286,6 +292,7 @@ void enemyRed::attackPlayer() {
     if ((abs(shootingAngle - rotation) >= (80 * (M_PI / 180))) && (abs(shootingAngle - rotation) <= (100 * (M_PI / 180)))) {
         DrawText("I'm firing at the player", 20, 300, 20, (Color){255,255,255,255});
         sideCannonsAvailable = false;
+        sideCannonsCooldown = sideCannonsCooldownDuration;
 
          /* Determines if enemy should rotate clockwise or counter-clockwise */
         int random = rand() % 2;
