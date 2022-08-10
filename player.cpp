@@ -48,6 +48,17 @@ player::player() : ship() {
     ImageResize(&sprite, shipWidth, shipHeight);
     ImageRotateCW(&sprite);
 
+     /* Loads in image and resizes it for texture */
+    Image barrelImage = LoadImage("images/firebarrel.png");
+    int barrelWidth = shipWidth/2.5;
+    int barrelHeight = shipHeight/2.5;
+    ImageResize(&barrelImage, barrelWidth, barrelHeight);
+    ImageRotateCCW(&barrelImage);
+
+    barrelTexture = LoadTextureFromImage(barrelImage); 
+    UnloadImage(barrelImage);
+    //UnloadTexture(barrelTexture);
+
     shipTexture = LoadTextureFromImage(sprite); 
     UnloadImage(sprite);
     shipWidth = shipTexture.width;
@@ -60,8 +71,11 @@ player::player() : ship() {
     destRec = (Rectangle){-150, screenHeight / 2, shipWidth, shipHeight};
 
     /* Draws the target rectangle based on the destRec */
+    if (targetRecAlive) {
+        targetRec = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
+    }
+    
     hitBox = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
-
 
     /* Origin of the texture (rotation/scale point) */
     origin = (Vector2){shipWidth / 2, shipHeight / 2};
@@ -84,7 +98,7 @@ player::player() : ship() {
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 player::~player() {
-
+    //UnloadTexture(shipTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -139,6 +153,19 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
         rotatePlayer();
         movePlayer();
         playerAttack();
+        // if (drawLoot) {
+        //     DrawRectangleRec(targetRec, (Color){ 255, 255, 255, 255 });
+        //     dropPoint = (Rectangle){targetRec.x, targetRec.y, 10, 10};
+        //     DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
+        //     //lootPickup();
+
+        DrawRectangleRec(targetRec, (Color){ 255, 255, 255, 255 });
+        DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
+
+        if(CheckCollisionRecs(targetRec, dropPoint)) {
+            DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
+        }
+        // }
         monitorShipCollisions();
     }
 }
@@ -214,6 +241,8 @@ void player::playerAttack(){
 
     monitorCanonballs();
     monitorFirebarrel();
+    // glitch with own character
+    // checkCollision();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

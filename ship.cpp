@@ -9,12 +9,12 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <random>
+#include <ctime> 
 #include "ship.h"
 
 #define MAX_SHOTS   10
 #define EXPLOSION_RADIUS 50
-#define EXPLOSION_INCREASE_TIME     90          // In frames
-#define EXPLOSION_TOTAL_TIME        210         // In frames
 
 typedef struct Shoot {
     Vector2 position;
@@ -27,11 +27,9 @@ typedef struct Shoot {
 
 typedef struct Firebarrel {
     Vector2 position;
-    float fireBarrelExplosionTimer;
-    float radiusMultiplier;
+    float explosionTimer;
     int frame;
-    bool firebarrelInizialized;
-    bool active;    
+    bool active;  
 } Firebarrel;
 
 static Shoot shoot[MAX_SHOTS] = { 0 };
@@ -77,6 +75,10 @@ ship::ship() {
     /* Initializes the attack type to cannon */
     isAlive = true;
 
+    /* Target rectangle initialized as true */
+    targetRecAlive = true;
+    lootSpawn = false;
+
     /* Initializes collided status of ship */
     hasCollided = false;
 }
@@ -92,7 +94,7 @@ ship::ship() {
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 ship::~ship() {
-
+    //UnloadTexture(barrelTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -110,6 +112,11 @@ void ship::drawShip() {
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
+    if (targetRecAlive) {
+        targetRec.x = destRec.x - destRec.width/2;
+        targetRec.y = destRec.y - destRec.height/2;
+    }
+
     hitBox.x = destRec.x - destRec.width/2;
     hitBox.y = destRec.y - destRec.height/2;
 
@@ -118,7 +125,7 @@ void ship::drawShip() {
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
 
-    if (healthBar > 0) {
+    if (healthBar > 0 && targetRecAlive) {
         DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
         DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
         isAlive = false;
@@ -131,6 +138,26 @@ void ship::drawShip() {
         DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
         DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
+    // else {
+    //     // need to make a condition here where the loot disappears after ship hovered over
+    //     // std::minstd_rand generator(std::time(0)); 
+    //     // std::uniform_int_distribution<> numLoot(0, 4);
+
+    //     // int nextRandomInt = numLoot(generator);
+
+    //     if (lootSpawn == false) {
+    //         lootTypeColor = lootDrop();
+    //         targetRecAlive = false;
+    //         lootSpawn = true;
+    //     }
+
+
+    //     // if (drawLoot) {
+    //     //     dropPoint = (Rectangle){targetRec.x, targetRec.y, 10, 10};
+    //     //     DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
+    //     // }
+    //     // DrawText(TextFormat("red count: %i", red), 100, 100, 25, (Color){255,255,255,255});
+    // }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -371,7 +398,9 @@ void ship::sideCannonAttack(){
     
     for (int i = 0; i < MAX_SHOTS; i++){
         if (!shoot[i].active){
-            shoot[i].position = (Vector2){ getX(), getY()};
+            //note: need to make the cannons shoot out rather than from middle
+            shoot[i].position.x = getX() - (5 * -cos(rotation));
+            shoot[i].position.y = getY() - (5 * -sin(rotation));
             shoot[i].active = true;
             /* Angle is based on the direction of the ship */
             if(canonballCounter == 0) {
@@ -406,7 +435,8 @@ void ship::frontCannonAttack(){
     /* Initializes a canonball and populates space in array with values */
     for (int i = 0; i < MAX_SHOTS; i++) {
         if (!shoot[i].active) {
-            shoot[i].position = (Vector2){ getX(), getY()};
+            shoot[i].position.x = getX() - (40 * -cos(rotation));
+            shoot[i].position.y = getY() - (40 * -sin(rotation));
             shoot[i].active = true;
             shoot[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
             shoot[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
@@ -430,17 +460,25 @@ void ship::fireBarrelAttack() {
     for (int i = 0; i < MAX_SHOTS; i++){
         if (!barrel[i].active) {
             barrel[i].active = true;
-            barrel[i].fireBarrelExplosionTimer = 5.0f;
+            barrel[i].explosionTimer = 7.0f;
             barrel[i].frame = 0;
-            barrel[i].position = (Vector2){ getX(), getY()};
-            DrawRectangle(barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
-            fireBarrelAvailable = false;
-            barrel[i].firebarrelInizialized = true;
+            barrel[i].position.x = getX() + (60 * -cos(rotation));
+            barrel[i].position.y = getY() + (60 * -sin(rotation));
             break;
         }
     }
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorCanonballs
+ * @purpose:  
+ *
+ * @parameters: 
+ *     
+ * @returns:
+ * @effects: 
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorCanonballs() {
     
     for (int i = 0; i < MAX_SHOTS; i++){
@@ -488,24 +526,27 @@ void ship::monitorCanonballs() {
     }
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorFirebarrel
+ * @purpose:  
+ *
+ * @parameters: 
+ *     
+ * @returns:
+ * @effects: 
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorFirebarrel() {
-    for (int i = 0; i < MAX_SHOTS; i++){
-        if (barrel[i].active){
-            barrel[i].frame++;
-            if (barrel[i].frame <= EXPLOSION_INCREASE_TIME) {
-                barrel[i].radiusMultiplier = barrel[i].frame/(float)EXPLOSION_INCREASE_TIME;
-            }
-            else if (barrel[i].frame <= EXPLOSION_TOTAL_TIME) {
-                barrel[i].radiusMultiplier = 1 - (barrel[i].frame - (float)EXPLOSION_INCREASE_TIME)/(float)EXPLOSION_TOTAL_TIME;
-            }
-            else {
-                barrel[i].frame = 0;
-                barrel[i].active = false;
-            }
-        }
-    }
-
     for (int i = 0; i < MAX_SHOTS; i++) {
+        if (barrel[i].active && targetRecAlive) {
+            Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
+            int damage = EXPLOSION_RADIUS - ((targetRec.x - fireBarrelMarker.x) + (targetRec.y - fireBarrelMarker.y)) * 0.5;
+            barrel[i].explosionTimer -= GetFrameTime();
+
+            if (barrel[i].explosionTimer <= 0) {
+                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, targetRec)) {
+                    healthBar -= damage;
+
         if (barrel[i].firebarrelInizialized) {
             barrel[i].fireBarrelExplosionTimer -= GetFrameTime();
             if (barrel[i].fireBarrelExplosionTimer > 0) {
@@ -517,31 +558,55 @@ void ship::monitorFirebarrel() {
                 if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox)){
                     healthBar -= 10 * barrel[i].radiusMultiplier;
                 }
-                
+                DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
                 barrel[i].active = false;
             }
-        }
-    }
-}
-
-void ship::drawExplosion(){
-    for (int i = 0; i < MAX_SHOTS; i++) {
-        if (barrel[i].active) {
-            DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*barrel[i].radiusMultiplier, (Color){ 230, 41, 55, 255 });
-        }
-    }
-}
-
-void ship::checkCollision(){
-    /* Collision logic between the cannons and enemy ships */
-    for (int i = 0; i < MAX_SHOTS; i++) {
-        if ((shoot[i].active)) {
-            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
-                shoot[i].active = false;
-                shoot[i].lifeSpawn = 0;
-                healthBar -= 10;
+            else if (barrel[i].explosionTimer > 0 && barrel[i].active){
+                DrawTexture(barrelTexture, barrel[i].position.x - shipWidth/6, barrel[i].position.y - shipHeight/6, (Color){255,255,255,255});
             }
         }
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: checkCollision
+ * @purpose:  
+ *
+ * @parameters: 
+ *     
+ * @returns:
+ * @effects: 
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::checkCollision(){
+    for (int i = 0; i < MAX_SHOTS; i++) {
+        /* Collision logic between the cannons and enemy ships */
+        if ((shoot[i].active) && targetRecAlive) {
+            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, targetRec)){
+                if ((shoot[i].active)) {
+                    if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
+                        shoot[i].active = false;
+                        shoot[i].lifeSpawn = 0;
+                        healthBar -= 10;
+                    }
+                }
+                /* Explosion logic for the fire barrels and any ships */
+                if (barrel[i].active && targetRecAlive) {
+                    Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
+                    int damage = EXPLOSION_RADIUS - ((targetRec.x - fireBarrelMarker.x) + (targetRec.y - fireBarrelMarker.y)) * 0.5;
+
+                    if (CheckCollisionRecs(fireBarrelMarker, targetRec)) { 
+                        DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
+                        barrel[i].active = false;
+                        healthBar -= damage;
+                    }
+                
+                    else if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, targetRec) && targetRecAlive) {
+                        DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
+                        barrel[i].active = false;
+                        healthBar -= damage;
+                    }
+                }
     }
 }
 
@@ -583,6 +648,54 @@ void ship::monitorCoolDown() {
             fireBarrelCooldown = 0;
             fireBarrelAvailable = true;
         }
+    }
+}
+
+// void ship::unloadComponents() {
+//     UnloadTexture(sprite);
+//     UnloadTexture(barrelTexture);
+// }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: lootDrop
+ * @purpose: Monitors the cooldown time 
+ * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+Color ship::lootDrop() {
+    drawLoot = true;
+    std::minstd_rand generator(std::time(0)); 
+    std::uniform_int_distribution<> type(0, 4);
+
+    int nextRandomInt = type(generator);
+
+    if (nextRandomInt == 0) {
+        lootTypeColor = (Color){ 230, 41, 55, 255 };
+        lootTypeInt = 1;
+    }
+    else if (nextRandomInt == 1) {
+        lootTypeColor = (Color){ 255, 161, 0, 255 };
+        lootTypeInt = 2;
+    }
+    else if (nextRandomInt == 2) {
+        lootTypeColor = (Color){ 253, 249, 0, 255 };
+        lootTypeInt = 3;
+    }
+    else if (nextRandomInt == 3) {
+        lootTypeColor = (Color){ 102, 191, 255, 255};
+        lootTypeInt = 4;
+    }
+    else {
+        lootTypeColor = (Color){ 200, 122, 255, 255 };
+        lootTypeInt = 5;
+    }
+
+    return lootTypeColor;
+}
+
+void ship::lootPickup() {
+    if(CheckCollisionRecs(targetRec, dropPoint)) {
+        DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
     }
 }
 
@@ -765,5 +878,4 @@ void ship::computeHitBox() {
     hitBoxEdges.at(2) = Vector2Subtract(vertexBR, vertexBL);
     hitBoxEdges.at(3) = Vector2Subtract(vertexBL, vertexTL);
 }
-
 
