@@ -72,7 +72,7 @@ player::player() : ship() {
 
     /* Draws the target rectangle based on the destRec */
     if (targetRecAlive) {
-        targetRec = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
+        hitBox = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
     }
     
     hitBox = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
@@ -159,10 +159,10 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
         //     DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
         //     //lootPickup();
 
-        DrawRectangleRec(targetRec, (Color){ 255, 255, 255, 255 });
+        DrawRectangleRec(hitBox, (Color){ 255, 255, 255, 255 });
         DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
 
-        if(CheckCollisionRecs(targetRec, dropPoint)) {
+        if(CheckCollisionRecs(hitBox, dropPoint)) {
             DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
         }
         // }
