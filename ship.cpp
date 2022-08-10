@@ -70,8 +70,15 @@ ship::ship() {
         //shoot[i].color = (Color){ 80, 80, 80, 255 };
     }
 
+    /* Sets up hitBox vector sizes */
+    hitBoxVertices.resize(4);
+    hitBoxEdges.resize(4);
+
     /* Initializes the attack type to cannon */
     isAlive = true;
+
+    /* Initializes collided status of ship */
+    hasCollided = false;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -103,8 +110,10 @@ void ship::drawShip() {
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
-    targetRec.x = destRec.x - destRec.width/2;
-    targetRec.y = destRec.y - destRec.height/2;
+    hitBox.x = destRec.x - destRec.width/2;
+    hitBox.y = destRec.y - destRec.height/2;
+
+    computeHitBox();
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
@@ -115,7 +124,12 @@ void ship::drawShip() {
         isAlive = false;
 
         /* Health bar status */
-        DrawRectangle(targetRec.x - 7, targetRec.y - 17, healthBar, 7, (Color){ 0, 228, 48, 255 });
+        DrawRectangle(hitBox.x - 7, hitBox.y - 17, healthBar, 7, (Color){ 0, 228, 48, 255 });
+
+        DrawLineV(hitBoxVertices.at(0), hitBoxVertices.at(1), (Color){0,0,0,255});
+        DrawLineV(hitBoxVertices.at(1), hitBoxVertices.at(2), (Color){0,0,0,255});
+        DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
+        DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
 }
 
@@ -500,7 +514,7 @@ void ship::monitorFirebarrel() {
             else {
                 fireBarrelAvailable = true;
                 drawExplosion();
-                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, targetRec)){
+                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox)){
                     healthBar -= 10 * barrel[i].radiusMultiplier;
                 }
                 
@@ -522,7 +536,7 @@ void ship::checkCollision(){
     /* Collision logic between the cannons and enemy ships */
     for (int i = 0; i < MAX_SHOTS; i++) {
         if ((shoot[i].active)) {
-            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, targetRec)){
+            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
                 shoot[i].active = false;
                 shoot[i].lifeSpawn = 0;
                 healthBar -= 10;
@@ -571,3 +585,185 @@ void ship::monitorCoolDown() {
         }
     }
 }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorShipCollisions
+ * @purpose: Monitors if ships are about to collide and when they do collide. 
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: None
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::monitorShipCollisions() {
+    float distToShip;
+    bool collision;
+    /* Loops through the allShips vector to compare their distances to each other */
+    for (int i = 0; i < allShips.size(); i++) {
+
+        /* Skips comparision of this object to itself */  
+        if (this == allShips.at(i)) {
+            continue;
+        }
+
+        /* Gets distance between this ship and other enemy ship */
+        distToShip = sqrt(pow(allShips.at(i)->getX() - getX(), 2) + pow(allShips.at(i)->getY() - getY(), 2));
+
+        /* If distance is below threshhold, check if ships are colliding */
+        if (distToShip <= shipHeight + allShips.at(i)->shipHeight) {
+            isShipToShipColliding(allShips.at(i));
+        }
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: isShipToShipColliding
+ * @purpose: Determines if two ships are colliding
+ *
+ * @parameters: ship* otherShip: a pointer to another ship to check collision with
+ *     
+ * @returns: nothing
+ * @effects: None
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::isShipToShipColliding(ship* otherShip) {
+    /* Gets the minimum separation between the two ships */
+    shipCollision thisCollision = findMinSeparation(this, otherShip);
+    shipCollision otherCollision = findMinSeparation(otherShip, this);
+
+    /* If separation amount is < 0, collision is happening */
+    if ((thisCollision.separation <= 0) && (otherCollision.separation <= 0)) {
+        shipToShipCollision(otherCollision.collidingEdge);
+    } else {
+        hasCollided = false;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: findMinSeparation
+ * @purpose: Finds the minimum separation between 2 ships using Separating Axis Theorem
+ *
+ * @parameters: ship* shipA: a pointer to a ship to check collision with
+ *              ship* shipB: a pointer to a ship to check collision with
+ *    
+ * @returns: a shipCollision struct with the minimum separation amount and the corresponding edge from shipA
+ *           this separation was found from
+ * @effects: None
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+shipCollision ship::findMinSeparation(ship* shipA, ship* shipB) {
+    float separation = std::numeric_limits<float>::lowest();
+    Vector2 normal;
+    float minSep;
+    shipCollision thisCollision;
+    thisCollision.separation = separation;
+    thisCollision.collidingEdge = (Vector2){0, 0};
+
+    /* Loop through all edges in shipA */
+    /* Note: since hitBoxes are rectangles, only need to go through 2 of the edges, not all 4 */
+    for (int i = 0; i < shipA->hitBoxEdges.size(); i++) {
+        normal = (Vector2){shipA->hitBoxEdges.at(i).y, -shipA->hitBoxEdges.at(i).x};
+        minSep = std::numeric_limits<float>::max();
+
+        /* Loop through all vertices in shipA and shipB */
+        for (int j = 0; j < shipA->hitBoxVertices.size(); j++) {
+            for (int k = 0; k < shipB->hitBoxVertices.size(); k++) {
+                minSep = std::min(minSep, Vector2DotProduct(Vector2Subtract(shipA->hitBoxVertices.at(j), shipB->hitBoxVertices.at(k)), normal));
+            }
+        }
+
+        if (separation < minSep) {
+            separation = minSep;
+            thisCollision.separation = separation;
+            thisCollision.collidingEdge = shipA->hitBoxEdges.at(i);
+        }
+    } 
+    return thisCollision;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: shipToShipCollision
+ * @purpose: Updates the velocity components of this ship during a collision
+ *
+ * @parameters: Vector2 collidingEdge: a Vector2 representing the edge this ship is colliding with
+ *    
+ * @returns: none
+ * @effects: Updates velMag and velComp of this ship
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::shipToShipCollision(Vector2 collidingEdge) {
+    /* Unit vector of where this ship is pointing */
+    Vector2 inDirection = Vector2One();
+    inDirection.x = cos(rotation);
+    inDirection.y = sin(rotation);
+    
+    /* Unit vector of colliding edge */
+    Vector2 collidingEdgeNormalized = Vector2Normalize(collidingEdge);
+
+    /* If hasn't collided yet, update velMag */
+    if (!hasCollided) {
+        velMag = abs(velMag * Vector2DotProduct(inDirection, collidingEdgeNormalized));
+        decelerateShip(deceleration);
+        hasCollided = true;
+    }
+
+    /* Determines angle between edge vector and vector of where this ship is pointing to */
+    float dot = Vector2DotProduct(inDirection, collidingEdgeNormalized);
+    float det = (inDirection.x * collidingEdgeNormalized.y) - (inDirection.y * collidingEdgeNormalized.x);
+    float angle = atan2(dot, det);
+    angle = fmod(angle + (2 * M_PI), 2 * M_PI);
+
+    /* Updates the velocity of this ship based on angle */
+    if (angle <= M_PI) {
+        velComp.x = collidingEdgeNormalized.x * velMag;
+        velComp.y = collidingEdgeNormalized.y * velMag;
+    } else {
+        velComp.x = -collidingEdgeNormalized.x * velMag;
+        velComp.y = -collidingEdgeNormalized.y * velMag;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: computeHitBox
+ * @purpose: Computes the hitbox of the ship
+ *
+ * @parameters: none
+ *    
+ * @returns: none
+ * @effects: Sets the values of the hitBoxEdges and hitBoxVertices vector
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::computeHitBox() {
+    /* center point of the hitbox */
+    int hitBoxCenterX = destRec.x;
+    int hitBoxCenterY = destRec.y;
+
+    /* Vertices of the hitbox */
+    /* Top left vertex */
+    Vector2 vertexTL = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * cos(-rotation)};
+    /* Top right vertext */
+    Vector2 vertexTR = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * cos(-rotation)};
+    /* Bottom left vertex */
+    Vector2 vertexBL = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * cos(-rotation)};
+    /* Bottom right vertext */
+    Vector2 vertexBR = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.8 ) - hitBoxCenterY) * cos(-rotation)};
+
+    /* Adds vertices to hitBoxVertices vector */
+    hitBoxVertices.at(0) = vertexTL;
+    hitBoxVertices.at(1) = vertexTR;
+    hitBoxVertices.at(2) = vertexBR;
+    hitBoxVertices.at(3) = vertexBL;
+
+    /* Adds edges to hitBoxEdges vector */
+    hitBoxEdges.at(0) = Vector2Subtract(vertexTL, vertexTR);
+    hitBoxEdges.at(1) = Vector2Subtract(vertexTR, vertexBR);
+    hitBoxEdges.at(2) = Vector2Subtract(vertexBR, vertexBL);
+    hitBoxEdges.at(3) = Vector2Subtract(vertexBL, vertexTL);
+}
+
+

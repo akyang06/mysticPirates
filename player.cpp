@@ -60,7 +60,7 @@ player::player() : ship() {
     destRec = (Rectangle){-150, screenHeight / 2, shipWidth, shipHeight};
 
     /* Draws the target rectangle based on the destRec */
-    targetRec = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
+    hitBox = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
 
 
     /* Origin of the texture (rotation/scale point) */
@@ -122,7 +122,9 @@ void player::enterPlayer() {
  * @effects: none
  * @notes:   Calls movePlayer() function to move the player
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void player::monitorPlayer() {
+void player::monitorPlayer(std::vector<ship*> &allShips) {
+
+    this->allShips = allShips;
 
     // DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
     // DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
@@ -137,6 +139,7 @@ void player::monitorPlayer() {
         rotatePlayer();
         movePlayer();
         playerAttack();
+        monitorShipCollisions();
     }
 }
 
