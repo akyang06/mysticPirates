@@ -256,6 +256,7 @@ Rectangle screen::drawButton(const char *text, float roundness, int segments, Fo
  * @notes: 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void screen::unloadItems(Texture2D currTexture, Font currFont, Music currMusic) {
+    //unloadComponents();
     UnloadTexture(currTexture);
     UnloadFont(currFont);
     UnloadMusicStream(currMusic);

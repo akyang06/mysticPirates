@@ -41,6 +41,9 @@ class ship {
         float getRotation();
 
         bool enteredBounds;
+
+        //void unloadComponents();
+        Rectangle dropPoint;
         
     protected:
 
@@ -64,6 +67,8 @@ class ship {
         void checkCollision();
         void monitorCoolDown();
 
+        Color lootDrop();
+        void lootPickup();
         void monitorShipCollisions();
         void isShipToShipColliding(ship* otherShip);
         shipCollision findMinSeparation(ship* shipA, ship* shipB);
@@ -90,6 +95,7 @@ class ship {
         int range;
 
         Texture2D shipTexture;
+        Texture2D barrelTexture;
 
         Rectangle sourceRec;
         Rectangle destRec;
@@ -121,6 +127,14 @@ class ship {
 
         float fireBarrelCooldownDuration;
         float fireBarrelCooldown;
+
+        bool targetRecAlive;
+
+        /* Loot (replace colors with images later) */
+        bool lootSpawn;
+        int lootTypeInt;
+        Color lootTypeColor;
+        bool drawLoot;
 
         bool hasCollided;
 
