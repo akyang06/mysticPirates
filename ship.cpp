@@ -818,6 +818,7 @@ void ship::shipToShipCollision(Vector2 collidingEdge) {
     float det = (inDirection.x * collidingEdgeNormalized.y) - (inDirection.y * collidingEdgeNormalized.x);
     float angle = atan2(dot, det);
     angle = fmod(angle + (2 * M_PI), 2 * M_PI);
+    std::cout << angle << std::endl;
 
     /* Updates the velocity of this ship based on angle */
     if (angle <= M_PI) {
