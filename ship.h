@@ -18,9 +18,16 @@
 #include <math.h>
 #include <time.h>
 #include <vector>
+#include <limits>
 
 #include "raylib.h"
 #include "rlgl.h"
+#include "raymath.h"
+
+typedef struct shipCollision {
+    Vector2 collidingEdge;
+    float separation;
+} shipCollision;
 
 
 class ship {
@@ -62,6 +69,11 @@ class ship {
 
         Color lootDrop();
         void lootPickup();
+        void monitorShipCollisions();
+        void isShipToShipColliding(ship* otherShip);
+        shipCollision findMinSeparation(ship* shipA, ship* shipB);
+        void shipToShipCollision(Vector2 collidingEdge);
+        void computeHitBox();
         
         int screenWidth;
         int screenHeight;
@@ -87,7 +99,7 @@ class ship {
 
         Rectangle sourceRec;
         Rectangle destRec;
-        Rectangle targetRec;
+        Rectangle hitBox;
         Vector2 origin;  
 
         float upBounds;
@@ -124,9 +136,15 @@ class ship {
         Color lootTypeColor;
         bool drawLoot;
 
+        bool hasCollided;
+
+        std::vector<ship*> allShips;
+
+        std::vector<Vector2> hitBoxVertices;
+        std::vector<Vector2> hitBoxEdges;
+        
     private:
         float collisionDrag;
-        
 };
 
 

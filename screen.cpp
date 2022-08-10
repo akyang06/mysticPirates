@@ -78,7 +78,7 @@ void screen::titleScreen() {
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
-        UpdateMusicStream(titleMusic);
+        //UpdateMusicStream(titleMusic);
         BeginDrawing();
             
             ClearBackground((Color){0, 0, 0, 255});
@@ -152,17 +152,17 @@ void screen::titleScreen() {
     /* Create player and enemies */
     player *p1 = new player;
     enemyRed *e1 = new enemyRed;
-    enemyRed *e2 = new enemyRed;
+    //enemyRed *e2 = new enemyRed;
     std::vector<ship*> allShips;
     allShips.push_back(p1);
     allShips.push_back(e1);
-    allShips.push_back(e2);
+    //allShips.push_back(e2);
 
     while (!WindowShouldClose())    /* Detect window close button or ESC key */
     {
         if (IsKeyPressed(KEY_P)) pause = !pause;
         if (!pause) {
-            UpdateMusicStream(tutorialMusic);
+            //UpdateMusicStream(tutorialMusic);
             scrollingBack -= 1.0f;
             /* Allows texture to repeat when it gets to the end of the background */
             if (scrollingBack <= -background.width * 2) {
@@ -183,29 +183,25 @@ void screen::titleScreen() {
             
             if (pause && ((framesCounter/30)%2)) DrawText("PAUSED", 350, 200, 30, (Color){ 130, 130, 130, 255 });
 
-            // /* Draws the menu for navigating between pages*/
-            // Texture2D mapTexture = drawMenu();
-            // DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
-
             /* Draws player and enemy on screen */
             p1->drawShip();
             
             /* Note: working pause for player and background, not enemies yet */
             if (!pause) {
                 /* Tracks player movement */
-                p1->monitorPlayer();
+                p1->monitorPlayer(allShips);
                 e1->drawShip();
-                e2->drawShip();
+                //e2->drawShip();
                 if (p1->enteredBounds) {
                     e1->monitorEnemyRed(allShips);
-                    e2->monitorEnemyRed(allShips);
+                    //e2->monitorEnemyRed(allShips);
                 }
             }
         EndDrawing();
         }
     delete p1;
     delete e1;
-    delete e2;
+    //delete e2;
 
     UnloadMusicStream(tutorialMusic);
 }

@@ -63,8 +63,8 @@ enemyRed::enemyRed() : enemy() {
     destRec.width = shipWidth;
     destRec.height = shipHeight; 
 
-    targetRec.width = destRec.width;
-    targetRec.height = destRec.height;
+    hitBox.width = destRec.width;
+    hitBox.height = destRec.height;
 
     /* Origin of the texture (rotation/scale point) */
     origin = (Vector2){shipWidth / 2, shipHeight / 2};
@@ -146,18 +146,20 @@ void enemyRed::moveEnemyRed(){
         boundCollision();
         moveEnemyInBounds();
     } else {
-        /* Enemy movement and attack AI*/
-        if (sideCannonsAvailable) {
-            if (distMag > range) {
-                getInRange();
-            } else {
-                attackPlayer();
-            }
-        } else {
-            circleAround();
-        }
+        decelerateShip(deceleration);
+        // /* Enemy movement and attack AI*/
+        // if (sideCannonsAvailable) {
+        //     if (distMag > range) {
+        //         getInRange();
+        //     } else {
+        //         attackPlayer();
+        //     }
+        // } else {
+        //     circleAround();
+        // }
     }
     monitorCoolDown();
+    monitorShipCollisions();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

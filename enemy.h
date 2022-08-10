@@ -44,9 +44,7 @@ class enemy: public ship {
         float playerRotation;
         Vector2 playerPos;
         Vector2 distToPlayer;
-        float distMag;
-
-        std::vector<ship*> allShips;        
+        float distMag;      
         
     private:
            
