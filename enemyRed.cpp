@@ -121,7 +121,7 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
                 lootSpawn = true;
             }
             if (drawLoot) {
-                dropPoint = (Rectangle){targetRec.x, targetRec.y, 10, 10};
+                dropPoint = (Rectangle){hitBox.x, hitBox.y, 10, 10};
             }
         }
     } 

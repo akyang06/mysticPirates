@@ -113,8 +113,8 @@ void ship::drawShip() {
     destRec.y += velComp.y;
 
     if (targetRecAlive) {
-        targetRec.x = destRec.x - destRec.width/2;
-        targetRec.y = destRec.y - destRec.height/2;
+        hitBox.x = destRec.x - destRec.width/2;
+        hitBox.y = destRec.y - destRec.height/2;
     }
 
     hitBox.x = destRec.x - destRec.width/2;
@@ -540,23 +540,12 @@ void ship::monitorFirebarrel() {
     for (int i = 0; i < MAX_SHOTS; i++) {
         if (barrel[i].active && targetRecAlive) {
             Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
-            int damage = EXPLOSION_RADIUS - ((targetRec.x - fireBarrelMarker.x) + (targetRec.y - fireBarrelMarker.y)) * 0.5;
+            int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
             barrel[i].explosionTimer -= GetFrameTime();
 
             if (barrel[i].explosionTimer <= 0) {
-                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, targetRec)) {
+                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox)) {
                     healthBar -= damage;
-
-        if (barrel[i].firebarrelInizialized) {
-            barrel[i].fireBarrelExplosionTimer -= GetFrameTime();
-            if (barrel[i].fireBarrelExplosionTimer > 0) {
-                DrawRectangle(barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3, (Color){ 190, 33, 55, 255 });
-            }
-            else {
-                fireBarrelAvailable = true;
-                drawExplosion();
-                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox)){
-                    healthBar -= 10 * barrel[i].radiusMultiplier;
                 }
                 DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
                 barrel[i].active = false;
@@ -567,6 +556,7 @@ void ship::monitorFirebarrel() {
         }
     }
 }
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: checkCollision
@@ -582,7 +572,7 @@ void ship::checkCollision(){
     for (int i = 0; i < MAX_SHOTS; i++) {
         /* Collision logic between the cannons and enemy ships */
         if ((shoot[i].active) && targetRecAlive) {
-            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, targetRec)){
+            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
                 if ((shoot[i].active)) {
                     if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
                         shoot[i].active = false;
@@ -593,20 +583,22 @@ void ship::checkCollision(){
                 /* Explosion logic for the fire barrels and any ships */
                 if (barrel[i].active && targetRecAlive) {
                     Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
-                    int damage = EXPLOSION_RADIUS - ((targetRec.x - fireBarrelMarker.x) + (targetRec.y - fireBarrelMarker.y)) * 0.5;
+                    int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
 
-                    if (CheckCollisionRecs(fireBarrelMarker, targetRec)) { 
+                    if (CheckCollisionRecs(fireBarrelMarker, hitBox)) { 
                         DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
                         barrel[i].active = false;
                         healthBar -= damage;
                     }
                 
-                    else if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, targetRec) && targetRecAlive) {
+                    else if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox) && targetRecAlive) {
                         DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
                         barrel[i].active = false;
                         healthBar -= damage;
                     }
                 }
+            }
+        }
     }
 }
 
@@ -694,7 +686,7 @@ Color ship::lootDrop() {
 }
 
 void ship::lootPickup() {
-    if(CheckCollisionRecs(targetRec, dropPoint)) {
+    if(CheckCollisionRecs(hitBox, dropPoint)) {
         DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
     }
 }
