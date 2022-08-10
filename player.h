@@ -29,7 +29,7 @@ class player: public ship {
         ~player();
 
         void enterPlayer();
-        void monitorPlayer();
+        void monitorPlayer(std::vector<ship*> &allShips);
         
     protected:
         
