@@ -114,6 +114,16 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
     } else {
         checkCollision();
         moveEnemyRed();
+        if (healthBar <= 0) {
+            if (lootSpawn == false) {
+                lootTypeColor = lootDrop();
+                targetRecAlive = false;
+                lootSpawn = true;
+            }
+            if (drawLoot) {
+                dropPoint = (Rectangle){targetRec.x, targetRec.y, 10, 10};
+            }
+        }
     } 
 }
 
