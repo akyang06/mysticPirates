@@ -71,7 +71,7 @@ player::player() : ship() {
     destRec = (Rectangle){-150, screenHeight / 2, shipWidth, shipHeight};
 
     /* Draws the target rectangle based on the destRec */
-    if (targetRecAlive) {
+    if (isAlive) {
         hitBox = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
     }
     
@@ -148,7 +148,6 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
     /* move player and deal with kinematics */
     if (!enteredBounds) {
         enterPlayer();
-
     } else {
         rotatePlayer();
         movePlayer();
@@ -159,14 +158,14 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
         //     DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
         //     //lootPickup();
 
-        DrawRectangleRec(hitBox, (Color){ 255, 255, 255, 255 });
+
         DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
 
         if(CheckCollisionRecs(hitBox, dropPoint)) {
             DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
         }
         // }
-        monitorShipCollisions();
+        monitorCollisions();
     }
 }
 
@@ -182,6 +181,10 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::movePlayer(){
 
+    if (!edgeCollision) {
+        updateVelComp();
+    }
+
     if (IsKeyDown(KEY_UP)) {
         accelerateShip(acceration);
     } else if (velMag > 0) {
@@ -191,10 +194,6 @@ void player::movePlayer(){
 
     if (IsKeyDown(KEY_DOWN)) {
         decelerateShip(deceleration);
-    }
-
-    if (outOfBounds() && !facingInBounds()) {
-        boundCollision();
     }
 }
 
