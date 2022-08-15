@@ -110,21 +110,22 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
 
     /* Moves enemy into the bounds after they spawn and continue to move after */
     if (!enteredBounds) {
-        moveEnemyInBoundsStart ();
+        moveEnemyInBoundsStart();
     } else {
-        checkCollision();
+        monitorCollisions();
         moveEnemyRed();
         if (healthBar <= 0) {
             if (lootSpawn == false) {
                 lootTypeColor = lootDrop();
-                targetRecAlive = false;
+                isAlive = false;
                 lootSpawn = true;
             }
             if (drawLoot) {
                 dropPoint = (Rectangle){hitBox.x, hitBox.y, 10, 10};
             }
         }
-    } 
+    }
+    monitorCoolDown(); 
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -141,25 +142,24 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
 void enemyRed::moveEnemyRed(){
     
     /* Enemy movement AI */
-    if (outOfBounds() && !facingInBounds()) {
-        /* Deals with boundary condition */
-        boundCollision();
+    if (inCorner()) {
+        moveEnemyOutOfCorner();
+    }
+    if (edgeCollision) {
         moveEnemyInBounds();
     } else {
-        decelerateShip(deceleration);
-        // /* Enemy movement and attack AI*/
-        // if (sideCannonsAvailable) {
-        //     if (distMag > range) {
-        //         getInRange();
-        //     } else {
-        //         attackPlayer();
-        //     }
-        // } else {
-        //     circleAround();
-        // }
+        /* Enemy movement and attack AI*/
+        if (sideCannonsAvailable) {
+            if (distMag > range) {
+                getInRange();
+            } else {
+                attackPlayer();
+            }
+        } else {
+            circleAround();
+        }
+        updateVelComp();
     }
-    monitorCoolDown();
-    monitorShipCollisions();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

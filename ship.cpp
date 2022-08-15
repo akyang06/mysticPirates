@@ -56,6 +56,8 @@ ship::ship() {
     collisionDrag = 0.01;
     enteredBounds = false;
     healthBar = 100;
+    isAlive = true;
+    
 
     /* Initializes the shooting component */
     for (int i = 0; i < MAX_SHOTS; i++)
@@ -73,14 +75,14 @@ ship::ship() {
     hitBoxEdges.resize(4);
 
     /* Initializes the attack type to cannon */
-    isAlive = true;
+    shootType = 1;
 
-    /* Target rectangle initialized as true */
-    targetRecAlive = true;
+    /* Loot spawn */
     lootSpawn = false;
 
     /* Initializes collided status of ship */
-    hasCollided = false;
+    edgeCollision = false;
+    shipCollision = false;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -94,7 +96,7 @@ ship::ship() {
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 ship::~ship() {
-    //UnloadTexture(barrelTexture);
+    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -109,13 +111,9 @@ ship::~ship() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::drawShip() {
 
+    /* Updates destRec and hitBox values */
     destRec.x += velComp.x;
     destRec.y += velComp.y;
-
-    if (targetRecAlive) {
-        hitBox.x = destRec.x - destRec.width/2;
-        hitBox.y = destRec.y - destRec.height/2;
-    }
 
     hitBox.x = destRec.x - destRec.width/2;
     hitBox.y = destRec.y - destRec.height/2;
@@ -124,19 +122,17 @@ void ship::drawShip() {
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
-
-    if (healthBar > 0 && targetRecAlive) {
+    if (isAlive) {
         DrawTexturePro(shipTexture, sourceRec, destRec, origin, rotation * 57.3, (Color){255,255,255,255});
-        DrawCircleLines(destRec.x, destRec.y, 250, (Color){0,0,0,255});
-        isAlive = false;
 
         /* Health bar status */
         DrawRectangle(hitBox.x - 7, hitBox.y - 17, healthBar, 7, (Color){ 0, 228, 48, 255 });
 
-        DrawLineV(hitBoxVertices.at(0), hitBoxVertices.at(1), (Color){0,0,0,255});
-        DrawLineV(hitBoxVertices.at(1), hitBoxVertices.at(2), (Color){0,0,0,255});
-        DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
-        DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
+        /* Draws the hitbox of the ship */
+        // DrawLineV(hitBoxVertices.at(0), hitBoxVertices.at(1), (Color){0,0,0,255});
+        // DrawLineV(hitBoxVertices.at(1), hitBoxVertices.at(2), (Color){0,0,0,255});
+        // DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
+        // DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
     // else {
     //     // need to make a condition here where the loot disappears after ship hovered over
@@ -147,7 +143,7 @@ void ship::drawShip() {
 
     //     if (lootSpawn == false) {
     //         lootTypeColor = lootDrop();
-    //         targetRecAlive = false;
+    //         isAlive = false;
     //         lootSpawn = true;
     //     }
 
@@ -216,22 +212,7 @@ void ship::accelerateShip(float amount) {
     if(velMag < velLimit - amount) {
         velMag += amount;
     }
-
-    /* Deals with velocity updates when colliding with bounds */
-    if (outOfBounds() && !facingInBounds()) {
-        /* Left and right boundaries */
-        if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
-            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
-        }
-
-        /* Up and down boundaries */
-        if ((getY() <= upBounds) || (getY() >= downBounds)) {
-            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
-        }
-        return;
-    }
-
-    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
+    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -252,22 +233,38 @@ void ship::decelerateShip(float amount) {
     if (velMag < 0) {
         velMag = 0;
     }
+}
 
-    /* Deals with velocity updates when colliding with bounds */
+void ship::updateVelComp() {
+    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorCollisions
+ * @purpose: Checks collisions with other ships, bounds and attacks
+ *
+ * @parameters: none
+ *     
+ * @returns: none
+ * @effects: 
+ * @notes:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::monitorCollisions() {
+
+    /* Boundary collisions */
     if (outOfBounds() && !facingInBounds()) {
-        /* Left and right boundaries */
-        if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
-            velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
-        }
-
-        /* Up and down boundaries */
-        if ((getY() <= upBounds) || (getY() >=  downBounds)) {
-            velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
-        }
-        return;
+        /* Deals with boundary condition */
+        edgeCollision = true;
+        boundCollision();
+    } else {
+        edgeCollision = false;
     }
 
-    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
+    /* Ship to ship collisions */
+    monitorShiptoShipCollisions();
+
+    /*Ship to weapon collisions */
+    monitorShipToWeaponCollisions();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -302,9 +299,15 @@ bool ship::outOfBounds() {
  *     
  * @returns: A boolean representing if a ship is facing in bounds or not
  * @effects: 
- * @notes: Returns false if ship is already in bounds
+ * @notes: Returns true if ship is already in bounds
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool ship::facingInBounds() {
+
+    /* Already in bounds */
+    if (!outOfBounds()) {
+        return true;
+    }
+
     /* Left boundary */
     if (getX() <= leftBounds) {
         if((rotation > 3 * M_PI_2) || (rotation < M_PI_2)) {
@@ -349,13 +352,13 @@ bool ship::facingInBounds() {
 void ship::boundCollision() {
     /* Left and right boundaries */
     if ((getX() <= leftBounds) || (getX() >= rightBounds)) {
-        velComp.x = 0;
+        velComp = (Vector2) {0, (float) sinf(rotation) * velMag};
         decelerateShip(collisionDrag);
     }
 
     /* Up and down boundaries */
     if ((getY() <= upBounds) || (getY() >= downBounds)) {
-        velComp.y = 0;
+        velComp = (Vector2) {(float) cosf(rotation) * velMag, 0};
         decelerateShip(collisionDrag);
     }
 
@@ -377,7 +380,7 @@ void ship::boundCollision() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 bool ship::inCorner() {
     if ((getX() <= leftBounds && getY() <= upBounds) || (getX() >= rightBounds && getY() <= upBounds) || 
-       (getX() <= leftBounds && getY() >= downBounds) || (getX() >= rightBounds && (getY()) >= downBounds)) {
+       (getX() <= leftBounds && getY() >= downBounds) || (getX() >= rightBounds && getY() >= downBounds)) {
         return true;
     }
     return false;
@@ -538,7 +541,7 @@ void ship::monitorCanonballs() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorFirebarrel() {
     for (int i = 0; i < MAX_SHOTS; i++) {
-        if (barrel[i].active && targetRecAlive) {
+        if (barrel[i].active && isAlive) {
             Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
             int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
             barrel[i].explosionTimer -= GetFrameTime();
@@ -559,7 +562,7 @@ void ship::monitorFirebarrel() {
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: checkCollision
+ * @function: monitorShipToWeaponCollisions
  * @purpose:  
  *
  * @parameters: 
@@ -568,10 +571,10 @@ void ship::monitorFirebarrel() {
  * @effects: 
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::checkCollision(){
+void ship::monitorShipToWeaponCollisions(){
     for (int i = 0; i < MAX_SHOTS; i++) {
         /* Collision logic between the cannons and enemy ships */
-        if ((shoot[i].active) && targetRecAlive) {
+        if ((shoot[i].active) && isAlive) {
             if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
                 if ((shoot[i].active)) {
                     if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
@@ -581,7 +584,7 @@ void ship::checkCollision(){
                     }
                 }
                 /* Explosion logic for the fire barrels and any ships */
-                if (barrel[i].active && targetRecAlive) {
+                if (barrel[i].active && isAlive) {
                     Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
                     int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
 
@@ -591,7 +594,7 @@ void ship::checkCollision(){
                         healthBar -= damage;
                     }
                 
-                    else if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox) && targetRecAlive) {
+                    else if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox) && isAlive) {
                         DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
                         barrel[i].active = false;
                         healthBar -= damage;
@@ -692,7 +695,7 @@ void ship::lootPickup() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: monitorShipCollisions
+ * @function: monitorShiptoShipCollisions
  * @purpose: Monitors if ships are about to collide and when they do collide. 
  *
  * @parameters: none
@@ -701,7 +704,7 @@ void ship::lootPickup() {
  * @effects: None
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::monitorShipCollisions() {
+void ship::monitorShiptoShipCollisions() {
     float distToShip;
     bool collision;
     /* Loops through the allShips vector to compare their distances to each other */
@@ -734,14 +737,14 @@ void ship::monitorShipCollisions() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::isShipToShipColliding(ship* otherShip) {
     /* Gets the minimum separation between the two ships */
-    shipCollision thisCollision = findMinSeparation(this, otherShip);
-    shipCollision otherCollision = findMinSeparation(otherShip, this);
+    shipCollisionStruct thisCollision = findMinSeparation(this, otherShip);
+    shipCollisionStruct otherCollision = findMinSeparation(otherShip, this);
 
     /* If separation amount is < 0, collision is happening */
     if ((thisCollision.separation <= 0) && (otherCollision.separation <= 0)) {
         shipToShipCollision(otherCollision.collidingEdge);
     } else {
-        hasCollided = false;
+        shipCollision = false;
     }
 }
 
@@ -757,11 +760,11 @@ void ship::isShipToShipColliding(ship* otherShip) {
  * @effects: None
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-shipCollision ship::findMinSeparation(ship* shipA, ship* shipB) {
+shipCollisionStruct ship::findMinSeparation(ship* shipA, ship* shipB) {
     float separation = std::numeric_limits<float>::lowest();
     Vector2 normal;
     float minSep;
-    shipCollision thisCollision;
+    shipCollisionStruct thisCollision;
     thisCollision.separation = separation;
     thisCollision.collidingEdge = (Vector2){0, 0};
 
@@ -807,26 +810,29 @@ void ship::shipToShipCollision(Vector2 collidingEdge) {
     Vector2 collidingEdgeNormalized = Vector2Normalize(collidingEdge);
 
     /* If hasn't collided yet, update velMag */
-    if (!hasCollided) {
-        velMag = abs(velMag * Vector2DotProduct(inDirection, collidingEdgeNormalized));
-        decelerateShip(deceleration);
-        hasCollided = true;
+    if (!shipCollision) {
+        velMag = velMag * abs(Vector2DotProduct(inDirection, collidingEdgeNormalized));
+        shipCollision = true;
     }
+    decelerateShip(drag);
 
     /* Determines angle between edge vector and vector of where this ship is pointing to */
     float dot = Vector2DotProduct(inDirection, collidingEdgeNormalized);
     float det = (inDirection.x * collidingEdgeNormalized.y) - (inDirection.y * collidingEdgeNormalized.x);
     float angle = atan2(dot, det);
     angle = fmod(angle + (2 * M_PI), 2 * M_PI);
-    std::cout << angle << std::endl;
 
     /* Updates the velocity of this ship based on angle */
-    if (angle <= M_PI) {
-        velComp.x = collidingEdgeNormalized.x * velMag;
-        velComp.y = collidingEdgeNormalized.y * velMag;
+    if (Vector2DotProduct(inDirection, collidingEdgeNormalized) > 0) {
+        if (angle < M_PI_2 || angle > 3 * M_PI_2) {
+            velComp.x = collidingEdgeNormalized.x * velMag;
+            velComp.y = collidingEdgeNormalized.y * velMag;
+        }
     } else {
-        velComp.x = -collidingEdgeNormalized.x * velMag;
-        velComp.y = -collidingEdgeNormalized.y * velMag;
+        if (angle < M_PI_2 || angle > 3 * M_PI_2) {
+            velComp.x = -collidingEdgeNormalized.x * velMag;
+            velComp.y = -collidingEdgeNormalized.y * velMag;
+        }
     }
 }
 
@@ -847,17 +853,17 @@ void ship::computeHitBox() {
 
     /* Vertices of the hitbox */
     /* Top left vertex */
-    Vector2 vertexTL = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * sin(-rotation), 
-                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * cos(-rotation)};
+    Vector2 vertexTL = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.1) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.1) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * cos(-rotation)};
     /* Top right vertext */
-    Vector2 vertexTR = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * sin(-rotation), 
-                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * cos(-rotation)};
+    Vector2 vertexTR = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.9) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.9) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.2) - hitBoxCenterY) * cos(-rotation)};
     /* Bottom left vertex */
-    Vector2 vertexBL = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * sin(-rotation), 
-                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.15) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * cos(-rotation)};
+    Vector2 vertexBL = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.1) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.1) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * cos(-rotation)};
     /* Bottom right vertext */
-    Vector2 vertexBR = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * sin(-rotation), 
-                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.85) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.8 ) - hitBoxCenterY) * cos(-rotation)};
+    Vector2 vertexBR = (Vector2){hitBoxCenterX + (hitBox.x + (shipWidth * 0.9) - hitBoxCenterX) * cos(-rotation) + (hitBox.y + (shipHeight * 0.8) - hitBoxCenterY) * sin(-rotation), 
+                                hitBoxCenterY - (hitBox.x + (shipWidth * 0.9) - hitBoxCenterX) * sin(-rotation) + (hitBox.y + (shipHeight * 0.8 ) - hitBoxCenterY) * cos(-rotation)};
 
     /* Adds vertices to hitBoxVertices vector */
     hitBoxVertices.at(0) = vertexTL;

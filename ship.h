@@ -24,10 +24,10 @@
 #include "rlgl.h"
 #include "raymath.h"
 
-typedef struct shipCollision {
+typedef struct shipCollisionStruct {
     Vector2 collidingEdge;
     float separation;
-} shipCollision;
+} shipCollisionStruct;
 
 
 class ship {
@@ -55,6 +55,7 @@ class ship {
 
         void accelerateShip(float amount);
         void decelerateShip(float amount);
+        void updateVelComp();
 
         void sideCannonAttack();
         void frontCannonAttack();
@@ -64,14 +65,16 @@ class ship {
         void monitorFirebarrel();
         void drawExplosion();
 
-        void checkCollision();
+        void monitorCollisions();
+        void monitorShipToWeaponCollisions();
+        void monitorShiptoShipCollisions();
         void monitorCoolDown();
 
         Color lootDrop();
         void lootPickup();
-        void monitorShipCollisions();
+        
         void isShipToShipColliding(ship* otherShip);
-        shipCollision findMinSeparation(ship* shipA, ship* shipB);
+        shipCollisionStruct findMinSeparation(ship* shipA, ship* shipB);
         void shipToShipCollision(Vector2 collidingEdge);
         void computeHitBox();
         
@@ -107,6 +110,9 @@ class ship {
         float leftBounds;
         float rightBounds;
 
+        bool edgeCollision;
+        bool shipCollision;
+
         int healthBar;
         int shootType;
         bool isAlive;
@@ -128,15 +134,11 @@ class ship {
         float fireBarrelCooldownDuration;
         float fireBarrelCooldown;
 
-        bool targetRecAlive;
-
         /* Loot (replace colors with images later) */
         bool lootSpawn;
         int lootTypeInt;
         Color lootTypeColor;
         bool drawLoot;
-
-        bool hasCollided;
 
         std::vector<ship*> allShips;
 

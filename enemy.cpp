@@ -69,6 +69,7 @@ enemy::~enemy() {
 void enemy::moveEnemyInBoundsStart() {
     facePlayer();
     accelerateShip(acceration);
+    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
     if (!outOfBounds()) {
         enteredBounds = true;
     }
@@ -154,6 +155,62 @@ void enemy::moveEnemyInBounds() {
     /* down boundary */
     if (getY() >= downBounds) {
         if(rotation > M_PI_2) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* Keeps the speed of the enemy at 40% of top speed when trying to get out back in bounds */
+    if (velMag <= 0.4 * velLimit) {
+        accelerateShip(acceration);
+    }
+
+    /* Keeps the rotation between 0 and 2pi radians */
+    rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: moveEnemyOutOfCorner
+ * @purpose: Move the enemy out of the corner
+ *
+ * @parameters: none
+ *     
+ * @returns: none
+ * @effects: Rotates enemy so the face out of the corner and into bounds
+ * @notes: 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void enemy::moveEnemyOutOfCorner() {
+    /* top left corner */
+    if (getX() <= leftBounds && getY() <= upBounds) {
+        if(rotation > 5 * M_PI_4) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* top right corner */
+    if (getX() >= rightBounds && getY() <= upBounds) {
+        if(rotation > 7 * M_PI_4) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* bottom left corner */
+    if (getX() <= leftBounds && getY() >= downBounds) {
+        if(rotation > 3 * M_PI_4) {
+            rotation += rotationSpeed;
+        } else {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* bottom right corner */
+    if (getX() >= rightBounds && getY() >= downBounds) {
+        if(rotation > M_PI_4) {
             rotation += rotationSpeed;
         } else {
             rotation -= rotationSpeed;
