@@ -24,7 +24,7 @@
 player::player() : ship() {
 
     /* Player ship initial stats */
-    acceration = 0.015;
+    acceleration = 0.015;
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
@@ -149,6 +149,7 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
     if (!enteredBounds) {
         enterPlayer();
     } else {
+        monitorCollisions();
         rotatePlayer();
         movePlayer();
         playerAttack();
@@ -165,7 +166,6 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
             DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
         }
         // }
-        monitorCollisions();
     }
 }
 
@@ -181,20 +181,20 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::movePlayer(){
 
-    if (!edgeCollision) {
-        updateVelComp();
-    }
-
     if (IsKeyDown(KEY_UP)) {
-        accelerateShip(acceration);
+        accelerateShip(acceleration);
     } else if (velMag > 0) {
-        /* drag force */
+         /* drag force */
         decelerateShip(drag);
     }
 
     if (IsKeyDown(KEY_DOWN)) {
         decelerateShip(deceleration);
     }
+    if (!edgeCollision && !shipCollision && !inCorner()) {
+        updateVelComp();
+    }
+     
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -240,8 +240,6 @@ void player::playerAttack(){
 
     monitorCanonballs();
     monitorFirebarrel();
-    // glitch with own character
-    // checkCollision();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

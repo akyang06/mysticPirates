@@ -90,7 +90,7 @@ class ship {
         float velLimit;
         Vector2 velComp;
 
-        float acceration;
+        float acceleration;
         float deceleration;
         float turnDrag;
         float drag;
@@ -104,6 +104,7 @@ class ship {
         Rectangle destRec;
         Rectangle hitBox;
         Vector2 origin;  
+        shipCollisionStruct collision;
 
         float upBounds;
         float downBounds;

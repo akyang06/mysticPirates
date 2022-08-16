@@ -706,7 +706,6 @@ void ship::lootPickup() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorShiptoShipCollisions() {
     float distToShip;
-    bool collision;
     /* Loops through the allShips vector to compare their distances to each other */
     for (int i = 0; i < allShips.size(); i++) {
 
@@ -719,7 +718,7 @@ void ship::monitorShiptoShipCollisions() {
         distToShip = sqrt(pow(allShips.at(i)->getX() - getX(), 2) + pow(allShips.at(i)->getY() - getY(), 2));
 
         /* If distance is below threshhold, check if ships are colliding */
-        if (distToShip <= shipHeight + allShips.at(i)->shipHeight) {
+        if (distToShip <= 2 * (shipHeight + allShips.at(i)->shipHeight)) {
             isShipToShipColliding(allShips.at(i));
         }
     }
@@ -743,6 +742,7 @@ void ship::isShipToShipColliding(ship* otherShip) {
     /* If separation amount is < 0, collision is happening */
     if ((thisCollision.separation <= 0) && (otherCollision.separation <= 0)) {
         shipToShipCollision(otherCollision.collidingEdge);
+        collision = otherCollision;
     } else {
         shipCollision = false;
     }

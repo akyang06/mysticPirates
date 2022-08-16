@@ -182,13 +182,12 @@ void screen::titleScreen() {
             DrawTexture(mapTexture, screenWidth - 100, 30, (Color){255,255,255,255});
             
             if (pause && ((framesCounter/30)%2)) DrawText("PAUSED", 350, 200, 30, (Color){ 130, 130, 130, 255 });
-
-            /* Draws player and enemy on screen */
-            p1->drawShip();
             
             /* Note: working pause for player and background, not enemies yet */
             if (!pause) {
                 /* Tracks player movement */
+                /* Draws player and enemy on screen */
+                p1->drawShip();
                 p1->monitorPlayer(allShips);
                 e1->drawShip();
                 e2->drawShip();
@@ -199,6 +198,7 @@ void screen::titleScreen() {
             }
         EndDrawing();
         }
+        
     delete p1;
     delete e1;
     delete e2;
