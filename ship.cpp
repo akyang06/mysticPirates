@@ -65,7 +65,6 @@ ship::ship() {
         shoot[i].radius = 5;
         shoot[i].active = false;
         shoot[i].lifeSpawn = 0;
-        //shoot[i].color = (Color){ 80, 80, 80, 255 };
     }
 
     /* Sets up hitBox vector sizes */
@@ -77,10 +76,17 @@ ship::ship() {
 
     /* Target rectangle initialized as true */
     targetRecAlive = true;
-    lootSpawn = false;
+    spawnLoot = true;
+    lootPickedUp = false;
 
     /* Initializes collided status of ship */
     hasCollided = false;
+
+    /* Initializes the different loot pickups to 0 */
+    for (int i = 0; i < 5; i++) {
+        spawnTypes[i] = 0;
+    }
+    lootTypeStr = "";
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -108,7 +114,6 @@ ship::~ship() {
  * @notes: 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::drawShip() {
-
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
@@ -117,10 +122,14 @@ void ship::drawShip() {
         hitBox.y = destRec.y - destRec.height/2;
     }
 
-    hitBox.x = destRec.x - destRec.width/2;
-    hitBox.y = destRec.y - destRec.height/2;
 
     computeHitBox();
+
+    DrawText(TextFormat("red: %d", spawnTypes[0]), 20, 50, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("orange: %d", spawnTypes[1]), 20, 80, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("yellow: %d", spawnTypes[2]), 20, 110, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("blue: %d", spawnTypes[3]), 20, 140, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("purple: %d", spawnTypes[4]), 20, 170, 20, (Color){255,255,255,255});
 
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
@@ -138,26 +147,19 @@ void ship::drawShip() {
         DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
         DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
-    // else {
-    //     // need to make a condition here where the loot disappears after ship hovered over
-    //     // std::minstd_rand generator(std::time(0)); 
-    //     // std::uniform_int_distribution<> numLoot(0, 4);
 
-    //     // int nextRandomInt = numLoot(generator);
-
-    //     if (lootSpawn == false) {
-    //         lootTypeColor = lootDrop();
-    //         targetRecAlive = false;
-    //         lootSpawn = true;
-    //     }
-
-
-    //     // if (drawLoot) {
-    //     //     dropPoint = (Rectangle){targetRec.x, targetRec.y, 10, 10};
-    //     //     DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
-    //     // }
-    //     // DrawText(TextFormat("red count: %i", red), 100, 100, 25, (Color){255,255,255,255});
-    // }
+    else if (healthBar <= 0) {
+        targetRecAlive = false;
+        if (spawnLoot) {
+            lootTypeColor = lootDrop();
+            loot = (Rectangle){destRec.x, destRec.y, 10, 10};
+            spawnLoot = false;
+        }
+        if (!lootPickedUp) {
+            DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
+            monitorCollectedLoot(lootTypeColor);
+        }
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -189,7 +191,7 @@ int ship::getY() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: getRotatio 
+ * @function: getRotation
  * @purpose: Returns the rotation value of the ship
  *
  * @parameters: none
@@ -643,52 +645,70 @@ void ship::monitorCoolDown() {
     }
 }
 
-// void ship::unloadComponents() {
-//     UnloadTexture(sprite);
-//     UnloadTexture(barrelTexture);
-// }
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: lootDrop
  * @purpose: Monitors the cooldown time 
  * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-Color ship::lootDrop() {
-    drawLoot = true;
+std::string ship::lootDrop() {
     std::minstd_rand generator(std::time(0)); 
     std::uniform_int_distribution<> type(0, 4);
 
     int nextRandomInt = type(generator);
 
     if (nextRandomInt == 0) {
-        lootTypeColor = (Color){ 230, 41, 55, 255 };
-        lootTypeInt = 1;
+        //lootTypeColor = (Color){ 230, 41, 55, 255 };
+        lootTypeStr = "red";
     }
     else if (nextRandomInt == 1) {
-        lootTypeColor = (Color){ 255, 161, 0, 255 };
-        lootTypeInt = 2;
+        //lootTypeColor = (Color){ 255, 161, 0, 255 };
+        lootTypeStr = "orange";
     }
     else if (nextRandomInt == 2) {
-        lootTypeColor = (Color){ 253, 249, 0, 255 };
-        lootTypeInt = 3;
+        //lootTypeColor = (Color){ 253, 249, 0, 255 };
+        lootTypeStr = "yellow";
     }
     else if (nextRandomInt == 3) {
-        lootTypeColor = (Color){ 102, 191, 255, 255};
-        lootTypeInt = 4;
+        //lootTypeColor = (Color){ 102, 191, 255, 255};
+        lootTypeStr = "blue";
     }
     else {
-        lootTypeColor = (Color){ 200, 122, 255, 255 };
-        lootTypeInt = 5;
+        //lootTypeColor = (Color){ 200, 122, 255, 255 };
+        lootTypeStr = "purple";
     }
-
-    return lootTypeColor;
+    return lootTypeStr;
 }
 
-void ship::lootPickup() {
-    if(CheckCollisionRecs(hitBox, dropPoint)) {
-        DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
-    }
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorCollectedLoot
+ * @purpose: Monitors if ships are about to collide and when they do collide. 
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: None
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::monitorCollectedLoot(std::string lootTypeColor){
+    // int time = GetFrameTime();
+    // if (time <= GetFrameTime()) {
+        if (lootTypeColor == "red"){
+            spawnTypes[0]++;
+        }
+        else if (lootTypeStr == "orange"){
+            spawnTypes[1]++;
+        }
+        else if (lootTypeStr == "yellow"){
+            spawnTypes[2]++;
+        }
+        else if (lootTypeStr == "blue"){
+            spawnTypes[3]++;
+        }
+        else {
+            spawnTypes[4]++;
+        }   
+   //}
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -871,4 +891,3 @@ void ship::computeHitBox() {
     hitBoxEdges.at(2) = Vector2Subtract(vertexBR, vertexBL);
     hitBoxEdges.at(3) = Vector2Subtract(vertexBL, vertexTL);
 }
-

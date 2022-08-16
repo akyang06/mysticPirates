@@ -110,19 +110,18 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
 
     /* Moves enemy into the bounds after they spawn and continue to move after */
     if (!enteredBounds) {
-        moveEnemyInBoundsStart ();
+        moveEnemyInBoundsStart();
     } else {
         checkCollision();
         moveEnemyRed();
-        if (healthBar <= 0) {
-            if (lootSpawn == false) {
-                lootTypeColor = lootDrop();
-                targetRecAlive = false;
-                lootSpawn = true;
-            }
-            if (drawLoot) {
-                dropPoint = (Rectangle){hitBox.x, hitBox.y, 10, 10};
-            }
+        if (!targetRecAlive) {
+            destRec.x = -200;
+            destRec.y = -200;
+        }
+        // maybe make more exact
+        playerRec = (Rectangle){playerPos.x, playerPos.y, shipWidth/1.5, shipHeight/1.5};
+        if (CheckCollisionRecs(playerRec, loot)){
+            lootPickedUp = true;
         }
     } 
 }
@@ -147,16 +146,16 @@ void enemyRed::moveEnemyRed(){
         moveEnemyInBounds();
     } else {
         decelerateShip(deceleration);
-        // /* Enemy movement and attack AI*/
-        // if (sideCannonsAvailable) {
-        //     if (distMag > range) {
-        //         getInRange();
-        //     } else {
-        //         attackPlayer();
-        //     }
-        // } else {
-        //     circleAround();
-        // }
+        /* Enemy movement and attack AI*/
+        if (sideCannonsAvailable) {
+            if (distMag > range) {
+                getInRange();
+            } else {
+                attackPlayer();
+            }
+        } else {
+            circleAround();
+        }
     }
     monitorCoolDown();
     monitorShipCollisions();

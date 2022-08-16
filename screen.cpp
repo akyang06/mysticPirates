@@ -162,7 +162,7 @@ void screen::titleScreen() {
     {
         if (IsKeyPressed(KEY_P)) pause = !pause;
         if (!pause) {
-            //UpdateMusicStream(tutorialMusic);
+            UpdateMusicStream(tutorialMusic);
             scrollingBack -= 1.0f;
             /* Allows texture to repeat when it gets to the end of the background */
             if (scrollingBack <= -background.width * 2) {

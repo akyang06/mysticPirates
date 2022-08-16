@@ -42,9 +42,11 @@ class ship {
 
         bool enteredBounds;
 
-        //void unloadComponents();
-        Rectangle dropPoint;
-        
+        Rectangle loot;
+        bool spawnLoot;
+        bool lootPickedUp;
+        void monitorCollectedLoot(std::string lootTypeColor);
+
     protected:
 
         bool outOfBounds();
@@ -67,8 +69,7 @@ class ship {
         void checkCollision();
         void monitorCoolDown();
 
-        Color lootDrop();
-        void lootPickup();
+        std::string lootDrop();
         void monitorShipCollisions();
         void isShipToShipColliding(ship* otherShip);
         shipCollision findMinSeparation(ship* shipA, ship* shipB);
@@ -131,10 +132,9 @@ class ship {
         bool targetRecAlive;
 
         /* Loot (replace colors with images later) */
-        bool lootSpawn;
-        int lootTypeInt;
-        Color lootTypeColor;
-        bool drawLoot;
+        std::string lootTypeStr;
+        std::string lootTypeColor;
+        int spawnTypes[5];
 
         bool hasCollided;
 
