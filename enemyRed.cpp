@@ -112,7 +112,7 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
     if (!enteredBounds) {
         moveEnemyInBoundsStart();
     } else {
-        checkCollision();
+        monitorCollisions();
         moveEnemyRed();
         if (!targetRecAlive) {
             destRec.x = -200;
@@ -123,7 +123,8 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
         if (CheckCollisionRecs(playerRec, loot)){
             lootPickedUp = true;
         }
-    } 
+    }
+    monitorCoolDown(); 
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -140,9 +141,10 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
 void enemyRed::moveEnemyRed(){
     
     /* Enemy movement AI */
-    if (outOfBounds() && !facingInBounds()) {
-        /* Deals with boundary condition */
-        boundCollision();
+    if (inCorner()) {
+        moveEnemyOutOfCorner();
+    }
+    if (edgeCollision) {
         moveEnemyInBounds();
     } else {
         decelerateShip(deceleration);
@@ -156,9 +158,8 @@ void enemyRed::moveEnemyRed(){
         } else {
             circleAround();
         }
+        updateVelComp();
     }
-    monitorCoolDown();
-    monitorShipCollisions();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

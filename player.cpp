@@ -71,7 +71,7 @@ player::player() : ship() {
     destRec = (Rectangle){-150, screenHeight / 2, shipWidth, shipHeight};
 
     /* Draws the target rectangle based on the destRec */
-    if (targetRecAlive) {
+    if (isAlive) {
         hitBox = (Rectangle){(destRec.x / 2), (destRec.y / 2), shipWidth, shipHeight};
     }
     
@@ -143,7 +143,6 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
     /* move player and deal with kinematics */
     if (!enteredBounds) {
         enterPlayer();
-
     } else {
         rotatePlayer();
         movePlayer();
@@ -164,6 +163,10 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::movePlayer(){
 
+    if (!edgeCollision) {
+        updateVelComp();
+    }
+
     if (IsKeyDown(KEY_UP)) {
         accelerateShip(acceration);
     } else if (velMag > 0) {
@@ -173,10 +176,6 @@ void player::movePlayer(){
 
     if (IsKeyDown(KEY_DOWN)) {
         decelerateShip(deceleration);
-    }
-
-    if (outOfBounds() && !facingInBounds()) {
-        boundCollision();
     }
 }
 

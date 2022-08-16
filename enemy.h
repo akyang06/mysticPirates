@@ -34,6 +34,7 @@ class enemy: public ship {
         void facePlayer();
         void moveEnemyInBoundsStart();
         void moveEnemyInBounds();
+        void moveEnemyOutOfCorner();
 
         void storePlayerInfo();
 
