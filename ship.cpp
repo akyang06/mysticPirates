@@ -144,25 +144,13 @@ void ship::drawShip() {
         /* Health bar status */
         DrawRectangle(hitBox.x - 7, hitBox.y - 17, healthBar, 7, (Color){ 0, 228, 48, 255 });
 
-        /* Draws the hitbox of the ship */
+        // /* Draws the hitbox of the ship */
         // DrawLineV(hitBoxVertices.at(0), hitBoxVertices.at(1), (Color){0,0,0,255});
         // DrawLineV(hitBoxVertices.at(1), hitBoxVertices.at(2), (Color){0,0,0,255});
         // DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
         // DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
 
-    else if (healthBar <= 0) {
-        targetRecAlive = false;
-        if (spawnLoot) {
-            lootTypeColor = lootDrop();
-            loot = (Rectangle){destRec.x, destRec.y, 10, 10};
-            spawnLoot = false;
-        }
-        if (!lootPickedUp) {
-            DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
-            monitorCollectedLoot(lootTypeColor);
-        }
-    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -248,6 +236,7 @@ void ship::updateVelComp() {
     velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
 }
 
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: monitorCollisions
  * @purpose: Checks collisions with other ships, bounds and attacks
@@ -271,9 +260,38 @@ void ship::monitorCollisions() {
 
     /* Ship to ship collisions */
     monitorShiptoShipCollisions();
+}
 
-    /*Ship to weapon collisions */
-    monitorShipToWeaponCollisions();
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorShiptoShipCollisions
+ * @purpose: Monitors if ships are about to collide and when they do collide. 
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: None
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::monitorShiptoShipCollisions() {
+    float distToShip;
+    bool collision;
+    /* Loops through the allShips vector to compare their distances to each other */
+    for (int i = 0; i < allShips.size(); i++) {
+
+        /* Skips comparision of this object to itself */  
+        if (this == allShips.at(i)) {
+            continue;
+        }
+
+        /* Gets distance between this ship and other enemy ship */
+        distToShip = sqrt(pow(allShips.at(i)->getX() - getX(), 2) + pow(allShips.at(i)->getY() - getY(), 2));
+
+        /* If distance is below threshhold, check if ships are colliding */
+        if (distToShip <= shipHeight + allShips.at(i)->shipHeight) {
+            isShipToShipColliding(allShips.at(i));
+        }
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -612,6 +630,19 @@ void ship::monitorShipToWeaponCollisions(){
             }
         }
     }
+    if (healthBar <= 0) {
+        targetRecAlive = false;
+        if (spawnLoot) {
+            lootTypeColor = lootDrop();
+            loot = (Rectangle){destRec.x, destRec.y, 10, 10};
+            spawnLoot = false;
+            isAlive = false;
+        }
+        if (!lootPickedUp) {
+            DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
+            monitorCollectedLoot(lootTypeColor);
+        }
+    }
 }
 
 
@@ -719,37 +750,6 @@ void ship::monitorCollectedLoot(std::string lootTypeColor){
             spawnTypes[4]++;
         }   
    //}
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: monitorShiptoShipCollisions
- * @purpose: Monitors if ships are about to collide and when they do collide. 
- *
- * @parameters: none
- *     
- * @returns: nothing
- * @effects: None
- * @notes:   
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::monitorShiptoShipCollisions() {
-    float distToShip;
-    bool collision;
-    /* Loops through the allShips vector to compare their distances to each other */
-    for (int i = 0; i < allShips.size(); i++) {
-
-        /* Skips comparision of this object to itself */  
-        if (this == allShips.at(i)) {
-            continue;
-        }
-
-        /* Gets distance between this ship and other enemy ship */
-        distToShip = sqrt(pow(allShips.at(i)->getX() - getX(), 2) + pow(allShips.at(i)->getY() - getY(), 2));
-
-        /* If distance is below threshhold, check if ships are colliding */
-        if (distToShip <= shipHeight + allShips.at(i)->shipHeight) {
-            isShipToShipColliding(allShips.at(i));
-        }
-    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

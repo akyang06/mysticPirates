@@ -147,7 +147,7 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
         rotatePlayer();
         movePlayer();
         playerAttack();
-        monitorShipCollisions();
+        monitorCollisions();
     }
 }
 

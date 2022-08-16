@@ -112,7 +112,9 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
     if (!enteredBounds) {
         moveEnemyInBoundsStart();
     } else {
-        monitorCollisions();
+        monitorShiptoShipCollisions();
+        /*Ship to weapon collisions */
+        monitorShipToWeaponCollisions();
         moveEnemyRed();
         if (!targetRecAlive) {
             destRec.x = -200;

@@ -24,10 +24,10 @@
 #include "rlgl.h"
 #include "raymath.h"
 
-typedef struct shipCollision {
+typedef struct shipCollisionStruct {
     Vector2 collidingEdge;
     float separation;
-} shipCollision;
+} shipCollisionStruct;
 
 
 class ship {
@@ -57,6 +57,7 @@ class ship {
 
         void accelerateShip(float amount);
         void decelerateShip(float amount);
+        void updateVelComp();
 
         void sideCannonAttack();
         void frontCannonAttack();
@@ -66,13 +67,15 @@ class ship {
         void monitorFirebarrel();
         void drawExplosion();
 
-        void checkCollision();
+        std::string lootDrop();
+
+        void monitorCollisions();
+        void monitorShipToWeaponCollisions();
+        void monitorShiptoShipCollisions();
         void monitorCoolDown();
 
-        std::string lootDrop();
-        void monitorShipCollisions();
         void isShipToShipColliding(ship* otherShip);
-        shipCollision findMinSeparation(ship* shipA, ship* shipB);
+        shipCollisionStruct findMinSeparation(ship* shipA, ship* shipB);
         void shipToShipCollision(Vector2 collidingEdge);
         void computeHitBox();
         
@@ -107,6 +110,9 @@ class ship {
         float downBounds;
         float leftBounds;
         float rightBounds;
+
+        bool edgeCollision;
+        bool shipCollision;
 
         int healthBar;
         int shootType;
