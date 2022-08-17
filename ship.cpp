@@ -89,6 +89,7 @@ ship::ship() {
         spawnTypes[i] = 0;
     }
     lootTypeStr = "";
+    lootExpire = 750.0f;
 
     /* Initializes collided status of ship */
     edgeCollision = false;
@@ -150,7 +151,6 @@ void ship::drawShip() {
         // DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
         // DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
-
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -638,9 +638,10 @@ void ship::monitorShipToWeaponCollisions(){
             spawnLoot = false;
             isAlive = false;
         }
+        //one of the ships is disappearing
         if (!lootPickedUp) {
             DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
-            monitorCollectedLoot(lootTypeColor);
+            lootExpire -= GetFrameTime();
         }
     }
 }
@@ -748,7 +749,7 @@ void ship::monitorCollectedLoot(std::string lootTypeColor){
         }
         else {
             spawnTypes[4]++;
-        }   
+        }
    //}
 }
 

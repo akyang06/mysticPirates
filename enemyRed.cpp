@@ -120,10 +120,16 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
             destRec.x = -200;
             destRec.y = -200;
         }
-        // maybe make more exact
-        playerRec = (Rectangle){playerPos.x, playerPos.y, shipWidth/1.5, shipHeight/1.5};
-        if (CheckCollisionRecs(playerRec, loot)){
+        // maybe make more exact with hitbox, i am not sure how to do this
+        playerRec = (Rectangle){playerPos.x - shipWidth/2, playerPos.y - shipHeight/2, shipWidth, shipHeight};
+        
+        //DrawRectangleRec(playerRec, (Color){ 200, 122, 255, 255 });
+        if (CheckCollisionRecs(playerRec, loot) || lootExpire <= 0){
             lootPickedUp = true;
+            //int tempFrame = GetFrameTime();
+            // for (int i = tempFrame; i == GetFrameTime()-5; i++) {
+            //     monitorCollectedLoot(lootTypeColor); 
+            // }
         }
     }
     monitorCoolDown(); 

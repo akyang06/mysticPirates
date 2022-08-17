@@ -141,6 +141,7 @@ class ship {
         std::string lootTypeStr;
         std::string lootTypeColor;
         int spawnTypes[5];
+        int lootExpire;
 
         bool hasCollided;
 
