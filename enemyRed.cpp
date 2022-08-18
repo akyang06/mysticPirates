@@ -126,10 +126,6 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
         //DrawRectangleRec(playerRec, (Color){ 200, 122, 255, 255 });
         if (CheckCollisionRecs(playerRec, loot) || lootExpire <= 0){
             lootPickedUp = true;
-            //int tempFrame = GetFrameTime();
-            // for (int i = tempFrame; i == GetFrameTime()-5; i++) {
-            //     monitorCollectedLoot(lootTypeColor); 
-            // }
         }
     }
     monitorCoolDown(); 

@@ -88,7 +88,7 @@ ship::ship() {
     for (int i = 0; i < 5; i++) {
         spawnTypes[i] = 0;
     }
-    lootTypeStr = "";
+    //lootTypeStr = "";
     lootExpire = 750.0f;
 
     /* Initializes collided status of ship */
@@ -131,12 +131,6 @@ void ship::drawShip() {
 
     computeHitBox();
 
-    DrawText(TextFormat("red: %d", spawnTypes[0]), 20, 50, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("orange: %d", spawnTypes[1]), 20, 80, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("yellow: %d", spawnTypes[2]), 20, 110, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("blue: %d", spawnTypes[3]), 20, 140, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("purple: %d", spawnTypes[4]), 20, 170, 20, (Color){255,255,255,255});
-
     /* Draws ship on screen
     Note: rotation is multiplied by FPS to compensate for the BeginDrawing function */
     if (isAlive) {
@@ -151,6 +145,12 @@ void ship::drawShip() {
         // DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
         // DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
+
+    DrawText(TextFormat("red: %d", spawnTypes[0]), 20, 50, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("orange: %d", spawnTypes[1]), 20, 80, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("yellow: %d", spawnTypes[2]), 20, 110, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("blue: %d", spawnTypes[3]), 20, 140, 20, (Color){255,255,255,255});
+    DrawText(TextFormat("purple: %d", spawnTypes[4]), 20, 170, 20, (Color){255,255,255,255});
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -633,15 +633,18 @@ void ship::monitorShipToWeaponCollisions(){
     if (healthBar <= 0) {
         targetRecAlive = false;
         if (spawnLoot) {
-            lootTypeColor = lootDrop();
+            trackLoot = lootDrop();
             loot = (Rectangle){destRec.x, destRec.y, 10, 10};
             spawnLoot = false;
             isAlive = false;
         }
-        //one of the ships is disappearing
+        //one of the ships is disappearing?? ok idk this happened twice
         if (!lootPickedUp) {
             DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
             lootExpire -= GetFrameTime();
+            if (lootExpire <= 0) {
+                spawnTypes[trackLoot]--;
+            }
         }
     }
 }
@@ -693,64 +696,32 @@ void ship::monitorCoolDown() {
  * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-std::string ship::lootDrop() {
+int ship::lootDrop() {
     std::minstd_rand generator(std::time(0)); 
     std::uniform_int_distribution<> type(0, 4);
 
     int nextRandomInt = type(generator);
 
     if (nextRandomInt == 0) {
-        //lootTypeColor = (Color){ 230, 41, 55, 255 };
-        lootTypeStr = "red";
+        spawnTypes[0]++;
+        return 0;
     }
     else if (nextRandomInt == 1) {
-        //lootTypeColor = (Color){ 255, 161, 0, 255 };
-        lootTypeStr = "orange";
+        spawnTypes[1]++;
+        return 1;
     }
     else if (nextRandomInt == 2) {
-        //lootTypeColor = (Color){ 253, 249, 0, 255 };
-        lootTypeStr = "yellow";
+        spawnTypes[2]++;
+        return 2;
     }
     else if (nextRandomInt == 3) {
-        //lootTypeColor = (Color){ 102, 191, 255, 255};
-        lootTypeStr = "blue";
+        spawnTypes[3]++;
+        return 3;
     }
     else {
-        //lootTypeColor = (Color){ 200, 122, 255, 255 };
-        lootTypeStr = "purple";
+        spawnTypes[4]++;
+        return 4;
     }
-    return lootTypeStr;
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: monitorCollectedLoot
- * @purpose: Monitors if ships are about to collide and when they do collide. 
- *
- * @parameters: none
- *     
- * @returns: nothing
- * @effects: None
- * @notes:   
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::monitorCollectedLoot(std::string lootTypeColor){
-    // int time = GetFrameTime();
-    // if (time <= GetFrameTime()) {
-        if (lootTypeColor == "red"){
-            spawnTypes[0]++;
-        }
-        else if (lootTypeStr == "orange"){
-            spawnTypes[1]++;
-        }
-        else if (lootTypeStr == "yellow"){
-            spawnTypes[2]++;
-        }
-        else if (lootTypeStr == "blue"){
-            spawnTypes[3]++;
-        }
-        else {
-            spawnTypes[4]++;
-        }
-   //}
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -45,7 +45,6 @@ class ship {
         Rectangle loot;
         bool spawnLoot;
         bool lootPickedUp;
-        void monitorCollectedLoot(std::string lootTypeColor);
 
     protected:
 
@@ -67,7 +66,7 @@ class ship {
         void monitorFirebarrel();
         void drawExplosion();
 
-        std::string lootDrop();
+        int lootDrop();
 
         void monitorCollisions();
         void monitorShipToWeaponCollisions();
@@ -138,10 +137,11 @@ class ship {
         bool targetRecAlive;
 
         /* Loot (replace colors with images later) */
-        std::string lootTypeStr;
+        //std::string lootTypeStr;
         std::string lootTypeColor;
         int spawnTypes[5];
         int lootExpire;
+        int trackLoot;
 
         bool hasCollided;
 
