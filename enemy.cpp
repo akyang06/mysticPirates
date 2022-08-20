@@ -68,8 +68,8 @@ enemy::~enemy() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemy::moveEnemyInBoundsStart() {
     facePlayer();
-    accelerateShip(acceration);
-    velComp = (Vector2) {(float) cosf(rotation) * velMag, (float) sinf(rotation) * velMag};
+    accelerateShip(acceleration);
+    updateVelComp();
     if (!outOfBounds()) {
         enteredBounds = true;
     }
@@ -163,7 +163,7 @@ void enemy::moveEnemyInBounds() {
 
     /* Keeps the speed of the enemy at 40% of top speed when trying to get out back in bounds */
     if (velMag <= 0.4 * velLimit) {
-        accelerateShip(acceration);
+        accelerateShip(acceleration);
     }
 
     /* Keeps the rotation between 0 and 2pi radians */
@@ -218,11 +218,43 @@ void enemy::moveEnemyOutOfCorner() {
     }
 
     /* Keeps the speed of the enemy at 40% of top speed when trying to get out back in bounds */
-    if (velMag <= 0.4 * velLimit) {
-        accelerateShip(acceration);
+    if (velMag <= 0.5 * velLimit) {
+        accelerateShip(acceleration);
     }
 
     /* Keeps the rotation between 0 and 2pi radians */
+    rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+void enemy::moveEnemyAwayFromCollidingShip() {
+
+    Vector2 inDirection = Vector2One();
+    inDirection.x = cos(rotation);
+    inDirection.y = sin(rotation);
+
+    Vector2 collidingEdgeNormalized = Vector2Normalize(collision.collidingEdge);
+
+    /* Determines angle between edge vector and vector of where this ship is pointing to */
+    float dot = Vector2DotProduct(inDirection, collidingEdgeNormalized);
+    float det = (inDirection.x * collidingEdgeNormalized.y) - (inDirection.y * collidingEdgeNormalized.x);
+    float angle = atan2(dot, det);
+    angle = fmod(angle + (2 * M_PI), 2 * M_PI);
+
+    if (Vector2DotProduct(inDirection, collidingEdgeNormalized) > 0) {
+        if (angle < 1.2 * M_PI_2 || angle > 2.8 * M_PI_2) {
+            rotation += rotationSpeed;
+        }
+    } else {
+        if (angle < 1.2 * M_PI_2 || angle > 2.8 * M_PI_2) {
+            rotation -= rotationSpeed;
+        }
+    }
+
+    /* Keeps the speed of the enemy at 40% of top speed when trying to get out back in bounds */
+    // if (velMag <= 0.5 * velLimit) {
+    //     accelerateShip(acceleration);
+    // }
+    
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
 }
 

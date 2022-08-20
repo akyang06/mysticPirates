@@ -24,7 +24,7 @@
 enemyRed::enemyRed() : enemy() {
 
     /* Enemy Red ship initial stats */
-    acceration = 0.012;
+    acceleration = 0.012;
     deceleration = 0.01;
     turnDrag = 0.005;
     drag = 0.0025;
@@ -132,7 +132,7 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: moveEnemy
+ * @function: moveEnemyRed
  * @purpose: Moves the enemy based on its distance to the player ship
  *
  * @parameters: none
@@ -144,13 +144,15 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemyRed::moveEnemyRed(){
     
-    /* Enemy movement AI */
+    /* Enemy collision movement AI */
     if (inCorner()) {
         moveEnemyOutOfCorner();
-    }
-    if (edgeCollision) {
+    } else if (edgeCollision) {
         moveEnemyInBounds();
+    } else if (shipCollision) {
+        moveEnemyAwayFromCollidingShip();
     } else {
+        /* Enemy attack movement AI*/
         decelerateShip(deceleration);
         /* Enemy movement and attack AI*/
         if (sideCannonsAvailable) {
@@ -162,7 +164,7 @@ void enemyRed::moveEnemyRed(){
         } else {
             circleAround();
         }
-        updateVelComp();
+        updateVelComp(); 
     }
 }
 
@@ -178,7 +180,7 @@ void enemyRed::moveEnemyRed(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemyRed::getInRange() {
     trajectoryInRange();
-    accelerateShip(acceration);
+    accelerateShip(acceleration);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -370,14 +372,14 @@ void enemyRed::circleAround() {
 
     /* Has enemy circle around the player */
     if (distMag <= range) {
-        accelerateShip(acceration);
+        accelerateShip(acceleration);
     } else {
         if (circleAroundCC) {
             rotation -= rotationSpeed;
         } else {
             rotation+= rotationSpeed;
         }
-        accelerateShip(acceration);
+        accelerateShip(acceleration);
         decelerateShip(turnDrag);
     }
 

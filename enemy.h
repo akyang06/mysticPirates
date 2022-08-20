@@ -35,6 +35,7 @@ class enemy: public ship {
         void moveEnemyInBoundsStart();
         void moveEnemyInBounds();
         void moveEnemyOutOfCorner();
+        void moveEnemyAwayFromCollidingShip();
 
         void storePlayerInfo();
 
