@@ -112,11 +112,12 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
     if (!enteredBounds) {
         moveEnemyInBoundsStart();
     } else {
-        monitorShiptoShipCollisions();
-        /*Ship to weapon collisions */
-        monitorShipToWeaponCollisions();
+        monitorCollisions();
         moveEnemyRed();
-        if (!targetRecAlive) {
+        monitorCanonballs();
+        monitorFirebarrel();
+        monitorCoolDown(); 
+        if (!isAlive) {
             destRec.x = -200;
             destRec.y = -200;
         }
@@ -128,7 +129,6 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
             lootPickedUp = true;
         }
     }
-    monitorCoolDown(); 
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -152,8 +152,6 @@ void enemyRed::moveEnemyRed(){
     } else if (shipCollision) {
         moveEnemyAwayFromCollidingShip();
     } else {
-        /* Enemy attack movement AI*/
-        decelerateShip(deceleration);
         /* Enemy movement and attack AI*/
         if (sideCannonsAvailable) {
             if (distMag > range) {
@@ -308,7 +306,7 @@ void enemyRed::attackPlayer() {
 
     /* If angle between enemy and player is just over PI/2 then attack, otherwise rotate slightly */
     if ((abs(shootingAngle - rotation) >= (80 * (M_PI / 180))) && (abs(shootingAngle - rotation) <= (100 * (M_PI / 180)))) {
-        DrawText("I'm firing at the player", 20, 300, 20, (Color){255,255,255,255});
+        sideCannonAttack();
         sideCannonsAvailable = false;
         sideCannonsCooldown = sideCannonsCooldownDuration;
 

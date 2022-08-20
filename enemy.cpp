@@ -251,9 +251,9 @@ void enemy::moveEnemyAwayFromCollidingShip() {
     }
 
     /* Keeps the speed of the enemy at 40% of top speed when trying to get out back in bounds */
-    // if (velMag <= 0.5 * velLimit) {
-    //     accelerateShip(acceleration);
-    // }
+    if (velMag <= 0.5 * velLimit) {
+        accelerateShip(acceleration);
+    }
     
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
 }
