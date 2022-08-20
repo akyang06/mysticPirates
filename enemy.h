@@ -28,8 +28,7 @@ class enemy: public ship {
     public:
         enemy();
         ~enemy();
-
-        
+                
     protected:
 
         void facePlayer();

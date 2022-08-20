@@ -112,17 +112,20 @@ void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
     if (!enteredBounds) {
         moveEnemyInBoundsStart();
     } else {
-        monitorCollisions();
+        monitorShiptoShipCollisions();
+        /*Ship to weapon collisions */
+        monitorShipToWeaponCollisions();
         moveEnemyRed();
-        if (healthBar <= 0) {
-            if (lootSpawn == false) {
-                lootTypeColor = lootDrop();
-                isAlive = false;
-                lootSpawn = true;
-            }
-            if (drawLoot) {
-                dropPoint = (Rectangle){hitBox.x, hitBox.y, 10, 10};
-            }
+        if (!targetRecAlive) {
+            destRec.x = -200;
+            destRec.y = -200;
+        }
+        // maybe make more exact with hitbox, i am not sure how to do this
+        playerRec = (Rectangle){playerPos.x - shipWidth/2, playerPos.y - shipHeight/2, shipWidth, shipHeight};
+        
+        //DrawRectangleRec(playerRec, (Color){ 200, 122, 255, 255 });
+        if (CheckCollisionRecs(playerRec, loot) || lootExpire <= 0){
+            lootPickedUp = true;
         }
     }
     monitorCoolDown(); 
@@ -150,6 +153,8 @@ void enemyRed::moveEnemyRed(){
         moveEnemyAwayFromCollidingShip();
     } else {
         /* Enemy attack movement AI*/
+        decelerateShip(deceleration);
+        /* Enemy movement and attack AI*/
         if (sideCannonsAvailable) {
             if (distMag > range) {
                 getInRange();

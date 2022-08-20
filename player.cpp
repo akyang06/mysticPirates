@@ -139,12 +139,7 @@ void player::enterPlayer() {
 void player::monitorPlayer(std::vector<ship*> &allShips) {
 
     this->allShips = allShips;
-
-    // DrawText(TextFormat("rotation: %f", rotation), 20, 10, 20, (Color){255,255,255,255});
-    // DrawText(TextFormat("velocity x: %f", velComp.x), 20, 80, 20, (Color){255,255,255,255});
-    // DrawText(TextFormat("velocity y: %f", velComp.y), 20, 110, 20, (Color){255,255,255,255});
-    // DrawText(TextFormat("velocity mag: %f", velMag), 20, 140, 20, (Color){255,255,255,255});
-
+    
     /* move player and deal with kinematics */
     if (!enteredBounds) {
         enterPlayer();
@@ -153,19 +148,7 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
         rotatePlayer();
         movePlayer();
         playerAttack();
-        // if (drawLoot) {
-        //     DrawRectangleRec(targetRec, (Color){ 255, 255, 255, 255 });
-        //     dropPoint = (Rectangle){targetRec.x, targetRec.y, 10, 10};
-        //     DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
-        //     //lootPickup();
-
-
-        DrawRectangleRec(dropPoint, (Color){ 255, 255, 255, 255 });
-
-        if(CheckCollisionRecs(hitBox, dropPoint)) {
-            DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
-        }
-        // }
+        monitorCollisions();
     }
 }
 

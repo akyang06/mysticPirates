@@ -42,9 +42,10 @@ class ship {
 
         bool enteredBounds;
 
-        //void unloadComponents();
-        Rectangle dropPoint;
-        
+        Rectangle loot;
+        bool spawnLoot;
+        bool lootPickedUp;
+
     protected:
 
         bool outOfBounds();
@@ -65,14 +66,13 @@ class ship {
         void monitorFirebarrel();
         void drawExplosion();
 
+        int lootDrop();
+
         void monitorCollisions();
         void monitorShipToWeaponCollisions();
         void monitorShiptoShipCollisions();
         void monitorCoolDown();
 
-        Color lootDrop();
-        void lootPickup();
-        
         void isShipToShipColliding(ship* otherShip);
         shipCollisionStruct findMinSeparation(ship* shipA, ship* shipB);
         void shipToShipCollision(Vector2 collidingEdge);
@@ -135,11 +135,16 @@ class ship {
         float fireBarrelCooldownDuration;
         float fireBarrelCooldown;
 
+        bool targetRecAlive;
+
         /* Loot (replace colors with images later) */
-        bool lootSpawn;
-        int lootTypeInt;
-        Color lootTypeColor;
-        bool drawLoot;
+        //std::string lootTypeStr;
+        std::string lootTypeColor;
+        int spawnTypes[5];
+        int lootExpire;
+        int trackLoot;
+
+        bool hasCollided;
 
         std::vector<ship*> allShips;
 

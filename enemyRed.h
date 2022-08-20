@@ -46,6 +46,8 @@ class enemyRed: public enemy {
         bool aboveOrBelowPlayer();
 
         bool circleAroundCC;
+
+        Rectangle playerRec;
 };
 
 
