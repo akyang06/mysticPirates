@@ -138,8 +138,6 @@ class ship {
         bool targetRecAlive;
 
         /* Loot (replace colors with images later) */
-        //std::string lootTypeStr;
-        std::string lootTypeColor;
         int spawnTypes[5];
         int lootExpire;
         int trackLoot;

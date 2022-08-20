@@ -722,44 +722,6 @@ int ship::lootDrop() {
         spawnTypes[4]++;
         return 4;
     }
-
-    return lootTypeColor;
-}
-
-void ship::lootPickup() {
-    if(CheckCollisionRecs(hitBox, dropPoint)) {
-        DrawText(TextFormat("collision"), 100, 100, 25, (Color){255,255,255,255});
-    }
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: monitorShiptoShipCollisions
- * @purpose: Monitors if ships are about to collide and when they do collide. 
- *
- * @parameters: none
- *     
- * @returns: nothing
- * @effects: None
- * @notes:   
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void ship::monitorShiptoShipCollisions() {
-    float distToShip;
-    /* Loops through the allShips vector to compare their distances to each other */
-    for (int i = 0; i < allShips.size(); i++) {
-
-        /* Skips comparision of this object to itself */  
-        if (this == allShips.at(i)) {
-            continue;
-        }
-
-        /* Gets distance between this ship and other enemy ship */
-        distToShip = sqrt(pow(allShips.at(i)->getX() - getX(), 2) + pow(allShips.at(i)->getY() - getY(), 2));
-
-        /* If distance is below threshhold, check if ships are colliding */
-        if (distToShip <= 2 * (shipHeight + allShips.at(i)->shipHeight)) {
-            isShipToShipColliding(allShips.at(i));
-        }
-    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
