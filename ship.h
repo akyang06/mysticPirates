@@ -24,11 +24,29 @@
 #include "rlgl.h"
 #include "raymath.h"
 
+#define MAX_SHOTS   10
+#define EXPLOSION_RADIUS 50
+
+typedef struct Shoot {
+    Vector2 position;
+    Vector2 speed;
+    float radius;
+    float rot;
+    int lifeSpawn;
+    bool active;
+} Shoot;
+
+typedef struct Firebarrel {
+    Vector2 position;
+    float explosionTimer;
+    int frame;
+    bool active;  
+} Firebarrel;
+
 typedef struct shipCollisionStruct {
     Vector2 collidingEdge;
     float separation;
 } shipCollisionStruct;
-
 
 class ship {
     public:
@@ -135,9 +153,8 @@ class ship {
         float fireBarrelCooldownDuration;
         float fireBarrelCooldown;
 
-        bool targetRecAlive;
-
         /* Loot (replace colors with images later) */
+        void shipStatus();
         int spawnTypes[5];
         int lootExpire;
         int trackLoot;
@@ -145,7 +162,8 @@ class ship {
         bool hasCollided;
 
         std::vector<ship*> allShips;
-
+        std::vector<Shoot> shoot;
+        std::vector<Firebarrel> barrel;
         std::vector<Vector2> hitBoxVertices;
         std::vector<Vector2> hitBoxEdges;
         
