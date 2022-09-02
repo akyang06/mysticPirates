@@ -12,28 +12,6 @@
 #include <random>
 #include <ctime> 
 #include "ship.h"
-
-#define MAX_SHOTS   10
-#define EXPLOSION_RADIUS 50
-
-typedef struct Shoot {
-    Vector2 position;
-    Vector2 speed;
-    float radius;
-    float rot;
-    int lifeSpawn;
-    bool active;
-} Shoot;
-
-typedef struct Firebarrel {
-    Vector2 position;
-    float explosionTimer;
-    int frame;
-    bool active;  
-} Firebarrel;
-
-static Shoot shoot[MAX_SHOTS] = { 0 };
-static Firebarrel barrel[MAX_SHOTS] = { 0 };
  
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: constructor
@@ -57,6 +35,9 @@ ship::ship() {
     enteredBounds = false;
     healthBar = 100;
     isAlive = true;
+
+    shoot.resize(MAX_SHOTS);
+    barrel.resize(MAX_SHOTS);
     
 
     /* Initializes the shooting component */
@@ -77,7 +58,6 @@ ship::ship() {
     shootType = 1;
 
     /* Target rectangle initialized as true */
-    targetRecAlive = true;
     spawnLoot = true;
     lootPickedUp = false;
 
@@ -88,7 +68,6 @@ ship::ship() {
     for (int i = 0; i < 5; i++) {
         spawnTypes[i] = 0;
     }
-    //lootTypeStr = "";
     lootExpire = 750.0f;
 
     /* Initializes collided status of ship */
@@ -124,7 +103,7 @@ void ship::drawShip() {
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
-    if (targetRecAlive) {
+    if (isAlive) {
         hitBox.x = destRec.x - destRec.width/2;
         hitBox.y = destRec.y - destRec.height/2;
     }
@@ -260,6 +239,9 @@ void ship::monitorCollisions() {
 
     /* Ship to ship collisions */
     monitorShiptoShipCollisions();
+
+    /*Ship to weapon collisions */
+    monitorShipToWeaponCollisions();
 }
 
 
@@ -465,8 +447,8 @@ void ship::frontCannonAttack(){
     /* Initializes a canonball and populates space in array with values */
     for (int i = 0; i < MAX_SHOTS; i++) {
         if (!shoot[i].active) {
-            shoot[i].position.x = getX() - (40 * -cos(rotation));
-            shoot[i].position.y = getY() - (40 * -sin(rotation));
+            shoot[i].position.x = getX() - (70 * -cos(rotation));
+            shoot[i].position.y = getY() - (70 * -sin(rotation));
             shoot[i].active = true;
             shoot[i].speed.x = 0.5*sin(rotation + ((3 * M_PI)/2)) *7;
             shoot[i].speed.y = 0.5*cos(rotation + ((3 * M_PI)/ 2)) *7;
@@ -501,13 +483,13 @@ void ship::fireBarrelAttack() {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: monitorCanonballs
- * @purpose:  
+ * @purpose:  Checks the collisions between cannonballs and ships
  *
- * @parameters: 
+ * @parameters: none
  *     
- * @returns:
- * @effects: 
- * @notes:   
+ * @returns: none
+ * @effects: Inflicts damage on ships if they get hit with cannonballs
+ * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorCanonballs() {
     
@@ -558,28 +540,35 @@ void ship::monitorCanonballs() {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: monitorFirebarrel
- * @purpose:  
+ * @purpose:  Checks the position of other ships in relation to dropped
+ *            firebarrels, explodes if come into contact
  *
- * @parameters: 
+ * @parameters: none
  *     
- * @returns:
- * @effects: 
+ * @returns: none
+ * @effects: checks explosion radius for ships if the timer runs out or
+ *           if ships run into firebarrels
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorFirebarrel() {
     for (int i = 0; i < MAX_SHOTS; i++) {
+        /* Checks the status of the firebarrel */
         if (barrel[i].active && isAlive) {
+            /* Drawing the barrel and updating according variables */
             Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
+            // arbitrary calculation (alex todo)
             int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
+            /* Decreasing the explosion timer every frame */
             barrel[i].explosionTimer -= GetFrameTime();
 
+            /* Exploding the firebarrel if its timer is up */
             if (barrel[i].explosionTimer <= 0) {
-                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox)) {
-                    healthBar -= damage;
-                }
+                /* Draws the explosion */
                 DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
-                barrel[i].active = false;
+                barrel[i].active = false;             
             }
+
+            /* Continuing to draw the firebarrel if untouched and timer still active */
             else if (barrel[i].explosionTimer > 0 && barrel[i].active){
                 DrawTexture(barrelTexture, barrel[i].position.x - shipWidth/6, barrel[i].position.y - shipHeight/6, (Color){255,255,255,255});
             }
@@ -590,55 +579,81 @@ void ship::monitorFirebarrel() {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: monitorShipToWeaponCollisions
- * @purpose:  
+ * @purpose:  Checks the position of the cannons and firebarrels to all the
+ *            ships on the screen
  *
- * @parameters: 
+ * @parameters: none
  *     
- * @returns:
- * @effects: 
+ * @returns: none
+ * @effects: Inflicts appropriate damage to the ships that collide with 
+ *           different weapon types
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorShipToWeaponCollisions(){
-    for (int i = 0; i < MAX_SHOTS; i++) {
-        /* Collision logic between the cannons and enemy ships */
-        if ((shoot[i].active) && isAlive) {
-            if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
-                if ((shoot[i].active)) {
-                    if(CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, hitBox)){
-                        shoot[i].active = false;
-                        shoot[i].lifeSpawn = 0;
-                        healthBar -= 10;
-                    }
-                }
-                /* Explosion logic for the fire barrels and any ships */
-                if (barrel[i].active && isAlive) {
-                    Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
-                    int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
+    int allShipsSize = allShips.size();
+    for (int i = 0; i < allShipsSize; i++) {
+        /* Skips to avoid self collision */
+        if (allShips.at(i) == this) {
+            continue;
+        }
 
-                    if (CheckCollisionRecs(fireBarrelMarker, hitBox)) { 
-                        DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
-                        barrel[i].active = false;
-                        healthBar -= damage;
-                    }
-                
-                    else if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, hitBox) && isAlive) {
-                        DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
-                        barrel[i].active = false;
-                        healthBar -= damage;
-                    }
+        /* Collision logic between ship and all cannonballs from allShips */
+        for (int j = 0; j < allShips.at(i)->shoot.size(); j++) {
+            if (allShips.at(i)->shoot[j].active) {
+                if (CheckCollisionCircleRec(allShips.at(i)->shoot[j].position, allShips.at(i)->shoot[j].radius, hitBox)){
+                    allShips.at(i)->shoot[j].active = false;
+                    allShips.at(i)->shoot[j].lifeSpawn = 0;
+                    healthBar -= 10;
+                }
+            }
+        }
+
+        /* Collision logic between ship and all firebarrels from allShips */
+        for (int j = 0; j < allShips.at(i)->barrel.size(); j++) {
+            int damage;
+            Rectangle fireBarrelMarker = (Rectangle){allShips.at(i)->barrel[j].position.x, allShips.at(i)->barrel[j].position.y, shipWidth/3, shipHeight/3};
+            /* Checks for direct collision */
+            if (allShips.at(i)->barrel[j].active) {  
+                if (CheckCollisionRecs(fireBarrelMarker, hitBox)) { 
+                    damage = 20;
+                    DrawCircle(allShips.at(i)->barrel[j].position.x, allShips.at(i)->barrel[j].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
+                    allShips.at(i)->barrel[j].active = false;
+                    healthBar -= damage;
+                }
+            /* Checks for indirect A.O.E explosion */
+            } else if (allShips.at(i)->barrel[j].explosionTimer <= 0) {
+                if (CheckCollisionCircleRec(allShips.at(i)->barrel[j].position, EXPLOSION_RADIUS, hitBox)) {
+                    damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
+                    healthBar -= damage;
                 }
             }
         }
     }
+    shipStatus();
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: shipStatus
+ * @purpose: Checks the health bar of the respective ship and determines
+ *           if loot needs to be dropped
+ *
+ * @parameters: none
+ *     
+ * @returns: none
+ * @effects: Determines the status of the ship and whether loot needs to be
+*            dropped
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::shipStatus(){
     if (healthBar <= 0) {
-        targetRecAlive = false;
+    isAlive = false;
         if (spawnLoot) {
             trackLoot = lootDrop();
             loot = (Rectangle){destRec.x, destRec.y, 10, 10};
             spawnLoot = false;
             isAlive = false;
         }
-        //one of the ships is disappearing?? ok idk this happened twice
         if (!lootPickedUp) {
             DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
             lootExpire -= GetFrameTime();
@@ -646,6 +661,47 @@ void ship::monitorShipToWeaponCollisions(){
                 spawnTypes[trackLoot]--;
             }
         }
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: lootDrop
+ * @purpose: Monitors the cooldown time 
+ *
+ * @parameters: none
+ * 
+ * @returns: nothing
+ * @effects: Reduces the cooldown by the frame time and sets shotFired to false 
+ *           if cooldown reaches 0
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+int ship::lootDrop() {
+    /* Randomly generates a number between 0 and 4 to represent the type of loot */
+    std::minstd_rand generator(std::time(0)); 
+    std::uniform_int_distribution<> type(0, 4);
+
+    int nextRandomInt = type(generator);
+
+    /* Initializes the loot types based on random generator */
+    if (nextRandomInt == 0) {
+        spawnTypes[0]++;
+        return 0;
+    }
+    else if (nextRandomInt == 1) {
+        spawnTypes[1]++;
+        return 1;
+    }
+    else if (nextRandomInt == 2) {
+        spawnTypes[2]++;
+        return 2;
+    }
+    else if (nextRandomInt == 3) {
+        spawnTypes[3]++;
+        return 3;
+    }
+    else {
+        spawnTypes[4]++;
+        return 4;
     }
 }
 
@@ -657,7 +713,8 @@ void ship::monitorShipToWeaponCollisions(){
  * @parameters: none
  *     
  * @returns: nothing
- * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
+ * @effects: Reduces the cooldown by the frame time and sets shotFired to false 
+ *          if cooldown reaches 0
  * @notes:   
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorCoolDown() {
@@ -691,44 +748,11 @@ void ship::monitorCoolDown() {
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: lootDrop
- * @purpose: Monitors the cooldown time 
- * @effects: Reduces the cooldown by the frame time and sets shotFired to false if cooldown reaches 0
- * @notes:   
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-int ship::lootDrop() {
-    std::minstd_rand generator(std::time(0)); 
-    std::uniform_int_distribution<> type(0, 4);
-
-    int nextRandomInt = type(generator);
-
-    if (nextRandomInt == 0) {
-        spawnTypes[0]++;
-        return 0;
-    }
-    else if (nextRandomInt == 1) {
-        spawnTypes[1]++;
-        return 1;
-    }
-    else if (nextRandomInt == 2) {
-        spawnTypes[2]++;
-        return 2;
-    }
-    else if (nextRandomInt == 3) {
-        spawnTypes[3]++;
-        return 3;
-    }
-    else {
-        spawnTypes[4]++;
-        return 4;
-    }
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: isShipToShipColliding
  * @purpose: Determines if two ships are colliding
  *
- * @parameters: ship* otherShip: a pointer to another ship to check collision with
+ * @parameters: ship* otherShip: a pointer to another ship to check collision 
+ *              with
  *     
  * @returns: nothing
  * @effects: None
@@ -750,7 +774,8 @@ void ship::isShipToShipColliding(ship* otherShip) {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: findMinSeparation
- * @purpose: Finds the minimum separation between 2 ships using Separating Axis Theorem
+ * @purpose: Finds the minimum separation between 2 ships using Separating Axis 
+ *           Theorem
  *
  * @parameters: ship* shipA: a pointer to a ship to check collision with
  *              ship* shipB: a pointer to a ship to check collision with
