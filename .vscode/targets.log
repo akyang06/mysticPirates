@@ -8,7 +8,6 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 /Library/Developer/CommandLineTools/usr/bin/make pirateGame
- 
 # GNU Make 3.81
 # Copyright (C) 2006  Free Software Foundation, Inc.
 # This is free software; see the source for copying conditions.
@@ -18,7 +17,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Fri Aug  5 23:39:12 2022
+# Make data base, printed on Wed Aug 31 21:32:37 2022
 
 # Variables
 
@@ -73,7 +72,7 @@ LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.ekO3EnYfrN/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.mXJRkIC4QP/Listeners
 # automatic
 %F = $(notdir $%)
 # makefile (from `Makefile', line 319)
@@ -91,7 +90,7 @@ HOME = /Users/audreyyang
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/da76f93349a72022ca4670c1b84860304616aaa2
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
 # environment
 LOGNAME = audreyyang
 # environment
@@ -131,7 +130,7 @@ TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.70.0-main.sock
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.70.2-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -141,7 +140,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.81721953.81721959
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.82680826.82680832
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -175,7 +174,7 @@ MAKELEVEL := 1
 # environment
 LANG = C
 # environment
-VSCODE_PID = 41250
+VSCODE_PID = 86714
 # variable set hash-table stats:
 # Load=77/1024=8%, Rehash=0, Collisions=10/184=5%
 
@@ -185,9 +184,9 @@ VSCODE_PID = 41250
 
 # Directories
 
-# . (device 16777220, inode 77119163): 21 files, no impossibilities.
+# . (device 16777220, inode 77119163): 22 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -203,7 +202,8 @@ VSCODE_PID = 41250
 pirateGame: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 #  Command-line target.
 #  Implicit rule search has not been done.
-#  Last modified 2022-08-05 00:18:20
+#  Last modified 2022-08-19 19:37:27
+ 
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -229,7 +229,7 @@ all:
 # Not a target:
 enemyRed.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-03 14:57:22
+#  Last modified 2022-08-19 19:37:27
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -244,7 +244,7 @@ enemyRed.cpp:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-21 15:09:09
+#  Last modified 2022-07-21 12:09:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -253,7 +253,7 @@ Makefile:
 # Not a target:
 main.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-19 00:24:42
+#  Last modified 2022-07-18 21:24:42
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -262,7 +262,7 @@ main.cpp:
 # Not a target:
 ship.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-05 00:18:12
+#  Last modified 2022-08-19 19:37:27
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -271,7 +271,7 @@ ship.cpp:
 # Not a target:
 player.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-04 14:34:28
+#  Last modified 2022-08-19 19:37:27
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -286,7 +286,7 @@ player.cpp:
 # Not a target:
 enemy.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-02 14:41:20
+#  Last modified 2022-08-19 19:37:27
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -295,7 +295,7 @@ enemy.cpp:
 # Not a target:
 screen.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-04 14:29:47
+#  Last modified 2022-08-19 19:37:27
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -323,14 +323,13 @@ clean:
 # # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
- 
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Aug  5 23:39:12 2022
+# Finished Make data base on Wed Aug 31 21:32:37 2022
 
  
 
-# Make data base, printed on Fri Aug  5 23:39:12 2022
+# Make data base, printed on Wed Aug 31 21:32:37 2022
 
 # Variables
 
@@ -385,10 +384,11 @@ LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.ekO3EnYfrN/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.mXJRkIC4QP/Listeners
 # automatic
 %F = $(notdir $%)
 # makefile (from `Makefile', line 319)
+ 
 OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
 # makefile (from `Makefile', line 58)
 PLATFORM_OS = OSX
@@ -403,7 +403,7 @@ HOME = /Users/audreyyang
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/da76f93349a72022ca4670c1b84860304616aaa2
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
 # environment
 LOGNAME = audreyyang
 # environment
@@ -443,7 +443,7 @@ TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.70.0-main.sock
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.70.2-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -453,7 +453,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.81721953.81721959
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.82680826.82680832
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -487,7 +487,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 41250
+VSCODE_PID = 86714
 # variable set hash-table stats:
 # Load=77/1024=8%, Rehash=0, Collisions=10/187=5%
 
@@ -497,9 +497,9 @@ VSCODE_PID = 41250
 
 # Directories
 
-# . (device 16777220, inode 77119163): 21 files, no impossibilities.
+# . (device 16777220, inode 77119163): 22 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -570,7 +570,7 @@ enemyRed.cpp:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-21 15:09:09
+#  Last modified 2022-07-21 12:09:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -596,7 +596,6 @@ player.cpp:
 
 # Not a target:
 .DEFAULT:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -604,6 +603,7 @@ player.cpp:
 # Not a target:
 enemy.cpp:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -637,6 +637,6 @@ clean:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Aug  5 23:39:12 2022
+# Finished Make data base on Wed Aug 31 21:32:37 2022
 
  

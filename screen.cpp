@@ -132,7 +132,7 @@ void screen::titleScreen() {
     int framesCounter = 0;
 
     /* Creates background texture */
-    Image background = LoadImage("./images/backgroundSheet.png");
+    Image background = LoadImage("./images/ocean1.png");
     ImageResize(&background, screenWidth/2, screenHeight/2);
     Texture2D texture = LoadTextureFromImage(background); 
     UnloadImage(background);
