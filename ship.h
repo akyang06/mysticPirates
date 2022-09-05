@@ -25,7 +25,7 @@
 #include "raymath.h"
 
 #define MAX_SHOTS   10
-#define EXPLOSION_RADIUS 50
+#define EXPLOSION_RADIUS 300
 
 typedef struct Shoot {
     Vector2 position;
@@ -40,7 +40,8 @@ typedef struct Firebarrel {
     Vector2 position;
     float explosionTimer;
     int frame;
-    bool active;  
+    bool active;
+    bool exploded;
 } Firebarrel;
 
 typedef struct shipCollisionStruct {
@@ -82,7 +83,7 @@ class ship {
         
         void monitorCanonballs();
         void monitorFirebarrel();
-        void drawExplosion();
+        void drawBarrelExplosion(int barrelIndex);
 
         int lootDrop();
 
@@ -169,6 +170,8 @@ class ship {
         
     private:
         float collisionDrag;
+        Texture2D explosion;
+        Sound firebarrelExplosionSound;
 };
 
 

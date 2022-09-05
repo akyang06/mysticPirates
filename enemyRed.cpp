@@ -307,8 +307,6 @@ void enemyRed::attackPlayer() {
     /* If angle between enemy and player is just over PI/2 then attack, otherwise rotate slightly */
     if ((abs(shootingAngle - rotation) >= (80 * (M_PI / 180))) && (abs(shootingAngle - rotation) <= (100 * (M_PI / 180)))) {
         sideCannonAttack();
-        sideCannonsAvailable = false;
-        sideCannonsCooldown = sideCannonsCooldownDuration;
 
          /* Determines if enemy should rotate clockwise or counter-clockwise */
         int random = rand() % 2;
