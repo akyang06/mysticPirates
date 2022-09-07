@@ -48,7 +48,14 @@ ship::ship() {
         shoot[i].radius = 5;
         shoot[i].active = false;
         shoot[i].lifeSpawn = 0;
+
+        barrel[i].position = (Vector2){0, 0};
+        barrel[i].explosionTimer = -1.0f;
+        barrel[i].frame = 0;
+        barrel[i].active = false;
+        barrel[i].exploded = false;   
     }
+    
 
     /* Sets up hitBox vector sizes */
     hitBoxVertices.resize(4);
@@ -75,6 +82,10 @@ ship::ship() {
     shipCollision = false;
 
     gameOver = false;
+
+    /* Loading textures for explosion */
+    explosion = LoadTexture("images/explosionSpritesheet.png");
+    firebarrelExplosionSound = LoadSound("soundtrack/firebarrelExplosion.wav");
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -88,6 +99,7 @@ ship::ship() {
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 ship::~ship() {
+    UnloadTexture(explosion);
     
 }
 
@@ -439,10 +451,12 @@ void ship::sideCannonAttack(){
             }  
         }
     }
+    sideCannonsAvailable = false;
+    sideCannonsCooldown = sideCannonsCooldownDuration;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: shipShoot
+ * @function: frontCannonAttack
  * @purpose: Shoots cannons from the front of the ship
  *
  * @parameters: none
@@ -464,6 +478,8 @@ void ship::frontCannonAttack(){
             break;
         }
     }
+    frontCannonAvailable = false;
+    frontCannonCooldown = frontCannonCooldownDuration;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -473,20 +489,23 @@ void ship::frontCannonAttack(){
  * @parameters: none
  *     
  * @returns: Nothing
- * @effects: Inflicts damage on the opponent with timed fire barrels
+ * @effects: Sets values to one firebarrel after attack
  * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::fireBarrelAttack() {
     for (int i = 0; i < MAX_SHOTS; i++){
         if (!barrel[i].active) {
             barrel[i].active = true;
-            barrel[i].explosionTimer = 7.0f;
+            barrel[i].explosionTimer = 3.0f;
             barrel[i].frame = 0;
-            barrel[i].position.x = getX() + (60 * -cos(rotation));
-            barrel[i].position.y = getY() + (60 * -sin(rotation));
+            barrel[i].exploded = false;
+            barrel[i].position.x = getX() + ((shipWidth / 2 + 40) * -cos(rotation));
+            barrel[i].position.y = getY() + ((shipWidth / 2 + 40) * -sin(rotation));
             break;
         }
     }
+    fireBarrelAvailable = false;
+    fireBarrelCooldown = fireBarrelCooldownDuration;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -501,7 +520,7 @@ void ship::fireBarrelAttack() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorCanonballs() {
     
-    for (int i = 0; i < MAX_SHOTS; i++){
+    for (int i = 0; i < MAX_SHOTS; i++) {
         if (shoot[i].active) {
 
             /* Cannon ball timer */
@@ -533,7 +552,7 @@ void ship::monitorCanonballs() {
             }
 
             /* How long the cannonball appears for */
-            if (shoot[i].lifeSpawn >= 60){
+            if (shoot[i].lifeSpawn >= range){
                 shoot[i].position = (Vector2){0, 0};
                 shoot[i].speed = (Vector2){0, 0};
                 shoot[i].lifeSpawn = 0;
@@ -564,20 +583,21 @@ void ship::monitorFirebarrel() {
         if (barrel[i].active && isAlive) {
             /* Drawing the barrel and updating according variables */
             Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
-            // arbitrary calculation (alex todo)
-            int damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
+            
             /* Decreasing the explosion timer every frame */
             barrel[i].explosionTimer -= GetFrameTime();
 
             /* Exploding the firebarrel if its timer is up */
             if (barrel[i].explosionTimer <= 0) {
                 /* Draws the explosion */
-                DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
-                barrel[i].active = false;             
+                //DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS, (Color){ 230, 41, 55, 255 });
+                barrel[i].active = false; 
+                barrel[i].explosionTimer = 0;
+                barrel[i].exploded = true;   
             }
 
             /* Continuing to draw the firebarrel if untouched and timer still active */
-            else if (barrel[i].explosionTimer > 0 && barrel[i].active){
+            else if (barrel[i].explosionTimer > 0 && barrel[i].active) {
                 DrawTexture(barrelTexture, barrel[i].position.x - shipWidth/6, barrel[i].position.y - shipHeight/6, (Color){255,255,255,255});
             }
         }
@@ -595,49 +615,112 @@ void ship::monitorFirebarrel() {
  * @returns: none
  * @effects: Inflicts appropriate damage to the ships that collide with 
  *           different weapon types
- * @notes:   
+ * @notes:   ships should be able to collide into their own firebarrel but not own cannonball
+ (note for future, rework comparision so each cannonball/firebarrel from this ship is compared against all_ships) 
+ (currently, all cannonballs/firebarrels from other ships are ebing compared to this ship)
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::monitorShipToWeaponCollisions(){
     int allShipsSize = allShips.size();
-    for (int i = 0; i < allShipsSize; i++) {
-        /* Skips to avoid self collision */
-        if (allShips.at(i) == this) {
-            continue;
-        }
 
-        /* Collision logic between ship and all cannonballs from allShips */
-        for (int j = 0; j < allShips.at(i)->shoot.size(); j++) {
-            if (allShips.at(i)->shoot[j].active) {
-                if (CheckCollisionCircleRec(allShips.at(i)->shoot[j].position, allShips.at(i)->shoot[j].radius, hitBox)){
-                    allShips.at(i)->shoot[j].active = false;
-                    allShips.at(i)->shoot[j].lifeSpawn = 0;
-                    healthBar -= 10;
-                }
-            }
-        }
+    for (int i = 0; i < MAX_SHOTS; i++) {
 
         /* Collision logic between ship and all firebarrels from allShips */
-        for (int j = 0; j < allShips.at(i)->barrel.size(); j++) {
-            int damage;
-            Rectangle fireBarrelMarker = (Rectangle){allShips.at(i)->barrel[j].position.x, allShips.at(i)->barrel[j].position.y, shipWidth/3, shipHeight/3};
-            /* Checks for direct collision */
-            if (allShips.at(i)->barrel[j].active) {  
-                if (CheckCollisionRecs(fireBarrelMarker, hitBox)) { 
-                    damage = 20;
-                    DrawCircle(allShips.at(i)->barrel[j].position.x, allShips.at(i)->barrel[j].position.y, EXPLOSION_RADIUS*2, (Color){ 230, 41, 55, 255 });
-                    allShips.at(i)->barrel[j].active = false;
-                    healthBar -= damage;
+        int damage = 40;
+        Rectangle fireBarrelMarker = (Rectangle){barrel[i].position.x, barrel[i].position.y, shipWidth/3, shipHeight/3};
+        /* Checks for direct collision */
+        if (barrel[i].active) {  
+            for (int j = 0; j < allShipsSize; j++) {
+                if (CheckCollisionRecs(fireBarrelMarker, allShips.at(j)->hitBox)) { 
+                    DrawCircle(barrel[i].position.x, barrel[i].position.y, EXPLOSION_RADIUS, (Color){ 230, 41, 55, 255 });
+                    barrel[i].active = false;
+                    barrel[i].explosionTimer = 0;
+                    barrel[i].exploded = true;
+                    allShips.at(j)->healthBar -= damage; 
                 }
-            /* Checks for indirect A.O.E explosion */
-            } else if (allShips.at(i)->barrel[j].explosionTimer <= 0) {
-                if (CheckCollisionCircleRec(allShips.at(i)->barrel[j].position, EXPLOSION_RADIUS, hitBox)) {
-                    damage = EXPLOSION_RADIUS - ((hitBox.x - fireBarrelMarker.x) + (hitBox.y - fireBarrelMarker.y)) * 0.5;
-                    healthBar -= damage;
+            }
+        }  
+        /* Checks for indirect A.O.E explosion */
+        if (barrel[i].explosionTimer == 0) {
+            for (int j = 0; j < allShipsSize; j++) {
+                if (CheckCollisionCircleRec(barrel[i].position, EXPLOSION_RADIUS, allShips.at(j)->hitBox)) {
+                    damage = damage - (damage * (Vector2Distance((Vector2){allShips.at(j)->getX(), allShips.at(j)->getY()}, barrel[i].position)) / EXPLOSION_RADIUS);
+                    allShips.at(j)->healthBar -= damage;   
+                }
+            }
+            barrel[i].explosionTimer = -1.0f;
+        }
+
+        /* Checks for barrel explosion to draw explosion */
+        if (barrel[i].exploded == true) {
+            drawBarrelExplosion(i);
+        }
+        
+        /* Collision logic between ship and all cannonballs from allShips */
+        for (int j = 0; j < allShipsSize; j++) {
+            /* Skips to avoid self collision with cannonballs */
+            if (allShips.at(j) == this) {
+                continue;
+            }
+
+            if (shoot[i].active) {
+                if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, allShips.at(j)->hitBox)){
+                    shoot[i].active = false;
+                    shoot[i].lifeSpawn = 0;
+                    allShips.at(j)->healthBar -= 10;
                 }
             }
         }
     }
     shipStatus();
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: drawBarrelExplosion
+ * @purpose: Draws the gif of a barrel explosion after it explodes
+ *
+ * @parameters: int barrelIndex: the index in the barrel vector representing which 
+                            barrel has exploded
+ *     
+ * @returns: none
+ * @effects: Draws barrel explosion texture on screen and plays sound
+ * @notes: explosion lasts for 80 frames
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void ship::drawBarrelExplosion(int barrelIndex) {
+
+    /* Draws the explosion */
+    float explosionWidth = explosion.width / 8;
+
+    if (barrel[barrelIndex].exploded) {
+        int frameCount = barrel[barrelIndex].frame;
+        /* Plays a sound on the first frame */
+        if (frameCount == 1) {
+            PlaySound(firebarrelExplosionSound);
+        }
+        /*Draws animation of firebarrel explosion */
+        if (frameCount <= 10) {
+            DrawTextureRec(explosion, (Rectangle){0, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else if (frameCount <= 20) {
+            DrawTextureRec(explosion, (Rectangle){explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else if (frameCount <= 30) {
+            DrawTextureRec(explosion, (Rectangle){2 * explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else if (frameCount <= 40) {
+            DrawTextureRec(explosion, (Rectangle){3 * explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else if (frameCount <= 50) {
+            DrawTextureRec(explosion, (Rectangle){4 * explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else if (frameCount <= 60) {
+            DrawTextureRec(explosion, (Rectangle){5 * explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else if (frameCount <= 70) {
+            DrawTextureRec(explosion, (Rectangle){6 * explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } else {
+            DrawTextureRec(explosion, (Rectangle){7 * explosionWidth, 0, explosionWidth, explosion.height}, (Vector2){barrel[barrelIndex].position.x - explosionWidth / 2, barrel[barrelIndex].position.y - explosion.height / 1.4}, (Color){255, 255, 255, 255});
+        } 
+        barrel[barrelIndex].frame++;
+    }
+
+    /* After 80 frames, the barrel should no longer be exploding */
+    if (barrel[barrelIndex].frame == 80) {
+        barrel[barrelIndex].exploded = false;
+    }
 }
 
 
@@ -748,7 +831,7 @@ Texture2D ship::setTexture(int lootType){
 void ship::monitorCoolDown() {
 
     /* Side cannon cooldown */
-    if (sideCannonsUnlocked) {
+    if (sideCannonsUnlocked && !sideCannonsAvailable) {
         sideCannonsCooldown -= GetFrameTime();
         if (sideCannonsCooldown <= 0) {
             sideCannonsCooldown = 0;
@@ -757,7 +840,7 @@ void ship::monitorCoolDown() {
     }
 
     /* Front cannon cooldown */
-    if (frontCannonUnlocked) {
+    if (frontCannonUnlocked && !frontCannonAvailable) {
         frontCannonCooldown -= GetFrameTime();
         if (frontCannonCooldown <= 0) {
             frontCannonCooldown = 0;
@@ -766,7 +849,7 @@ void ship::monitorCoolDown() {
     }
     
     /* Fire barrel cooldown */
-    if (fireBarrelUnlocked) {
+    if (fireBarrelUnlocked && !fireBarrelAvailable) {
         fireBarrelCooldown -= GetFrameTime();
         if (fireBarrelCooldown <= 0) {
             fireBarrelCooldown = 0;

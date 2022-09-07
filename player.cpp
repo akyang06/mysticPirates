@@ -30,16 +30,26 @@ player::player() : ship() {
     drag = 0.0025;
     velLimit = 3;
     rotationSpeed = 0.015;
-    range = 300;
+    range = 60;
 
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
 
     /*Initial values for attacks */
+    sideCannonsUnlocked = true;
+    frontCannonUnlocked = true;
+    fireBarrelUnlocked = true;
     frontCannonAvailable = true;
     sideCannonsAvailable = true;
     fireBarrelAvailable = true;
     shootType = 1;
+
+    sideCannonsCooldownDuration = 5;
+    sideCannonsCooldown = 0;
+    frontCannonCooldownDuration = 5;
+    frontCannonCooldown = 0;
+    fireBarrelCooldownDuration = 5;
+    fireBarrelCooldown = 0;
 
     /* Loads in image and resizes it for texture */
     Image sprite = LoadImage("images/starterShip.png");
@@ -146,7 +156,6 @@ void player::monitorPlayer(std::vector<ship*> &allShips) {
         rotatePlayer();
         movePlayer();
         playerAttack();
-        monitorCollisions();
     }
 }
 
@@ -221,6 +230,7 @@ void player::playerAttack(){
 
     monitorCanonballs();
     monitorFirebarrel();
+    monitorCoolDown();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -235,13 +245,13 @@ void player::playerAttack(){
  * @notes: n/a
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::attackType(){
-    if (IsKeyPressed(KEY_ONE)){
+    if (IsKeyPressed(KEY_ONE) && sideCannonsUnlocked){
         shootType = 1;
     }
-    else if (IsKeyPressed(KEY_TWO)){
+    else if (IsKeyPressed(KEY_TWO) && frontCannonUnlocked){
         shootType = 2;
     }
-    else if (IsKeyPressed(KEY_THREE)){
+    else if (IsKeyPressed(KEY_THREE) && fireBarrelUnlocked){
         shootType = 3;
     }
 }
@@ -258,11 +268,11 @@ void player::attackType(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void player::monitorPlayerAttack() {
     if (IsKeyPressed(KEY_SPACE)) { 
-        if (shootType == 1) {
+        if (shootType == 1 && sideCannonsAvailable) {
             sideCannonAttack();
-        } else if (shootType == 2) {
+        } else if (shootType == 2 && frontCannonAvailable) {
             frontCannonAttack();
-        } else if (shootType == 3) {
+        } else if (shootType == 3 && fireBarrelAvailable) {
             fireBarrelAttack();
         }
     }
