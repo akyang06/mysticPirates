@@ -73,6 +73,8 @@ ship::ship() {
     /* Initializes collided status of ship */
     edgeCollision = false;
     shipCollision = false;
+
+    gameOver = false;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -100,6 +102,12 @@ ship::~ship() {
  * @notes: 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::drawShip() {
+    // DrawTexture(cottonTexture, 300, 150, (Color){255,255,255,255});
+    // DrawTexture(woodTexture, 400, 150, (Color){255,255,255,255});
+    // DrawTexture(ironTexture, 500, 150, (Color){255,255,255,255});
+    // DrawTexture(gunpowderTexture, 600, 150, (Color){255,255,255,255});
+    // DrawTexture(drinksTexture, 700, 150, (Color){255,255,255,255});
+
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
@@ -647,15 +655,17 @@ void ship::monitorShipToWeaponCollisions(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::shipStatus(){
     if (healthBar <= 0) {
-    isAlive = false;
+        isAlive = false;
         if (spawnLoot) {
             trackLoot = lootDrop();
+            lootTexture = setTexture(trackLoot);
             loot = (Rectangle){destRec.x, destRec.y, 10, 10};
             spawnLoot = false;
             isAlive = false;
         }
         if (!lootPickedUp) {
-            DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
+            //DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
+            DrawTexture(lootTexture, loot.x, loot.y, (Color){255,255,255,255});
             lootExpire -= GetFrameTime();
             if (lootExpire <= 0) {
                 spawnTypes[trackLoot]--;
@@ -702,6 +712,24 @@ int ship::lootDrop() {
     else {
         spawnTypes[4]++;
         return 4;
+    }
+}
+
+Texture2D ship::setTexture(int lootType){
+    if (lootType == 1){
+        return cottonTexture;
+    }
+    else if (lootType == 2){
+        return woodTexture;
+    }
+    else if (lootType == 3){
+        return ironTexture;
+    }
+    else if (lootType == 4){
+        return gunpowderTexture;
+    }
+    else {
+        return drinksTexture;
     }
 }
 

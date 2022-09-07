@@ -132,7 +132,7 @@ void screen::titleScreen() {
     int framesCounter = 0;
 
     /* Creates background texture */
-    Image background = LoadImage("./images/ocean1.png");
+    Image background = LoadImage("./images/ocean.png");
     ImageResize(&background, screenWidth/2, screenHeight/2);
     Texture2D texture = LoadTextureFromImage(background); 
     UnloadImage(background);
@@ -196,9 +196,13 @@ void screen::titleScreen() {
                     e2->monitorEnemyRed(allShips);
                 }
             }
+            
         EndDrawing();
         }
-        
+    p1->unloadPlayerComponents();
+    e1->unloadEnemyComponents();
+    e2->unloadEnemyComponents();
+
     delete p1;
     delete e1;
     delete e2;

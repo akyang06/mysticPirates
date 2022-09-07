@@ -118,6 +118,12 @@ class ship {
         Texture2D shipTexture;
         Texture2D barrelTexture;
 
+        Texture2D cottonTexture;
+        Texture2D woodTexture;
+        Texture2D ironTexture;
+        Texture2D gunpowderTexture;
+        Texture2D drinksTexture;
+
         Rectangle sourceRec;
         Rectangle destRec;
         Rectangle hitBox;
@@ -158,6 +164,8 @@ class ship {
         int spawnTypes[5];
         int lootExpire;
         int trackLoot;
+        Texture2D setTexture(int lootType);
+        Texture2D lootTexture;
 
         bool hasCollided;
 
@@ -166,6 +174,8 @@ class ship {
         std::vector<Firebarrel> barrel;
         std::vector<Vector2> hitBoxVertices;
         std::vector<Vector2> hitBoxEdges;
+
+        bool gameOver;
         
     private:
         float collisionDrag;

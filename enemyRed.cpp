@@ -56,6 +56,45 @@ enemyRed::enemyRed() : enemy() {
     shipWidth = shipTexture.width;
     shipHeight = shipTexture.height;
 
+    /* Loads in loot and resizes it for texture */
+    int lootWidth = shipWidth/3;
+    int lootHeight = shipHeight/3;
+
+    Image cottonImage = LoadImage("images/cotton.png");
+    ImageResize(&cottonImage, lootWidth, lootHeight);
+    cottonTexture = LoadTextureFromImage(cottonImage); 
+    UnloadImage(cottonImage);
+
+    /*********/
+
+    Image woodImage = LoadImage("images/wood.png");
+    ImageResize(&woodImage, lootWidth, lootHeight);
+    woodTexture = LoadTextureFromImage(woodImage); 
+    UnloadImage(woodImage);
+
+    /*********/
+
+    Image ironImage = LoadImage("images/iron.png");
+    ImageResize(&ironImage, lootWidth*1.2, lootHeight/1.3);
+    ironTexture = LoadTextureFromImage(ironImage); 
+    UnloadImage(ironImage);
+
+    /*********/
+
+    Image gunpowderImage = LoadImage("images/gunpowder.png");
+    ImageResize(&gunpowderImage, lootWidth, lootHeight);
+    gunpowderTexture = LoadTextureFromImage(gunpowderImage); 
+    UnloadImage(gunpowderImage);
+
+    /*********/
+
+    Image drinksImage = LoadImage("images/drinks.png");
+    ImageResize(&drinksImage, lootWidth, lootHeight);
+    drinksTexture = LoadTextureFromImage(drinksImage); 
+    UnloadImage(drinksImage);
+
+    /*******/
+
     /* Source rectangle (part of the texture to use for drawing) */
     sourceRec = (Rectangle){0.0, 0.0, shipWidth, shipHeight};
 
@@ -383,4 +422,24 @@ void enemyRed::circleAround() {
 
     /* Keeps the rotation between 0 and 2pi radians */
     rotation = fmod(rotation + (2 * M_PI), 2 * M_PI);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: unloadEnemyComponents
+ * @purpose: Unloads all the textures used in the enemyRed class at the end of
+ *           the level
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: None
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void enemyRed::unloadEnemyComponents(){
+    UnloadTexture(shipTexture);
+    UnloadTexture(cottonTexture);
+    UnloadTexture(woodTexture);
+    UnloadTexture(ironTexture);
+    UnloadTexture(gunpowderTexture);
+    UnloadTexture(drinksTexture);
 }

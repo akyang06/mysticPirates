@@ -30,9 +30,9 @@ class enemyRed: public enemy {
         ~enemyRed();
 
         void monitorEnemyRed(std::vector<ship*> &allShips);
+        void unloadEnemyComponents();
 
     protected:
-        
 
     private:
         void moveEnemyRed();

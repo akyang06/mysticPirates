@@ -57,7 +57,6 @@ player::player() : ship() {
 
     barrelTexture = LoadTextureFromImage(barrelImage); 
     UnloadImage(barrelImage);
-    //UnloadTexture(barrelTexture);
 
     shipTexture = LoadTextureFromImage(sprite); 
     UnloadImage(sprite);
@@ -98,7 +97,6 @@ player::player() : ship() {
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 player::~player() {
-    //UnloadTexture(shipTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -268,4 +266,20 @@ void player::monitorPlayerAttack() {
             fireBarrelAttack();
         }
     }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: unloadPlayerComponents
+ * @purpose: Unloads all the textures used in the player class at the end of
+ *           the level
+ *
+ * @parameters: none
+ *     
+ * @returns: Nothing
+ * @effects: None
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void player::unloadPlayerComponents(){
+    UnloadTexture(shipTexture);
+    UnloadTexture(barrelTexture);
 }
