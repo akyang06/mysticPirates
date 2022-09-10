@@ -35,15 +35,26 @@ class screen {
     private:
        
         void tutorialScreen();
+        void tortugaHubScreen();
+        void challengeScreen();
+        void marketScreen();
 
         Rectangle drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor);
 
-        Texture2D drawMenu();
+        Texture2D drawImages(Image img, int width, int height);
 
-        void unloadItems(Texture2D currTexture, Font currFont, Music currMusic);
+        void unloadTitleScreen(Texture2D currTexture, Font currFont, Music currMusic);
+
+        void unloadTutorialScreen(Music tutorialMusic, Texture2D pauseTexture, Texture2D playTexture, Texture2D texture);
+
+        void drawPopUpWindow();
+        void progressPopUp();
 
         int screenWidth;
         int screenHeight;
+
+        bool exitPopUp;
+        bool toHub;
 };
 
 
