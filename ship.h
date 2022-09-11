@@ -163,12 +163,12 @@ class ship {
         float fireBarrelCooldownDuration;
         float fireBarrelCooldown;
 
-        /* Loot (replace colors with images later) */
+        /* Loot */
         void shipStatus();
-        int lootExpire;
         int trackLoot;
         Texture2D setTexture(int lootType);
         Texture2D lootTexture;
+        int lootExpire;
 
         bool hasCollided;
 

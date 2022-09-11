@@ -37,7 +37,7 @@ class screen {
         void tortugaHubScreen();
         void challengeScreen();
         void marketScreen();
-        void victoryScreen();
+        void victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5]);
         void defeatScreen();
 
         Rectangle drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor);

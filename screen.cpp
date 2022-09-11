@@ -274,12 +274,7 @@ void screen::titleScreen()
             defeatScreen();
         }
         else if (!enemyOneHealth && !enemyTwoHealth) {
-            victoryScreen();
-            // DrawText(TextFormat("%d", p1->spawnTypes[0]), 20, 50, 20, (Color){255,255,255,255});
-            // DrawText(TextFormat("%d", p1->spawnTypes[1]), 20, 80, 20, (Color){255,255,255,255});
-            // DrawText(TextFormat("%d", p1->spawnTypes[2]), 20, 110, 20,      (Color){255,255,255,255});
-            // DrawText(TextFormat("%d", p1->spawnTypes[3]), 20, 140, 20, (Color){255,255,255,255});
-            // DrawText(TextFormat("%d", p1->spawnTypes[4]), 20, 170, 20, (Color){255,255,255,255});
+            victoryScreen(e1->spawnTypes, e2->spawnTypes);
         }
         else if (toHub) {
             tortugaHubScreen();
@@ -493,7 +488,7 @@ void screen::marketScreen()
  * @effects: Changes the background screen 
  * @notes: Creates a player object
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void screen::victoryScreen()
+void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
 {
     Image victoryPage = LoadImage("./images/victory.png");
     Texture2D victoryPageTexture = drawImages(victoryPage, screenWidth, screenHeight);
@@ -508,6 +503,12 @@ void screen::victoryScreen()
         BeginDrawing();
             ClearBackground((Color){0, 0, 0, 255});
             DrawTexture(victoryPageTexture, 0, 0, (Color){255, 255, 255, 255});
+
+            DrawText(TextFormat("%d", (enemyOneSpawnTypes[0] + enemyTwoSpawnTypes[0])), screenWidth/2 - 340, screenHeight/2 - 50, 40, (Color){255,255,255,255});
+            DrawText(TextFormat("%d", (enemyOneSpawnTypes[1] + enemyTwoSpawnTypes[1])), screenWidth/2 - 175, screenHeight/2 - 50, 40, (Color){255,255,255,255});
+            DrawText(TextFormat("%d", (enemyOneSpawnTypes[2] + enemyTwoSpawnTypes[2])), screenWidth/2 + 30, screenHeight/2 - 50, 40, (Color){255,255,255,255});
+            DrawText(TextFormat("%d", (enemyOneSpawnTypes[3] + enemyTwoSpawnTypes[3])), screenWidth/2 + 220, screenHeight/2 - 50, 40, (Color){255,255,255,255});
+            DrawText(TextFormat("%d", (enemyOneSpawnTypes[4] + enemyTwoSpawnTypes[4])), screenWidth/2 + 385, screenHeight/2 - 50, 40, (Color){255,255,255,255});
             
             Rectangle mapBox = {screenWidth/2 - 25, screenHeight-200, 100, 80};
             Rectangle homeBox = {screenWidth/2 - 195, screenHeight-200, 100, 80};

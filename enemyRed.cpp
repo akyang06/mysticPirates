@@ -112,7 +112,9 @@ enemyRed::enemyRed() : enemy() {
     upBounds = shipHeight / 4;
     downBounds = screenHeight - (shipHeight / 2);
     leftBounds = shipWidth / 4;
-    rightBounds = screenWidth - (shipWidth / 4);   
+    rightBounds = screenWidth - (shipWidth / 4);  
+
+    healthBar = 1; 
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -141,7 +143,6 @@ enemyRed::~enemyRed() {
  *           Moves enemy into the screen after they spawn
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void enemyRed::monitorEnemyRed(std::vector<ship*> &allShips) {
-
     this->allShips = allShips;
 
     /* Tracks current location and positon of the player */

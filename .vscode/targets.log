@@ -8,6 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 /Library/Developer/CommandLineTools/usr/bin/make pirateGame
+ 
 # GNU Make 3.81
 # Copyright (C) 2006  Free Software Foundation, Inc.
 # This is free software; see the source for copying conditions.
@@ -17,7 +18,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Sat Sep 10 00:32:11 2022
+# Make data base, printed on Sun Sep 11 12:09:56 2022
 
 # Variables
 
@@ -29,7 +30,6 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 USE_WAYLAND_DISPLAY = FALSE
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
- 
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # automatic
@@ -175,7 +175,7 @@ MAKELEVEL := 1
 # environment
 LANG = C
 # environment
-VSCODE_PID = 45956
+VSCODE_PID = 68965
 # variable set hash-table stats:
 # Load=77/1024=8%, Rehash=0, Collisions=14/198=7%
 
@@ -204,7 +204,7 @@ pirateGame: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 #  Command-line target.
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `'
-#  Last modified 2022-09-10 00:31:49
+#  Last modified 2022-09-11 12:08:38
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -246,7 +246,7 @@ all:
 # Not a target:
 enemyRed.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-06 23:02:52
+#  Last modified 2022-09-11 11:47:38
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -270,7 +270,7 @@ Makefile:
 # Not a target:
 main.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-18 21:24:42
+#  Last modified 2022-09-11 11:52:10
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -279,7 +279,7 @@ main.cpp:
 # Not a target:
 ship.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-06 23:04:08
+#  Last modified 2022-09-11 00:28:54
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -288,7 +288,7 @@ ship.cpp:
 # Not a target:
 player.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-06 23:02:52
+#  Last modified 2022-09-11 11:46:24
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -312,7 +312,7 @@ enemy.cpp:
 # Not a target:
 screen.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-10 00:32:09
+#  Last modified 2022-09-11 12:09:55
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -324,6 +324,7 @@ clean:
 #  File does not exist.
 #  File has not been updated.
 #  commands to execute (from `Makefile', line 357):
+ 
 	find . -type f -perm +ugo+x -delete
 	rm -f *.o
 	@echo Cleaning done
@@ -338,18 +339,14 @@ clean:
 # No general (`VPATH' variable) search path.
 
 # # of strings in strcache: 1
- 
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Sat Sep 10 00:32:11 2022
-
- 
-make: *** [all] Error 1
+# Finished Make data base on Sun Sep 11 12:09:56 2022
 
 
-# Make data base, printed on Sat Sep 10 00:32:11 2022
+# Make data base, printed on Sun Sep 11 12:09:56 2022
 
 # Variables
 
@@ -367,7 +364,6 @@ USE_WAYLAND_DISPLAY = FALSE
 @F = $(notdir $@)
 # makefile (from `Makefile', line 285)
 LDLIBS = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
- 
 # makefile
 CURDIR := /Users/audreyyang/Desktop/pirateGame
 # makefile
@@ -507,7 +503,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 45956
+VSCODE_PID = 68965
 # variable set hash-table stats:
 # Load=77/1024=8%, Rehash=0, Collisions=10/187=5%
 
@@ -533,7 +529,6 @@ VSCODE_PID = 45956
 # Files
 
 pirateGame: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -652,11 +647,14 @@ clean:
 
 # No general (`VPATH' variable) search path.
 
+ 
+make: *** [all] Error 1
+
 # # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Sat Sep 10 00:32:11 2022
+# Finished Make data base on Sun Sep 11 12:09:56 2022
 
  
