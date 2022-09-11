@@ -45,6 +45,11 @@ screen::~screen() {
 
 }
 
+void screen::opening()
+{
+    titleScreen();
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: titleScreen
  * @purpose: draws the title screen with buttons to access other parts of
@@ -54,10 +59,10 @@ screen::~screen() {
  *     
  * @returns: nothing
  * @effects:
- * @notes:
+ * @notes: ISSUE, SONGS GET FASTER AND FASTER WHEN TOGGLING B/W PAGES
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void screen::titleScreen() {
-
+void screen::titleScreen() 
+{
     /* Creates title screen texture */
     Image titleScreen = LoadImage("./images/titleScreen.png");
     Texture2D titleScreenTexture = drawImages(titleScreen, screenWidth, screenHeight);
@@ -108,9 +113,9 @@ void screen::titleScreen() {
         EndDrawing();
 
         if (closeTutorial){
+            //unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
             tutorialScreen();
         }
-
     }
     unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
 }
@@ -141,6 +146,10 @@ void screen::titleScreen() {
     toHub = false;
     bool toHome = false;
     bool restart = false;
+
+    playerHealth = true;
+    enemyOneHealth = true;
+    enemyTwoHealth = true;
 
     /* Creates font */
     Font pirateFont = LoadFontEx("./fonts/theDarkestPearl.ttf", 200, 0, 250);
@@ -180,7 +189,7 @@ void screen::titleScreen() {
     allShips.push_back(e1);
     allShips.push_back(e2);
 
-    while (!WindowShouldClose() && !toHub && !toHome && !restart)    /* Detect window close button or ESC key */
+    while (!WindowShouldClose() && !toHub && !toHome && !restart && playerHealth && (enemyOneHealth || enemyTwoHealth))    /* Detect window close button or ESC key */
     {
         Rectangle pausePlayBtn = {screenWidth - 97, 30, 60, 65};
         if ((IsKeyPressed(KEY_P)) || (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), pausePlayBtn))) pause = !pause;
@@ -254,6 +263,10 @@ void screen::titleScreen() {
                 if (p1->enteredBounds) {
                     e1->monitorEnemyRed(allShips);
                     e2->monitorEnemyRed(allShips);
+                    /* Monitors the health of a ship to determine who wins */
+                    playerHealth = p1->monitorShipHealth();
+                    enemyOneHealth = e1->monitorShipHealth();
+                    enemyTwoHealth = e2->monitorShipHealth();
                 }
             }
 
@@ -262,7 +275,18 @@ void screen::titleScreen() {
             }
         
         EndDrawing();
-        if (toHub) {
+        if (!playerHealth) {
+            defeatScreen();
+        }
+        else if (!enemyOneHealth && !enemyTwoHealth) {
+            victoryScreen();
+            // DrawText(TextFormat("%d", p1->spawnTypes[0]), 20, 50, 20, (Color){255,255,255,255});
+            // DrawText(TextFormat("%d", p1->spawnTypes[1]), 20, 80, 20, (Color){255,255,255,255});
+            // DrawText(TextFormat("%d", p1->spawnTypes[2]), 20, 110, 20,      (Color){255,255,255,255});
+            // DrawText(TextFormat("%d", p1->spawnTypes[3]), 20, 140, 20, (Color){255,255,255,255});
+            // DrawText(TextFormat("%d", p1->spawnTypes[4]), 20, 170, 20, (Color){255,255,255,255});
+        }
+        else if (toHub) {
             tortugaHubScreen();
         }
         else if (toHome) {
@@ -463,6 +487,124 @@ void screen::marketScreen()
     UnloadTexture(mapTexture);
     UnloadTexture(homeTexture);
 }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: victoryScreen
+ * @purpose: Draws the market page, STILL IN PROGRESS
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: Changes the background screen 
+ * @notes: Creates a player object
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void screen::victoryScreen()
+{
+    Image victoryPage = LoadImage("./images/victory.png");
+    Texture2D victoryPageTexture = drawImages(victoryPage, screenWidth, screenHeight);
+
+    toHub = false;
+    bool toHome = false;
+    bool restart = false;
+
+    /* Detect window close button or ESC key */
+    while (!WindowShouldClose() && !toHub && !toHome && !restart)    
+    { 
+        BeginDrawing();
+            ClearBackground((Color){0, 0, 0, 255});
+            DrawTexture(victoryPageTexture, 0, 0, (Color){255, 255, 255, 255});
+            
+            Rectangle mapBox = {screenWidth/2 - 25, screenHeight-200, 100, 80};
+            Rectangle homeBox = {screenWidth/2 - 195, screenHeight-200, 100, 80};
+            Rectangle restartBox = {screenWidth/2 + 160, screenHeight-200, 80, 80};
+
+            /* Checks if the map button is pressed */
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), mapBox)) {
+                toHub = !toHub;
+            }
+            /* Checks if the home button is pressed */
+            else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), homeBox)) {
+                toHome = !toHome;
+            }
+            /* Checks if the home button is pressed */
+            else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), restartBox)) {
+                restart = !restart;
+            }
+
+        EndDrawing();
+
+        if (toHub) {
+            tortugaHubScreen();
+        }
+        else if (toHome) {
+            titleScreen();
+        }
+        else if (restart) {
+            tutorialScreen();
+        }
+    }
+    UnloadTexture(victoryPageTexture);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: defeatScreen
+ * @purpose: Draws the market page, STILL IN PROGRESS
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: Changes the background screen 
+ * @notes: Creates a player object
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void screen::defeatScreen()
+{
+    Image defeatPage = LoadImage("./images/defeat.png");
+    Texture2D defeatPageTexture = drawImages(defeatPage, screenWidth, screenHeight);
+
+    toHub = false;
+    bool toHome = false;
+    bool restart = false;
+
+    /* Detect window close button or ESC key */
+    while (!WindowShouldClose() && !toHub && !toHome && !restart)    
+    { 
+        BeginDrawing();
+            ClearBackground((Color){0, 0, 0, 255});
+            DrawTexture(defeatPageTexture, 0, 0, (Color){255, 255, 255, 255});
+            
+            Rectangle mapBox = {screenWidth/2 - 43, screenHeight-370, 100, 80};
+            Rectangle homeBox = {screenWidth/2 - 195, screenHeight-370, 100, 80};
+            Rectangle restartBox = {screenWidth/2 + 120, screenHeight-370, 80, 80};
+
+            /* Checks if the map button is pressed */
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), mapBox)) {
+                toHub = !toHub;
+            }
+            /* Checks if the home button is pressed */
+            else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), homeBox)) {
+                toHome = !toHome;
+            }
+            /* Checks if the home button is pressed */
+            else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), restartBox)) {
+                restart = !restart;
+            }
+
+        EndDrawing();
+
+        if (toHub) {
+            tortugaHubScreen();
+        }
+        else if (toHome) {
+            titleScreen();
+        }
+        else if (restart) {
+            tutorialScreen();
+        }
+    }
+    UnloadTexture(defeatPageTexture);
+}
+
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: drawButton

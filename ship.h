@@ -58,12 +58,15 @@ class ship {
         int getX();
         int getY();
         float getRotation();
+        bool monitorShipHealth();
 
         bool enteredBounds;
 
         Rectangle loot;
         bool spawnLoot;
         bool lootPickedUp;
+
+        int spawnTypes[5];
 
     protected:
 
@@ -162,7 +165,6 @@ class ship {
 
         /* Loot (replace colors with images later) */
         void shipStatus();
-        int spawnTypes[5];
         int lootExpire;
         int trackLoot;
         Texture2D setTexture(int lootType);

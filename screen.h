@@ -30,14 +30,16 @@ class screen {
         screen();
         ~screen();
 
-        void titleScreen();
+        void opening();
 
     private:
-       
+        void titleScreen();
         void tutorialScreen();
         void tortugaHubScreen();
         void challengeScreen();
         void marketScreen();
+        void victoryScreen();
+        void defeatScreen();
 
         Rectangle drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor);
 
@@ -55,6 +57,10 @@ class screen {
 
         bool exitPopUp;
         bool toHub;
+
+        bool playerHealth;
+        bool enemyOneHealth;
+        bool enemyTwoHealth;
 };
 
 

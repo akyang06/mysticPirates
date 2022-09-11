@@ -1,7 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/audreyyang/Desktop/pirateGame'
 /Library/Developer/CommandLineTools/usr/bin/make pirateGame
- 
 make[1]: Entering directory `/Users/audreyyang/Desktop/pirateGame'
 clang++ -o pirateGame main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp -s -O1 -I. -I../../../raylib/src -L. -L../../../raylib/src -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo -DPLATFORM_DESKTOP
 make[1]: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
