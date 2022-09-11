@@ -45,11 +45,6 @@ screen::~screen() {
 
 }
 
-void screen::opening()
-{
-    titleScreen();
-}
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: titleScreen
  * @purpose: draws the title screen with buttons to access other parts of

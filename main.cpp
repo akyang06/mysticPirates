@@ -4,6 +4,6 @@
 int main()
 {
     screen game;
-    game.opening();
+    game.titleScreen();
     return 0;
 }

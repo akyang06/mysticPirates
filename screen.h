@@ -30,10 +30,9 @@ class screen {
         screen();
         ~screen();
 
-        void opening();
+        void titleScreen();
 
     private:
-        void titleScreen();
         void tutorialScreen();
         void tortugaHubScreen();
         void challengeScreen();
