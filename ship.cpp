@@ -81,6 +81,8 @@ ship::ship() {
     edgeCollision = false;
     shipCollision = false;
 
+    gameOver = false;
+
     /* Loading textures for explosion */
     explosion = LoadTexture("images/explosionSpritesheet.png");
     firebarrelExplosionSound = LoadSound("soundtrack/firebarrelExplosion.wav");
@@ -98,7 +100,6 @@ ship::ship() {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 ship::~ship() {
     UnloadTexture(explosion);
-    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -112,6 +113,12 @@ ship::~ship() {
  * @notes: 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::drawShip() {
+    // DrawTexture(cottonTexture, 300, 150, (Color){255,255,255,255});
+    // DrawTexture(woodTexture, 400, 150, (Color){255,255,255,255});
+    // DrawTexture(ironTexture, 500, 150, (Color){255,255,255,255});
+    // DrawTexture(gunpowderTexture, 600, 150, (Color){255,255,255,255});
+    // DrawTexture(drinksTexture, 700, 150, (Color){255,255,255,255});
+
     destRec.x += velComp.x;
     destRec.y += velComp.y;
 
@@ -136,12 +143,6 @@ void ship::drawShip() {
         // DrawLineV(hitBoxVertices.at(2), hitBoxVertices.at(3), (Color){0,0,0,255});
         // DrawLineV(hitBoxVertices.at(3), hitBoxVertices.at(0), (Color){0,0,0,255});
     }
-
-    DrawText(TextFormat("red: %d", spawnTypes[0]), 20, 50, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("orange: %d", spawnTypes[1]), 20, 80, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("yellow: %d", spawnTypes[2]), 20, 110, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("blue: %d", spawnTypes[3]), 20, 140, 20, (Color){255,255,255,255});
-    DrawText(TextFormat("purple: %d", spawnTypes[4]), 20, 170, 20, (Color){255,255,255,255});
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -730,15 +731,17 @@ void ship::drawBarrelExplosion(int barrelIndex) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void ship::shipStatus(){
     if (healthBar <= 0) {
-    isAlive = false;
+        isAlive = false;
         if (spawnLoot) {
             trackLoot = lootDrop();
+            lootTexture = setTexture(trackLoot);
             loot = (Rectangle){destRec.x, destRec.y, 10, 10};
             spawnLoot = false;
             isAlive = false;
         }
         if (!lootPickedUp) {
-            DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
+            //DrawRectangleRec(loot, (Color){ 230, 41, 55, 255 });
+            DrawTexture(lootTexture, loot.x, loot.y, (Color){255,255,255,255});
             lootExpire -= GetFrameTime();
             if (lootExpire <= 0) {
                 spawnTypes[trackLoot]--;
@@ -785,6 +788,34 @@ int ship::lootDrop() {
     else {
         spawnTypes[4]++;
         return 4;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: setTexture
+ * @purpose: Drops appropriate loot based on randomizer 
+ *
+ * @parameters: none
+ * 
+ * @returns: nothing
+ * @effects: n/a
+ * @notes: n/a
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+Texture2D ship::setTexture(int lootType){
+    if (lootType == 1){
+        return cottonTexture;
+    }
+    else if (lootType == 2){
+        return woodTexture;
+    }
+    else if (lootType == 3){
+        return ironTexture;
+    }
+    else if (lootType == 4){
+        return gunpowderTexture;
+    }
+    else {
+        return drinksTexture;
     }
 }
 
@@ -984,4 +1015,19 @@ void ship::computeHitBox() {
     hitBoxEdges.at(1) = Vector2Subtract(vertexTR, vertexBR);
     hitBoxEdges.at(2) = Vector2Subtract(vertexBR, vertexBL);
     hitBoxEdges.at(3) = Vector2Subtract(vertexBL, vertexTL);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: monitorShipHealth
+ * @purpose: Computes the hitbox of the ship
+ *
+ * @parameters: none
+ *    
+ * @returns: none
+ * @effects: Sets the values of the hitBoxEdges and hitBoxVertices vector
+ * @notes:   
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+bool ship::monitorShipHealth() {
+    if (healthBar > 0 )return true;
+    else return false;
 }

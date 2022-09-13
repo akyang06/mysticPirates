@@ -8,6 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 /Library/Developer/CommandLineTools/usr/bin/make pirateGame
+ 
 # GNU Make 3.81
 # Copyright (C) 2006  Free Software Foundation, Inc.
 # This is free software; see the source for copying conditions.
@@ -17,7 +18,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Wed Aug 31 21:32:37 2022
+# Make data base, printed on Sun Sep 11 12:09:56 2022
 
 # Variables
 
@@ -90,7 +91,7 @@ HOME = /Users/audreyyang
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/784b0177c56c607789f9638da7b6bf3230d47a8c
 # environment
 LOGNAME = audreyyang
 # environment
@@ -130,7 +131,7 @@ TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.70.2-main.sock
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.71.0-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -140,7 +141,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.82680826.82680832
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.83950605.83950611
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -174,9 +175,9 @@ MAKELEVEL := 1
 # environment
 LANG = C
 # environment
-VSCODE_PID = 86714
+VSCODE_PID = 68965
 # variable set hash-table stats:
-# Load=77/1024=8%, Rehash=0, Collisions=10/184=5%
+# Load=77/1024=8%, Rehash=0, Collisions=14/198=7%
 
 # Pattern-specific Variable Values
 
@@ -202,12 +203,28 @@ VSCODE_PID = 86714
 pirateGame: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 #  Command-line target.
 #  Implicit rule search has not been done.
-#  Last modified 2022-08-19 19:37:27
- 
+#  Implicit/static pattern stem: `'
+#  Last modified 2022-09-11 12:08:38
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := pirateGame
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
+# automatic
+# | := 
+# automatic
+# < := main.cpp
+# automatic
+# ^ := main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
+# automatic
+# ? := screen.cpp
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+# Load=8/32=25%, Rehash=0, Collisions=5/22=23%
 #  commands to execute (from `Makefile', line 339):
 	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	
@@ -229,7 +246,7 @@ all:
 # Not a target:
 enemyRed.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-19 19:37:27
+#  Last modified 2022-09-11 11:47:38
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -253,7 +270,7 @@ Makefile:
 # Not a target:
 main.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-18 21:24:42
+#  Last modified 2022-09-11 11:52:10
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -262,7 +279,7 @@ main.cpp:
 # Not a target:
 ship.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-19 19:37:27
+#  Last modified 2022-09-11 00:28:54
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -271,7 +288,7 @@ ship.cpp:
 # Not a target:
 player.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-19 19:37:27
+#  Last modified 2022-09-11 11:46:24
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -286,7 +303,7 @@ player.cpp:
 # Not a target:
 enemy.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-19 19:37:27
+#  Last modified 2022-09-01 20:38:42
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -295,7 +312,7 @@ enemy.cpp:
 # Not a target:
 screen.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-19 19:37:27
+#  Last modified 2022-09-11 12:09:55
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -307,13 +324,14 @@ clean:
 #  File does not exist.
 #  File has not been updated.
 #  commands to execute (from `Makefile', line 357):
+ 
 	find . -type f -perm +ugo+x -delete
 	rm -f *.o
 	@echo Cleaning done
 	
 
 # files hash-table stats:
-# Load=13/1024=1%, Rehash=0, Collisions=0/34=0%
+# Load=13/1024=1%, Rehash=0, Collisions=0/35=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -325,11 +343,10 @@ clean:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed Aug 31 21:32:37 2022
+# Finished Make data base on Sun Sep 11 12:09:56 2022
 
- 
 
-# Make data base, printed on Wed Aug 31 21:32:37 2022
+# Make data base, printed on Sun Sep 11 12:09:56 2022
 
 # Variables
 
@@ -388,7 +405,6 @@ SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.mXJRkIC4QP/Listeners
 # automatic
 %F = $(notdir $%)
 # makefile (from `Makefile', line 319)
- 
 OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
 # makefile (from `Makefile', line 58)
 PLATFORM_OS = OSX
@@ -403,7 +419,7 @@ HOME = /Users/audreyyang
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/784b0177c56c607789f9638da7b6bf3230d47a8c
 # environment
 LOGNAME = audreyyang
 # environment
@@ -443,7 +459,7 @@ TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.70.2-main.sock
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.71.0-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -453,7 +469,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.82680826.82680832
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.83950605.83950611
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -487,7 +503,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 86714
+VSCODE_PID = 68965
 # variable set hash-table stats:
 # Load=77/1024=8%, Rehash=0, Collisions=10/187=5%
 
@@ -527,7 +543,7 @@ all:
 #  Implicit/static pattern stem: `'
 #  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 # automatic
 # @ := all
 # automatic
@@ -603,7 +619,6 @@ player.cpp:
 # Not a target:
 enemy.cpp:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -625,18 +640,21 @@ clean:
 	
 
 # files hash-table stats:
-# Load=13/1024=1%, Rehash=0, Collisions=0/35=0%
+# Load=13/1024=1%, Rehash=0, Collisions=0/36=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
 
 # No general (`VPATH' variable) search path.
 
+ 
+make: *** [all] Error 1
+
 # # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed Aug 31 21:32:37 2022
+# Finished Make data base on Sun Sep 11 12:09:56 2022
 
  

@@ -30,6 +30,7 @@ class player: public ship {
 
         void enterPlayer();
         void monitorPlayer(std::vector<ship*> &allShips);
+        void unloadPlayerComponents();
         
     protected:
         
@@ -42,9 +43,6 @@ class player: public ship {
         void playerAttack();
         void attackType();
         void monitorPlayerAttack();
-        
-
-
 };
 
 
