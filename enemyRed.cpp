@@ -112,9 +112,7 @@ enemyRed::enemyRed() : enemy() {
     upBounds = shipHeight / 4;
     downBounds = screenHeight - (shipHeight / 2);
     leftBounds = shipWidth / 4;
-    rightBounds = screenWidth - (shipWidth / 4);  
-
-    healthBar = 1; 
+    rightBounds = screenWidth - (shipWidth / 4); 
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

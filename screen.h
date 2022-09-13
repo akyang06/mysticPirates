@@ -39,6 +39,7 @@ class screen {
         void marketScreen();
         void victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5]);
         void defeatScreen();
+        void aboutUsScreen();
 
         Rectangle drawButton(const char *text, float roundness, int segments, Font pirateFont, int fontSize, int screenWidth, int screenHeight, float divisor);
 
@@ -51,6 +52,7 @@ class screen {
         void drawPopUpWindow();
         void progressPopUp();
         void instructionsPage(Texture2D instructionsTexture);
+        void drawFuturePopUp();
 
         int screenWidth;
         int screenHeight;
@@ -58,6 +60,7 @@ class screen {
         bool exitPopUp;
         bool toHub;
         bool instructionsPopUp;
+        bool futurePopUp;
 
         bool playerHealth;
         bool enemyOneHealth;

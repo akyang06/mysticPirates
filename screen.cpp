@@ -79,8 +79,9 @@ void screen::titleScreen()
     Image instructions = LoadImage("./images/instructions.png");
     Texture2D instructionsTexture = drawImages(instructions, screenWidth - 170, screenHeight - 170);
     instructionsPopUp = false;
+    bool aboutUs = false;
 
-    while (!WindowShouldClose() && !closeTutorial)    /* Detect window close button or ESC key */
+    while (!WindowShouldClose() && !closeTutorial && !aboutUs)    /* Detect window close button or ESC key */
     {
         UpdateMusicStream(titleMusic);
         BeginDrawing();
@@ -111,6 +112,9 @@ void screen::titleScreen()
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), settingsBox)) {
                 instructionsPopUp = !instructionsPopUp;
             }
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), creatorsBox)) {
+                aboutUs = !aboutUs;
+            }
 
         if (instructionsPopUp) {
             instructionsPage(instructionsTexture);
@@ -118,8 +122,10 @@ void screen::titleScreen()
         EndDrawing();
 
         if (closeTutorial){
-            //unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
             tutorialScreen();
+        }
+        if (aboutUs) {
+            aboutUsScreen();
         }
     }
     unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
@@ -567,7 +573,7 @@ void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: defeatScreen
- * @purpose: Draws the market page, STILL IN PROGRESS
+ * @purpose: Draws the player defeat page, STILL IN PROGRESS
  *
  * @parameters: none
  *     
@@ -624,7 +630,76 @@ void screen::defeatScreen()
 }
 
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: aboutUsScreen
+ * @purpose: Draws the player defeat page, STILL IN PROGRESS
+ *
+ * @parameters: none
+ *     
+ * @returns: nothing
+ * @effects: Changes the background screen 
+ * @notes: Creates a player object
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void screen::aboutUsScreen()
+{
+    bool toHome = false;
+    Rectangle background = {0, 0, screenWidth, screenHeight};
+    Rectangle homeBox = {screenWidth - 100, 30, 75, 75};
 
+    Image home = LoadImage("./images/home.png");
+    Texture2D homeTexture = drawImages(home, 75, 75);
+
+    Image alexPhoto = LoadImage("./images/alex.png");
+    Texture2D alex = drawImages(alexPhoto, screenWidth/7, screenHeight/3);
+
+    Image audreyPhoto = LoadImage("./images/audrey.png");
+    Texture2D audrey = drawImages(audreyPhoto, screenWidth/6.5, screenHeight/3);
+
+    /* Creates font */
+    Font pirateFont = LoadFontEx("./fonts/theDarkestPearl.ttf", 200, 0, 250);
+
+    futurePopUp = false;
+
+    /* Detect window close button or ESC key */
+    while (!WindowShouldClose() && !toHome)    
+    { 
+        BeginDrawing();
+            ClearBackground((Color){0, 0, 0, 255});
+            DrawRectangleRec(background, (Color){48, 48, 48, 255});
+            DrawTexture(homeTexture, screenWidth - 100, 30, (Color){255, 255, 255, 255});
+            DrawText(TextFormat("CREATORS"), screenWidth/3 + 50, 55, 75, (Color){255,255,255,255});
+            DrawTexture(audrey, screenWidth/2 + 25, screenHeight/6, (Color){255, 255, 255, 255});
+            DrawTexture(alex, screenWidth/2 - screenWidth/6.5, screenHeight/6, (Color){255, 255, 255, 255});
+            DrawText(TextFormat("Hi everyone, thank you for\n  playing our game! I\'m Alex\n       and I\'m a 20 year old\n      majoring in Mechanical\n   Engineering and minoring\n        in Computer Science."), screenWidth/7.8, screenHeight/5, 20, (Color){255,255,255,255});
+            DrawText(TextFormat("and I\'m Audrey (also 20)\nmajoring in Computer Science\nwith a minor in Human\nFactors Engineering. We are\nboth rising juniors at\nTufts University."), screenWidth/2 + screenWidth/5, screenHeight/5, 20, (Color){255,255,255,255});
+            DrawText(TextFormat("ABOUT US: We wanted to create a video game this summer (2022) because we both wanted to challenge\nourselves. We have worked on projects before, but never to this scale. The reason we chose to make a game\nwas because we wanted our end product to be something that we or our friends could enjoy. We decided on a\npirate based game because I (Alex) recently watched Pirates of the Caribbean and pitched the idea to Audrey\nand she liked it (so simple yet it worked). Our initially naive thought process led us to believe we could\ncomplete this game by the end of the summer. Of course, as we started actually coding, designing, and drawing\n(which neither of us have ever done before), we realized it would take a lot longer than a couple months for\nour ambitious ideas. So while the game at its current state is incomplete in our eyes, we hope you will find\nit fun to play at least for the first few minutes :) "), screenWidth/3 - screenWidth/4.5, screenHeight - screenHeight/2.4, 20, (Color){255,255,255,255});
+
+            //Rectangle futureBox = {screenWidth/5 + screenWidth/5, screenHeight/2, 250, 55};
+            Rectangle futureBox = {screenWidth - 350, screenHeight - screenHeight/7, 320, 45};
+            DrawRectangleRounded(futureBox, 0.45f, 8, (Color){ 0, 0, 0, 255 });
+            DrawText(TextFormat("FUTURE PLANS FOR THE GAME"), futureBox.x + 30, futureBox.y + 15, 17, (Color){255,255,255,255});
+
+            /* Checks if the home button is pressed */
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), homeBox)) {
+                toHome = !toHome;
+            }
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), futureBox)) {
+                futurePopUp = !futurePopUp;
+            }
+        
+            if (futurePopUp) {
+                drawFuturePopUp();
+                }
+        EndDrawing();
+    }
+
+    if (toHome) {
+        titleScreen();
+    }
+    UnloadTexture(alex);
+    UnloadTexture(homeTexture);
+    UnloadFont(pirateFont);
+}
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: drawButton
  * @purpose: Draws buttons on the screen that the user can press to navigate through the game
@@ -654,7 +729,7 @@ Rectangle screen::drawButton(const char *text, float roundness, int segments, Fo
         Rectangle box = {boxX, boxY, boxWidth, boxHeight};
         
         /* Draws box and text on screen */
-        DrawRectangleRounded(box, roundness, segments, (Color){ 94, 14, 14, 255 });
+        DrawRectangleRounded(box, roundness, segments, (Color){ 0, 0, 0, 255 });
         Vector2 textPos = {box.x + ((boxWidth - textSize.x) / 2) , box.y + ((boxHeight - textSize.y) / 2)};
         DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){255, 255, 255, 255});
 
@@ -787,5 +862,28 @@ void screen::instructionsPage(Texture2D instructionsTexture){
     Rectangle exit = {screenWidth - 170, 85, 55, 55};
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), exit)) {
         instructionsPopUp = !instructionsPopUp;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: drawFuturePopUp
+ * @purpose: Draws the pop up window to show what the plans are for the future
+ * 
+ * @parameters: n/a
+ *     
+ * @returns: nothing
+ * @effects:
+ * @notes: 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void screen::drawFuturePopUp(){
+    Rectangle popUpBox = {screenWidth/12, screenHeight/5, screenWidth/1.2, screenHeight/1.5};
+    DrawRectangleRec(popUpBox, (Color){0,0,0,255});
+    DrawText(TextFormat("We still have some exciting plans for the game, including making upgrades (with cosmetic\nchanges) for the ship that the player can purchase with materials and gold they collect\nfrom defeating enemies. We have this whole idea to create a player hub known as,\nTortuga, where the player can acquire challenges and when they complete those\nchallenges they will receive gold and materials. There will also be a store to buy materials\nwith gold and a harbor to purchase upgrades and cosmetic changes for the player\'s ship.\nWe also wanted to create several levels with different enemies that spawn. The interesting\nthing is that each type of enemy would behave different and have a different way of\nattacking the player, from dropping fire barrels to ramming the player\'s ship. Even\nthough we still have more work to do in the future, we both learned a lot from this project\nthat we will take with us into our lives, whether its CS related or not. For instance, coding"), popUpBox.x + 50, popUpBox.y + 90, 25, (Color){255,255,255,255});
+    Rectangle notificationBox = {screenWidth - popUpBox.x - 50, popUpBox.y, 55, 55};
+    DrawText(TextFormat("in the middle of the summer without an AC is not fun for anyone unless you have popsicles."),popUpBox.x + 50, popUpBox.y + 495, 25, (Color){255,255,255,255});
+    
+    DrawText(TextFormat("x"), notificationBox.x, notificationBox.y, 50, (Color){255,255,255,255});
+    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), notificationBox)) {
+        futurePopUp = false;   
     }
 }
