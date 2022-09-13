@@ -748,7 +748,10 @@ void screen::aboutUsScreen()
             DrawText(TextFormat("and I\'m Audrey (also 20)\nmajoring in Computer Science\nwith a minor in Human\nFactors Engineering. We are\nboth rising juniors at\nTufts University."), screenWidth/2 + screenWidth/5, screenHeight/5, 20, (Color){255,255,255,255});
             DrawText(TextFormat("ABOUT US: We wanted to create a video game this summer (2022) because we both wanted to challenge\nourselves. We have worked on projects before, but never to this scale. The reason we chose to make a game\nwas because we wanted our end product to be something that we or our friends could enjoy. We decided on a\npirate based game because I (Alex) recently watched Pirates of the Caribbean and pitched the idea to Audrey\nand she liked it (so simple yet it worked). Our initially naive thought process led us to believe we could\ncomplete this game by the end of the summer. Of course, as we started actually coding, designing, and drawing\n(which neither of us have ever done before), we realized it would take a lot longer than a couple months for\nour ambitious ideas. So while the game at its current state is incomplete in our eyes, we hope you will find\nit fun to play at least for the first few minutes :) "), screenWidth/3 - screenWidth/4.5, screenHeight - screenHeight/2.4, 20, (Color){255,255,255,255});
 
-            //Rectangle futureBox = {screenWidth/5 + screenWidth/5, screenHeight/2, 250, 55};
+            
+            DrawText(TextFormat("linkedin.com/in/alexandar-savic"), screenWidth/3 + 5, screenHeight/2 + 10, 15, (Color){255,255,255,255});
+            DrawText(TextFormat("linkedin.com/in/audreyyangg"), screenWidth/2 + 35, screenHeight/2 + 10, 15, (Color){255,255,255,255});
+;
             Rectangle futureBox = {screenWidth - 350, screenHeight - screenHeight/7, 320, 45};
             DrawRectangleRounded(futureBox, 0.45f, 8, (Color){ 0, 0, 0, 255 });
             DrawText(TextFormat("FUTURE PLANS FOR THE GAME"), futureBox.x + 30, futureBox.y + 15, 17, (Color){255,255,255,255});
@@ -841,7 +844,7 @@ Texture2D screen::drawImages(Image img, int width, int height)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: unloadTitleScreen
- * @purpose: Unloads all remaining textures after the game is over
+ * @purpose: Unloads the components used in the title screen
  *
  * @parameters: currTexture: the texture to be unloaded
                 currFont: the font to be unloaded
