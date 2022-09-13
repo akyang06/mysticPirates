@@ -57,6 +57,7 @@ class screen {
         int screenWidth;
         int screenHeight;
 
+        bool unloaded;
         bool exitPopUp;
         bool toHub;
         bool instructionsPopUp;

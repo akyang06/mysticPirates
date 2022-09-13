@@ -65,6 +65,7 @@ void screen::titleScreen()
     /* Creates sound */
     InitAudioDevice();
     Music titleMusic = LoadMusicStream("./soundtrack/titleMusic.mp3"); 
+    SetMusicVolume(titleMusic, 0.1); 
     PlayMusicStream(titleMusic);
 
     /* Creates font */
@@ -75,6 +76,7 @@ void screen::titleScreen()
     int segments = 8;
 
     bool closeTutorial = false;
+    unloaded = false;
 
     Image instructions = LoadImage("./images/instructions.png");
     Texture2D instructionsTexture = drawImages(instructions, screenWidth - 170, screenHeight - 170);
@@ -122,13 +124,21 @@ void screen::titleScreen()
         EndDrawing();
 
         if (closeTutorial){
+            unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
+            unloaded = true;
             tutorialScreen();
+            CloseWindow();
         }
-        if (aboutUs) {
+        else if (aboutUs) {
+            unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
+            unloaded = true;
             aboutUsScreen();
+            CloseWindow();
         }
     }
-    unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
+    if (!unloaded){
+        unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -157,6 +167,7 @@ void screen::titleScreen()
     toHub = false;
     bool toHome = false;
     bool restart = false;
+    unloaded = false;
 
     playerHealth = true;
     enemyOneHealth = true;
@@ -184,6 +195,7 @@ void screen::titleScreen()
 
     /* Sets up music */
     Music tutorialMusic = LoadMusicStream("./soundtrack/tutorialMusic.mp3");
+    SetMusicVolume(tutorialMusic, 0.5); 
     PlayMusicStream(tutorialMusic);
 
     /* Set our game to run at 60 frames-per-second */
@@ -300,23 +312,40 @@ void screen::titleScreen()
         
         EndDrawing();
         if (!playerHealth) {
+            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+            unloaded = true;
             defeatScreen();
+            CloseWindow();
         }
         else if (!enemyOneHealth && !enemyTwoHealth) {
+            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+            unloaded = true;
             victoryScreen(e1->spawnTypes, e2->spawnTypes);
+            CloseWindow();
         }
         else if (toHub) {
+            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+            unloaded = true;
             tortugaHubScreen();
+            CloseWindow();
         }
         else if (toHome) {
+            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+            unloaded = true;
             titleScreen();
+            CloseWindow();
         }
         else if (restart) {
+            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+            unloaded = true;
             tutorialScreen();
+            CloseWindow();
         }
     }
-
-    unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+     
+    if (!unloaded){
+        unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+    }
 
     p1->unloadPlayerComponents();
     e1->unloadEnemyComponents();
@@ -346,6 +375,7 @@ void screen::tortugaHubScreen()
     bool toChallengePage = false;
     bool toMarketPage = false;
     exitPopUp = false;
+    unloaded = false;
 
     while (!WindowShouldClose() && !toMarketPage && !toChallengePage)    /* Detect window close button or ESC key */
     { 
@@ -373,14 +403,19 @@ void screen::tortugaHubScreen()
         EndDrawing();
         
         if(toChallengePage) {
+            UnloadTexture(hubScreenTexture);
+            unloaded = true;
             challengeScreen();
         }
         else if (toMarketPage) {
+            UnloadTexture(hubScreenTexture);
+            unloaded = true;
             marketScreen();
         }
     }
-    
-    UnloadTexture(hubScreenTexture);
+    if (!unloaded) {
+        UnloadTexture(hubScreenTexture);
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -407,6 +442,7 @@ void screen::challengeScreen()
 
     bool goHome = false;
     bool goMap = false;
+    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !goHome && !goMap)    
@@ -434,15 +470,26 @@ void screen::challengeScreen()
         EndDrawing();
 
         if (goMap) {
+            UnloadTexture(challengePageTexture);
+            UnloadTexture(mapTexture);
+            UnloadTexture(homeTexture);
+            unloaded = true;
             tortugaHubScreen();
         }
         else if (goHome){
+            UnloadTexture(challengePageTexture);
+            UnloadTexture(mapTexture);
+            UnloadTexture(homeTexture);
+            unloaded = true;
             titleScreen();
         }
     }
-    UnloadTexture(challengePageTexture);
-    UnloadTexture(mapTexture);
-    UnloadTexture(homeTexture);
+    
+    if (!unloaded) {
+        UnloadTexture(challengePageTexture);
+        UnloadTexture(mapTexture);
+        UnloadTexture(homeTexture);
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -469,6 +516,7 @@ void screen::marketScreen()
 
     bool goHome = false;
     bool goMap = false;
+    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !goHome && !goMap)    
@@ -496,15 +544,25 @@ void screen::marketScreen()
         EndDrawing();
 
         if (goMap) {
+            UnloadTexture(marketPageTexture);
+            UnloadTexture(mapTexture);
+            UnloadTexture(homeTexture);
+            unloaded = true;
             tortugaHubScreen();
         }
         else if (goHome){
+            UnloadTexture(marketPageTexture);
+            UnloadTexture(mapTexture);
+            UnloadTexture(homeTexture);
+            unloaded = true;
             titleScreen();
         }
     }
-    UnloadTexture(marketPageTexture);
-    UnloadTexture(mapTexture);
-    UnloadTexture(homeTexture);
+    if (!unloaded){
+        UnloadTexture(marketPageTexture);
+        UnloadTexture(mapTexture);
+        UnloadTexture(homeTexture);
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -525,6 +583,7 @@ void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
     toHub = false;
     bool toHome = false;
     bool restart = false;
+    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !toHub && !toHome && !restart)    
@@ -559,16 +618,24 @@ void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
         EndDrawing();
 
         if (toHub) {
+            UnloadTexture(victoryPageTexture);
+            unloaded = true;
             tortugaHubScreen();
         }
         else if (toHome) {
+            UnloadTexture(victoryPageTexture);
+            unloaded = true;
             titleScreen();
         }
         else if (restart) {
+            UnloadTexture(victoryPageTexture);
+            unloaded = true;
             tutorialScreen();
         }
     }
-    UnloadTexture(victoryPageTexture);
+    if (!unloaded) {
+        UnloadTexture(victoryPageTexture);
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -589,6 +656,7 @@ void screen::defeatScreen()
     toHub = false;
     bool toHome = false;
     bool restart = false;
+    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !toHub && !toHome && !restart)    
@@ -617,16 +685,24 @@ void screen::defeatScreen()
         EndDrawing();
 
         if (toHub) {
+            UnloadTexture(defeatPageTexture);
+            unloaded = true;
             tortugaHubScreen();
         }
         else if (toHome) {
+            UnloadTexture(defeatPageTexture);
+            unloaded = true;
             titleScreen();
         }
         else if (restart) {
+            UnloadTexture(defeatPageTexture);
+            unloaded = true;
             tutorialScreen();
         }
     }
-    UnloadTexture(defeatPageTexture);
+    if (!unloaded) {
+        UnloadTexture(defeatPageTexture);
+    }
 }
 
 
@@ -655,10 +731,8 @@ void screen::aboutUsScreen()
     Image audreyPhoto = LoadImage("./images/audrey.png");
     Texture2D audrey = drawImages(audreyPhoto, screenWidth/6.5, screenHeight/3);
 
-    /* Creates font */
-    Font pirateFont = LoadFontEx("./fonts/theDarkestPearl.ttf", 200, 0, 250);
-
     futurePopUp = false;
+    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !toHome)    
@@ -691,14 +765,22 @@ void screen::aboutUsScreen()
                 drawFuturePopUp();
                 }
         EndDrawing();
+
+        if (toHome) {
+            UnloadTexture(alex);
+            UnloadTexture(audrey);
+            UnloadTexture(homeTexture);
+            unloaded = true;
+            titleScreen();
+            CloseWindow();
+        }
     }
 
-    if (toHome) {
-        titleScreen();
+    if (!unloaded) {
+        UnloadTexture(alex);
+        UnloadTexture(audrey);
+        UnloadTexture(homeTexture);
     }
-    UnloadTexture(alex);
-    UnloadTexture(homeTexture);
-    UnloadFont(pirateFont);
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: drawButton
