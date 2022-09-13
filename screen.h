@@ -50,12 +50,14 @@ class screen {
 
         void drawPopUpWindow();
         void progressPopUp();
+        void instructionsPage(Texture2D instructionsTexture);
 
         int screenWidth;
         int screenHeight;
 
         bool exitPopUp;
         bool toHub;
+        bool instructionsPopUp;
 
         bool playerHealth;
         bool enemyOneHealth;

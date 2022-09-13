@@ -76,6 +76,10 @@ void screen::titleScreen()
 
     bool closeTutorial = false;
 
+    Image instructions = LoadImage("./images/instructions.png");
+    Texture2D instructionsTexture = drawImages(instructions, screenWidth - 170, screenHeight - 170);
+    instructionsPopUp = false;
+
     while (!WindowShouldClose() && !closeTutorial)    /* Detect window close button or ESC key */
     {
         UpdateMusicStream(titleMusic);
@@ -104,7 +108,13 @@ void screen::titleScreen()
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), playBox)) {
                 closeTutorial = true;
             }
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), settingsBox)) {
+                instructionsPopUp = !instructionsPopUp;
+            }
 
+        if (instructionsPopUp) {
+            instructionsPage(instructionsTexture);
+        }
         EndDrawing();
 
         if (closeTutorial){
@@ -175,6 +185,11 @@ void screen::titleScreen()
 
     float scrollingBack = 0.0f;
 
+    /* Setting up the instructions texture */
+    Image instructions = LoadImage("./images/instructions.png");
+    Texture2D instructionsTexture = drawImages(instructions, screenWidth - 170, screenHeight - 170);
+    instructionsPopUp = false;
+
     /* Create player and enemies */
     player *p1 = new player;
     enemyRed *e1 = new enemyRed;
@@ -225,6 +240,7 @@ void screen::titleScreen()
                 Rectangle mapBox = {screenWidth/2 - 50, 550, 100, 80};
                 Rectangle homeBox = {screenWidth/2 - 225, 550, 100, 80};
                 Rectangle restartBox = {screenWidth/2 + 130, 555, 80, 80};
+                Rectangle instructionsBox = {screenWidth/3.4, 420, 595, 80};
 
                 /* Check if Resume Button is pressed */
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), resumeBox)) {
@@ -238,9 +254,13 @@ void screen::titleScreen()
                 else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), homeBox)) {
                     toHome = !toHome;
                 }
-                /* Checks if the home button is pressed */
+                /* Checks if the restart button is pressed */
                 else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), restartBox)) {
                     restart = !restart;
+                }
+                /* Checks if the instructions button is pressed */
+                else if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), instructionsBox)) {
+                    instructionsPopUp = !instructionsPopUp;
                 }
             }
             
@@ -267,6 +287,9 @@ void screen::titleScreen()
 
             if (exitPopUp){
                 drawPopUpWindow();
+            }
+            if (instructionsPopUp) {
+                instructionsPage(instructionsTexture);
             }
         
         EndDrawing();
@@ -746,5 +769,23 @@ void screen::progressPopUp(){
     DrawText(TextFormat("OK!"), notificationBox.x + 35, notificationBox.y + 20, 20, (Color){0,0,0,255});
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), notificationBox)) {
         exitPopUp = false;
+    }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * @function: progressPopUp
+ * @purpose: Draws the pop up window for instructions
+ * 
+ * @parameters: The instructions texture to draw
+ *     
+ * @returns: nothing
+ * @effects:
+ * @notes: 
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void screen::instructionsPage(Texture2D instructionsTexture){
+    DrawTexture(instructionsTexture, 70, 70, (Color){255, 255, 255, 255});
+    Rectangle exit = {screenWidth - 170, 85, 55, 55};
+    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), exit)) {
+        instructionsPopUp = !instructionsPopUp;
     }
 }
