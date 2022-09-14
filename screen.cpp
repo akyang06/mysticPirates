@@ -63,7 +63,10 @@ void screen::titleScreen()
     Texture2D titleScreenTexture = drawImages(titleScreen, screenWidth, screenHeight);
 
     /* Creates sound */
-    InitAudioDevice();
+    if (!IsAudioDeviceReady()) {
+        InitAudioDevice();
+    }
+    
     Music titleMusic = LoadMusicStream("./soundtrack/titleMusic.mp3"); 
     SetMusicVolume(titleMusic, 0.1); 
     PlayMusicStream(titleMusic);
@@ -139,6 +142,9 @@ void screen::titleScreen()
     if (!unloaded){
         unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
     }
+    
+    UnloadTexture(instructionsTexture);
+
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -344,7 +350,7 @@ void screen::titleScreen()
     }
      
     if (!unloaded){
-        unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
+        unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture ,texture);
     }
 
     p1->unloadPlayerComponents();
@@ -354,6 +360,13 @@ void screen::titleScreen()
     delete p1;
     delete e1;
     delete e2;
+    UnloadFont(pirateFont);
+    UnloadImage(pauseBtn);
+    UnloadImage(playBtn);
+    UnloadImage(pauseScreen);
+    UnloadTexture(pauseScreenTexture);
+    UnloadImage(instructions);
+    UnloadTexture(instructionsTexture);
 }
 
 
