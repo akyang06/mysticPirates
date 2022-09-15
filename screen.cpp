@@ -54,7 +54,8 @@ screen::~screen() {
  *     
  * @returns: nothing
  * @effects:
- * @notes: ISSUE, SONGS GET FASTER AND FASTER WHEN TOGGLING B/W PAGES
+ * @notes: will add a loading page between home and play page so user does not
+ *         see the circle of doom 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void screen::titleScreen() 
 {
@@ -79,7 +80,6 @@ void screen::titleScreen()
     int segments = 8;
 
     bool closeTutorial = false;
-    unloaded = false;
 
     Image instructions = LoadImage("./images/instructions.png");
     Texture2D instructionsTexture = drawImages(instructions, screenWidth - 170, screenHeight - 170);
@@ -97,7 +97,6 @@ void screen::titleScreen()
             DrawTexture(titleScreenTexture, 0, 0, (Color){255, 255, 255, 255});
 
             /* Sets up text size */
-            // note: return memory of pointers
             const char *mysticPirates = "The Mystic Pirates";
             Rectangle titleBox = drawButton(mysticPirates, roundness, segments, pirateFont, 100, screenWidth, screenHeight, 10);
 
@@ -127,22 +126,15 @@ void screen::titleScreen()
         EndDrawing();
 
         if (closeTutorial){
-            unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
-            unloaded = true;
             tutorialScreen();
-            CloseWindow();
         }
         else if (aboutUs) {
-            unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
-            unloaded = true;
             aboutUsScreen();
-            CloseWindow();
         }
     }
-    if (!unloaded){
-        unloadTitleScreen(titleScreenTexture, pirateFont, titleMusic);
-    }
-    
+    UnloadTexture(titleScreenTexture);
+    UnloadFont(pirateFont);
+    UnloadMusicStream(titleMusic);
     UnloadTexture(instructionsTexture);
 
 }
@@ -173,7 +165,6 @@ void screen::titleScreen()
     toHub = false;
     bool toHome = false;
     bool restart = false;
-    unloaded = false;
 
     playerHealth = true;
     enemyOneHealth = true;
@@ -226,6 +217,7 @@ void screen::titleScreen()
     while (!WindowShouldClose() && !toHub && !toHome && !restart && playerHealth && (enemyOneHealth || enemyTwoHealth))    /* Detect window close button or ESC key */
     {
         Rectangle pausePlayBtn = {screenWidth - 97, 30, 60, 65};
+        DrawRectangleRec(pausePlayBtn, (Color){255,255,255,255});
         if ((IsKeyPressed(KEY_P)) || (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), pausePlayBtn))) pause = !pause;
         if (!pause) {
             UpdateMusicStream(tutorialMusic);
@@ -257,14 +249,19 @@ void screen::titleScreen()
                 /* Draws the "instructions" screen */
                 DrawText(TextFormat("INSTRUCTIONS"), screenWidth/2.85, 435, 55, (Color){255,255,255,255});
                 /* Draws the play button on the top right of the screen */
-                DrawTexture(playTexture, screenWidth - 97, 30, (Color){255,255,255,255});
+                //DrawTexture(playTexture, screenWidth - 97, 30, (Color){255,255,255,255});
 
                 /* Marks the different button positions */
-                Rectangle resumeBox = {screenWidth/3.4, 310, 595, 80};
-                Rectangle mapBox = {screenWidth/2 - 50, 550, 100, 80};
-                Rectangle homeBox = {screenWidth/2 - 225, 550, 100, 80};
-                Rectangle restartBox = {screenWidth/2 + 130, 555, 80, 80};
-                Rectangle instructionsBox = {screenWidth/3.4, 420, 595, 80};
+                Rectangle resumeBox = {screenWidth/3.4, screenHeight/2.9, screenWidth/2.4, screenHeight/10.5};
+                DrawRectangleRec(resumeBox, (Color){255,255,255,255});
+                Rectangle mapBox = {screenWidth/2 - screenWidth/30, screenHeight/2 + screenHeight/8.3, screenWidth/15, screenHeight/12};
+                DrawRectangleRec(mapBox, (Color){255,255,0,255});
+                Rectangle homeBox = {screenWidth/2 - screenWidth/7, screenHeight/2 + screenHeight/8.3, screenWidth/15, screenHeight/12};
+                DrawRectangleRec(homeBox, (Color){0,255,255,255});
+                Rectangle restartBox = {screenWidth/2 + screenWidth/11, screenHeight/2 + screenHeight/8.3, screenWidth/15, screenHeight/12};
+                DrawRectangleRec(restartBox, (Color){255,0,255,255});
+                Rectangle instructionsBox = {screenWidth/3.4, screenHeight/2.15, screenWidth/2.4, screenHeight/10.5};
+                DrawRectangleRec(instructionsBox, (Color){255,255,255,255});
 
                 /* Check if Resume Button is pressed */
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), resumeBox)) {
@@ -291,7 +288,7 @@ void screen::titleScreen()
             /* Note: working pause for player and background, not enemies yet */
             else if (!pause) {
                 /* Draws the pause button */ 
-                DrawTexture(pauseTexture, screenWidth - 100, 30, (Color){255,255,255,255});
+                //DrawTexture(pauseTexture, screenWidth - 100, 30, (Color){255,255,255,255});
 
                 /* Tracks player movement */
                 /* Draws player and enemy on screen */
@@ -318,40 +315,32 @@ void screen::titleScreen()
         
         EndDrawing();
         if (!playerHealth) {
-            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
-            unloaded = true;
             defeatScreen();
-            CloseWindow();
         }
         else if (!enemyOneHealth && !enemyTwoHealth) {
-            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
-            unloaded = true;
             victoryScreen(e1->spawnTypes, e2->spawnTypes);
-            CloseWindow();
         }
         else if (toHub) {
-            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
-            unloaded = true;
             tortugaHubScreen();
             CloseWindow();
         }
         else if (toHome) {
-            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
-            unloaded = true;
             titleScreen();
             CloseWindow();
         }
         else if (restart) {
-            unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture,texture);
-            unloaded = true;
             tutorialScreen();
             CloseWindow();
         }
     }
      
-    if (!unloaded){
-        unloadTutorialScreen(tutorialMusic, pauseTexture, playTexture ,texture);
-    }
+    UnloadMusicStream(tutorialMusic);
+    UnloadTexture(pauseTexture);
+    UnloadTexture(playTexture);
+    UnloadTexture(texture);
+    UnloadFont(pirateFont);
+    UnloadTexture(pauseScreenTexture);
+    UnloadTexture(instructionsTexture);
 
     p1->unloadPlayerComponents();
     e1->unloadEnemyComponents();
@@ -360,13 +349,6 @@ void screen::titleScreen()
     delete p1;
     delete e1;
     delete e2;
-    UnloadFont(pirateFont);
-    UnloadImage(pauseBtn);
-    UnloadImage(playBtn);
-    UnloadImage(pauseScreen);
-    UnloadTexture(pauseScreenTexture);
-    UnloadImage(instructions);
-    UnloadTexture(instructionsTexture);
 }
 
 
@@ -388,7 +370,6 @@ void screen::tortugaHubScreen()
     bool toChallengePage = false;
     bool toMarketPage = false;
     exitPopUp = false;
-    unloaded = false;
 
     while (!WindowShouldClose() && !toMarketPage && !toChallengePage)    /* Detect window close button or ESC key */
     { 
@@ -416,19 +397,13 @@ void screen::tortugaHubScreen()
         EndDrawing();
         
         if(toChallengePage) {
-            UnloadTexture(hubScreenTexture);
-            unloaded = true;
             challengeScreen();
         }
         else if (toMarketPage) {
-            UnloadTexture(hubScreenTexture);
-            unloaded = true;
             marketScreen();
         }
     }
-    if (!unloaded) {
-        UnloadTexture(hubScreenTexture);
-    }
+    UnloadTexture(hubScreenTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -455,7 +430,6 @@ void screen::challengeScreen()
 
     bool goHome = false;
     bool goMap = false;
-    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !goHome && !goMap)    
@@ -483,26 +457,18 @@ void screen::challengeScreen()
         EndDrawing();
 
         if (goMap) {
-            UnloadTexture(challengePageTexture);
-            UnloadTexture(mapTexture);
-            UnloadTexture(homeTexture);
-            unloaded = true;
             tortugaHubScreen();
+            CloseWindow();
         }
         else if (goHome){
-            UnloadTexture(challengePageTexture);
-            UnloadTexture(mapTexture);
-            UnloadTexture(homeTexture);
-            unloaded = true;
             titleScreen();
+            CloseWindow();
         }
     }
     
-    if (!unloaded) {
-        UnloadTexture(challengePageTexture);
-        UnloadTexture(mapTexture);
-        UnloadTexture(homeTexture);
-    }
+    UnloadTexture(challengePageTexture);
+    UnloadTexture(mapTexture);
+    UnloadTexture(homeTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -529,7 +495,6 @@ void screen::marketScreen()
 
     bool goHome = false;
     bool goMap = false;
-    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !goHome && !goMap)    
@@ -557,25 +522,18 @@ void screen::marketScreen()
         EndDrawing();
 
         if (goMap) {
-            UnloadTexture(marketPageTexture);
-            UnloadTexture(mapTexture);
-            UnloadTexture(homeTexture);
-            unloaded = true;
             tortugaHubScreen();
+            CloseWindow();
         }
         else if (goHome){
-            UnloadTexture(marketPageTexture);
-            UnloadTexture(mapTexture);
-            UnloadTexture(homeTexture);
-            unloaded = true;
             titleScreen();
+            CloseWindow();
         }
     }
-    if (!unloaded){
-        UnloadTexture(marketPageTexture);
-        UnloadTexture(mapTexture);
-        UnloadTexture(homeTexture);
-    }
+    UnloadTexture(marketPageTexture);
+    UnloadTexture(mapTexture);
+    UnloadTexture(homeTexture);
+    
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -596,7 +554,6 @@ void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
     toHub = false;
     bool toHome = false;
     bool restart = false;
-    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !toHub && !toHome && !restart)    
@@ -631,24 +588,19 @@ void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
         EndDrawing();
 
         if (toHub) {
-            UnloadTexture(victoryPageTexture);
-            unloaded = true;
             tortugaHubScreen();
+            CloseWindow();
         }
         else if (toHome) {
-            UnloadTexture(victoryPageTexture);
-            unloaded = true;
             titleScreen();
+            CloseWindow();
         }
         else if (restart) {
-            UnloadTexture(victoryPageTexture);
-            unloaded = true;
             tutorialScreen();
+            CloseWindow();
         }
     }
-    if (!unloaded) {
-        UnloadTexture(victoryPageTexture);
-    }
+    UnloadTexture(victoryPageTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -669,7 +621,6 @@ void screen::defeatScreen()
     toHub = false;
     bool toHome = false;
     bool restart = false;
-    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !toHub && !toHome && !restart)    
@@ -698,24 +649,19 @@ void screen::defeatScreen()
         EndDrawing();
 
         if (toHub) {
-            UnloadTexture(defeatPageTexture);
-            unloaded = true;
             tortugaHubScreen();
+            CloseWindow();
         }
         else if (toHome) {
-            UnloadTexture(defeatPageTexture);
-            unloaded = true;
             titleScreen();
+            CloseWindow();
         }
         else if (restart) {
-            UnloadTexture(defeatPageTexture);
-            unloaded = true;
             tutorialScreen();
+            CloseWindow();
         }
     }
-    if (!unloaded) {
-        UnloadTexture(defeatPageTexture);
-    }
+    UnloadTexture(defeatPageTexture);
 }
 
 
@@ -745,7 +691,6 @@ void screen::aboutUsScreen()
     Texture2D audrey = drawImages(audreyPhoto, screenWidth/6.5, screenHeight/3);
 
     futurePopUp = false;
-    unloaded = false;
 
     /* Detect window close button or ESC key */
     while (!WindowShouldClose() && !toHome)    
@@ -779,24 +724,17 @@ void screen::aboutUsScreen()
         
             if (futurePopUp) {
                 drawFuturePopUp();
-                }
+            }
         EndDrawing();
 
         if (toHome) {
-            UnloadTexture(alex);
-            UnloadTexture(audrey);
-            UnloadTexture(homeTexture);
-            unloaded = true;
             titleScreen();
             CloseWindow();
         }
     }
-
-    if (!unloaded) {
-        UnloadTexture(alex);
-        UnloadTexture(audrey);
-        UnloadTexture(homeTexture);
-    }
+    UnloadTexture(alex);
+    UnloadTexture(audrey);
+    UnloadTexture(homeTexture);
 }
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: drawButton
@@ -827,9 +765,10 @@ Rectangle screen::drawButton(const char *text, float roundness, int segments, Fo
         Rectangle box = {boxX, boxY, boxWidth, boxHeight};
         
         /* Draws box and text on screen */
-        DrawRectangleRounded(box, roundness, segments, (Color){ 0, 0, 0, 255 });
+        // DrawRectangleRounded(box, roundness, segments, (Color){ 0, 0, 0, 255 });
+        DrawRectangleRec(box, (Color){196, 164, 132, 255});
         Vector2 textPos = {box.x + ((boxWidth - textSize.x) / 2) , box.y + ((boxHeight - textSize.y) / 2)};
-        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){255, 255, 255, 255});
+        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){78,53,36, 255});
 
         return box;
 }
@@ -854,44 +793,6 @@ Texture2D screen::drawImages(Image img, int width, int height)
     UnloadImage(img);
     return imgTexture;
 }
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: unloadTitleScreen
- * @purpose: Unloads the components used in the title screen
- *
- * @parameters: currTexture: the texture to be unloaded
-                currFont: the font to be unloaded
-                currMusic: the music to be unloaded
- *     
- * @returns: nothing
- * @effects: Unloads a texture, font and music
- * @notes: 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void screen::unloadTitleScreen(Texture2D currTexture, Font currFont, Music currMusic) {
-    UnloadTexture(currTexture);
-    UnloadFont(currFont);
-    UnloadMusicStream(currMusic);
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * @function: unloadTutorialScreen
- * @purpose: Unloads all remaining textures after the game is over
- *
- * @parameters: currTexture: the texture to be unloaded
-                currFont: the font to be unloaded
-                currMusic: the music to be unloaded
- *     
- * @returns: nothing
- * @effects: Unloads a texture, font and music
- * @notes: 
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void screen::unloadTutorialScreen(Music tutorialMusic, Texture2D pauseTexture, Texture2D playTexture, Texture2D texture) {
-    UnloadMusicStream(tutorialMusic);
-    UnloadTexture(pauseTexture);
-    UnloadTexture(playTexture);
-    UnloadTexture(texture);
-}
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @function: drawPopUpWindow

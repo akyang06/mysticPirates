@@ -45,10 +45,6 @@ class screen {
 
         Texture2D drawImages(Image img, int width, int height);
 
-        void unloadTitleScreen(Texture2D currTexture, Font currFont, Music currMusic);
-
-        void unloadTutorialScreen(Music tutorialMusic, Texture2D pauseTexture, Texture2D playTexture, Texture2D texture);
-
         void drawPopUpWindow();
         void progressPopUp();
         void instructionsPage(Texture2D instructionsTexture);
@@ -57,7 +53,6 @@ class screen {
         int screenWidth;
         int screenHeight;
 
-        bool unloaded;
         bool exitPopUp;
         bool toHub;
         bool instructionsPopUp;
