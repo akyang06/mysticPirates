@@ -182,10 +182,10 @@ void screen::titleScreen()
 
     /* Loading pause/play components */
     Image pauseBtn = LoadImage("./images/pause.png");
-    Texture2D pauseTexture = drawImages(pauseBtn, 65, 68);
+    Texture2D pauseTexture = drawImages(pauseBtn, screenWidth/20, screenHeight/13);
 
     Image playBtn = LoadImage("./images/playButton.png");
-    Texture2D playTexture = drawImages(playBtn, 60, 68);
+    Texture2D playTexture = drawImages(playBtn, screenWidth/23, screenHeight/13);
 
     Image pauseScreen = LoadImage("./images/pausePage.png");
     Texture2D pauseScreenTexture = drawImages(pauseScreen, screenWidth/1.5, screenHeight/1.3);
@@ -216,8 +216,8 @@ void screen::titleScreen()
 
     while (!WindowShouldClose() && !toHub && !toHome && !restart && playerHealth && (enemyOneHealth || enemyTwoHealth))    /* Detect window close button or ESC key */
     {
-        Rectangle pausePlayBtn = {screenWidth - 97, 30, 60, 65};
-        DrawRectangleRec(pausePlayBtn, (Color){255,255,255,255});
+        Rectangle pausePlayBtn = {screenWidth - screenWidth/15, screenHeight/25, screenWidth/25, screenHeight/15};
+
         if ((IsKeyPressed(KEY_P)) || (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), pausePlayBtn))) pause = !pause;
         if (!pause) {
             UpdateMusicStream(tutorialMusic);
@@ -249,7 +249,7 @@ void screen::titleScreen()
                 /* Draws the "instructions" screen */
                 DrawText(TextFormat("INSTRUCTIONS"), screenWidth/2.85, 435, 55, (Color){255,255,255,255});
                 /* Draws the play button on the top right of the screen */
-                //DrawTexture(playTexture, screenWidth - 97, 30, (Color){255,255,255,255});
+                DrawTexture(playTexture, screenWidth - screenWidth/16, screenHeight/25, (Color){255,255,255,255});
 
                 /* Marks the different button positions */
                 Rectangle resumeBox = {screenWidth/3.4, screenHeight/2.9, screenWidth/2.4, screenHeight/10.5};
@@ -288,7 +288,8 @@ void screen::titleScreen()
             /* Note: working pause for player and background, not enemies yet */
             else if (!pause) {
                 /* Draws the pause button */ 
-                //DrawTexture(pauseTexture, screenWidth - 100, 30, (Color){255,255,255,255});
+                //DrawRectangleRec(pausePlayBtn, (Color){255,255,255,255});
+                DrawTexture(pauseTexture, screenWidth - screenWidth/15, screenHeight/25, (Color){255,255,255,255});
 
                 /* Tracks player movement */
                 /* Draws player and enemy on screen */
