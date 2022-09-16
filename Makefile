@@ -1,6 +1,6 @@
 
 # #########################################################
-# #                  pirateGame Makefile                  #
+# #                  mysticPirates Makefile                  #
 # #       Authors:  Alex Savic and Audrey Yang            #
 # #				Date:	  25 June 2022		   		  	  #
 # #########################################################
@@ -14,7 +14,7 @@
 
 # Define project configuration
 #------------------------------------------------------------------------------------------------
-PROJECT_NAME          ?= pirateGame
+PROJECT_NAME          ?= mysticPirates
 PROJECT_VERSION       ?= 1.0
 PROJECT_BUILD_MODE    ?= RELEASE
 
