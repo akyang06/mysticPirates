@@ -1,6 +1,6 @@
 
 # #########################################################
-# #                  mysticPirates Makefile                  #
+# #                  mysticPirates Makefile               #
 # #       Authors:  Alex Savic and Audrey Yang            #
 # #				Date:	  25 June 2022		   		  	  #
 # #########################################################
