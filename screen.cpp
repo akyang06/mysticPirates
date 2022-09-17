@@ -63,6 +63,9 @@ void screen::titleScreen()
     Image titleScreen = LoadImage("./images/titleScreen.png");
     Texture2D titleScreenTexture = drawImages(titleScreen, screenWidth, screenHeight);
 
+    Image titleWords = LoadImage("./images/title.png");
+    Texture2D titleWordsTexture = drawImages(titleWords, screenWidth/1.15, screenHeight/6);
+
     /* Creates sound */
     if (!IsAudioDeviceReady()) {
         InitAudioDevice();
@@ -96,10 +99,9 @@ void screen::titleScreen()
             /* Draws background */
             DrawTexture(titleScreenTexture, 0, 0, (Color){255, 255, 255, 255});
 
+            DrawTexture(titleWordsTexture, screenWidth/15, screenHeight/8, (Color){255, 255, 255, 255});
+            
             /* Sets up text size */
-            const char *mysticPirates = "The Mystic Pirates";
-            Rectangle titleBox = drawButton(mysticPirates, roundness, segments, pirateFont, 100, screenWidth, screenHeight, 10);
-
             const char *playB = "Play";
             Rectangle playBox = drawButton(playB, roundness, segments, pirateFont, 70, screenWidth, screenHeight, 1.7);
 
@@ -766,10 +768,10 @@ Rectangle screen::drawButton(const char *text, float roundness, int segments, Fo
         Rectangle box = {boxX, boxY, boxWidth, boxHeight};
         
         /* Draws box and text on screen */
-        // DrawRectangleRounded(box, roundness, segments, (Color){ 0, 0, 0, 255 });
-        DrawRectangleRec(box, (Color){196, 164, 132, 255});
+        //DrawRectangleRounded(box, roundness, segments, (Color){187, 160, 134, 255});
+        DrawRectangleRec(box, (Color){187, 160, 134, 255});
         Vector2 textPos = {box.x + ((boxWidth - textSize.x) / 2) , box.y + ((boxHeight - textSize.y) / 2)};
-        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){78,53,36, 255});
+        DrawTextEx(pirateFont, text, textPos, fontSize, -1, (Color){88,58,30, 255});
 
         return box;
 }
