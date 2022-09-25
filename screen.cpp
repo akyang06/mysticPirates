@@ -64,7 +64,7 @@ void screen::titleScreen()
     Texture2D titleScreenTexture = drawImages(titleScreen, screenWidth, screenHeight);
 
     Image titleWords = LoadImage("./images/title.png");
-    Texture2D titleWordsTexture = drawImages(titleWords, screenWidth/1.15, screenHeight/6);
+    Texture2D titleWordsTexture = drawImages(titleWords, screenWidth/1.15, screenHeight/7);
 
     /* Creates sound */
     if (!IsAudioDeviceReady()) {
@@ -244,26 +244,22 @@ void screen::titleScreen()
                 DrawRectangle(0, 0, screenWidth, screenHeight, (Color){ 0, 0, 0, 200 });
                 /* Draws the pause screen */
                 DrawTexture(pauseScreenTexture, screenWidth/6, 75, (Color){255,255,255,255});
-                /* Draws the "paused" title */
-                DrawText(TextFormat("PAUSED"), screenWidth/2.5, 180, 75, (Color){255,255,255,255});
-                /* Draws the "resume" button */
-                DrawText(TextFormat("RESUME"), screenWidth/2.35, 328, 55, (Color){255,255,255,255});
-                /* Draws the "instructions" screen */
-                DrawText(TextFormat("INSTRUCTIONS"), screenWidth/2.85, 435, 55, (Color){255,255,255,255});
-                /* Draws the play button on the top right of the screen */
-                DrawTexture(playTexture, screenWidth - screenWidth/16, screenHeight/25, (Color){255,255,255,255});
 
                 /* Marks the different button positions */
                 Rectangle resumeBox = {screenWidth/3.4, screenHeight/2.9, screenWidth/2.4, screenHeight/10.5};
-                DrawRectangleRec(resumeBox, (Color){255,255,255,255});
                 Rectangle mapBox = {screenWidth/2 - screenWidth/30, screenHeight/2 + screenHeight/8.3, screenWidth/15, screenHeight/12};
-                DrawRectangleRec(mapBox, (Color){255,255,0,255});
                 Rectangle homeBox = {screenWidth/2 - screenWidth/7, screenHeight/2 + screenHeight/8.3, screenWidth/15, screenHeight/12};
-                DrawRectangleRec(homeBox, (Color){0,255,255,255});
                 Rectangle restartBox = {screenWidth/2 + screenWidth/11, screenHeight/2 + screenHeight/8.3, screenWidth/15, screenHeight/12};
-                DrawRectangleRec(restartBox, (Color){255,0,255,255});
                 Rectangle instructionsBox = {screenWidth/3.4, screenHeight/2.15, screenWidth/2.4, screenHeight/10.5};
-                DrawRectangleRec(instructionsBox, (Color){255,255,255,255});
+
+                /* Draws the "paused" title */
+                DrawText(TextFormat("PAUSED"), screenWidth/2.5, screenHeight/5, 75, (Color){255,255,255,255});
+                /* Draws the "resume" button */
+                DrawText(TextFormat("RESUME"), resumeBox.x + resumeBox.x/2.2, resumeBox.y + resumeBox.y/20, 55, (Color){255,255,255,255});
+                /* Draws the "instructions" screen */
+                DrawText(TextFormat("INSTRUCTIONS"), instructionsBox.x + instructionsBox.x/5, instructionsBox.y + instructionsBox.y/25, 55, (Color){255,255,255,255});
+                /* Draws the play button on the top right of the screen */
+                DrawTexture(playTexture, screenWidth - screenWidth/16, screenHeight/25, (Color){255,255,255,255});
 
                 /* Check if Resume Button is pressed */
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), resumeBox)) {
@@ -379,9 +375,9 @@ void screen::tortugaHubScreen()
         BeginDrawing();
             ClearBackground((Color){0, 0, 0, 255});
             DrawTexture(hubScreenTexture, 0, 0, (Color){255, 255, 255, 255});
-            Rectangle challengePage = {20, screenHeight/3.7, 360, 500};
-            Rectangle upgradePage = {screenWidth/2-250, screenHeight/2.25, 430, screenHeight-screenHeight/2.25};
-            Rectangle marketPage = {screenWidth-395, screenHeight/3.7, 370, 500};
+            Rectangle challengePage = {screenWidth/50, screenHeight/3.7, 360, 500};
+            Rectangle upgradePage = {screenWidth/2-screenWidth/6, screenHeight/2.25, 430, screenHeight-screenHeight/2.25};
+            Rectangle marketPage = {screenWidth-screenWidth/3.6, screenHeight/3.7, 370, 500};
 
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), challengePage)) {
                 toChallengePage = !toChallengePage;
@@ -447,8 +443,8 @@ void screen::challengeScreen()
                 progressPopUp();
             }
             
-            Rectangle mapButton = {screenWidth-170, 50,  120,  120};
-            Rectangle homeButton = {50, 60, 100, 100};
+            Rectangle mapButton = {screenWidth-screenWidth/9, screenHeight/20,  120,  120};
+            Rectangle homeButton = {screenWidth/27, screenHeight/15, 100, 100};
 
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), mapButton)) {
                 goMap = true;
@@ -512,8 +508,8 @@ void screen::marketScreen()
                 progressPopUp();
             }
             
-            Rectangle mapButton = {screenWidth-170, 50,  120,  120};
-            Rectangle homeButton = {50, 60, 100, 100};
+            Rectangle mapButton = {screenWidth-screenWidth/8.5, screenHeight/20,  120,  120};
+            Rectangle homeButton = {screenWidth/30, screenHeight/15, 100, 100};
 
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), mapButton)) {
                 goMap = true;
@@ -571,9 +567,9 @@ void screen::victoryScreen(int enemyOneSpawnTypes[5], int enemyTwoSpawnTypes[5])
             DrawText(TextFormat("%d", (enemyOneSpawnTypes[3] + enemyTwoSpawnTypes[3])), screenWidth/2 + 220, screenHeight/2 - 50, 40, (Color){255,255,255,255});
             DrawText(TextFormat("%d", (enemyOneSpawnTypes[4] + enemyTwoSpawnTypes[4])), screenWidth/2 + 385, screenHeight/2 - 50, 40, (Color){255,255,255,255});
             
-            Rectangle mapBox = {screenWidth/2 - 25, screenHeight-200, 100, 80};
-            Rectangle homeBox = {screenWidth/2 - 195, screenHeight-200, 100, 80};
-            Rectangle restartBox = {screenWidth/2 + 160, screenHeight-200, 80, 80};
+            Rectangle mapBox = {screenWidth/2 - screenWidth/40, screenHeight-screenHeight/4.3, 110, 90};
+            Rectangle homeBox = {screenWidth/2 - screenWidth/7.5, screenHeight-screenHeight/4.3, 100, 100};
+            Rectangle restartBox = {screenWidth/2 + screenWidth/10, screenHeight-screenHeight/4.3, 90, 90};
 
             /* Checks if the map button is pressed */
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), mapBox)) {
@@ -632,9 +628,9 @@ void screen::defeatScreen()
             ClearBackground((Color){0, 0, 0, 255});
             DrawTexture(defeatPageTexture, 0, 0, (Color){255, 255, 255, 255});
             
-            Rectangle mapBox = {screenWidth/2 - 43, screenHeight-370, 100, 80};
-            Rectangle homeBox = {screenWidth/2 - 195, screenHeight-370, 100, 80};
-            Rectangle restartBox = {screenWidth/2 + 120, screenHeight-370, 80, 80};
+            Rectangle mapBox = {screenWidth/2 - screenWidth/30, screenHeight-screenHeight/2.45, 100, 80};
+            Rectangle homeBox = {screenWidth/2 - screenWidth/7.8, screenHeight-screenHeight/2.45, 100, 80};
+            Rectangle restartBox = {screenWidth/2 + screenWidth/12, screenHeight-screenHeight/2.45, 80, 80};
 
             /* Checks if the map button is pressed */
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), mapBox)) {
@@ -682,7 +678,7 @@ void screen::aboutUsScreen()
 {
     bool toHome = false;
     Rectangle background = {0, 0, screenWidth, screenHeight};
-    Rectangle homeBox = {screenWidth - 100, 30, 75, 75};
+    Rectangle homeBox = {screenWidth - screenWidth/15, screenHeight/30, 75, 75};
 
     Image home = LoadImage("./images/home.png");
     Texture2D homeTexture = drawImages(home, 75, 75);
@@ -713,7 +709,7 @@ void screen::aboutUsScreen()
             DrawText(TextFormat("linkedin.com/in/alexandar-savic"), screenWidth/3 + 5, screenHeight/2 + 10, 15, (Color){255,255,255,255});
             DrawText(TextFormat("linkedin.com/in/audreyyangg"), screenWidth/2 + 35, screenHeight/2 + 10, 15, (Color){255,255,255,255});
 ;
-            Rectangle futureBox = {screenWidth - 350, screenHeight - screenHeight/7, 320, 45};
+            Rectangle futureBox = {screenWidth - screenWidth/4, screenHeight - screenHeight/7, 320, 45};
             DrawRectangleRounded(futureBox, 0.45f, 8, (Color){ 0, 0, 0, 255 });
             DrawText(TextFormat("FUTURE PLANS FOR THE GAME"), futureBox.x + 30, futureBox.y + 15, 17, (Color){255,255,255,255});
 
@@ -812,8 +808,8 @@ void screen::drawPopUpWindow(){
     Rectangle popUpBox = {screenWidth/3, screenHeight/3, screenWidth/3, screenHeight/3};
     DrawRectangleRec(popUpBox, (Color){0,0,0,255});
     DrawText(TextFormat("Are you sure you want to exit? \n You will lose all the progress \n      you've made in this level."), screenWidth/3 + 50, screenHeight/3 + 50, 25, (Color){255,255,255,255});
-    Rectangle cancelBox = {screenWidth/2 - 170, screenHeight/2 + 45, 150, 55};
-    Rectangle continueBox = {screenWidth/2 + 30, screenHeight/2 + 45, 150, 55};
+    Rectangle cancelBox = {screenWidth/2 - screenWidth/9, screenHeight/2 + screenHeight/20, 150, 55};
+    Rectangle continueBox = {screenWidth/2 + screenWidth/50, screenHeight/2 + screenHeight/20, 150, 55};
     DrawRectangleRounded(cancelBox, 0.45f, 8, (Color){255,255,255,255});
     DrawRectangleRounded(continueBox, 0.45f, 8, (Color){255,255,255,255});
     DrawText(TextFormat("CANCEL"), cancelBox.x + 40, cancelBox.y + 20, 20, (Color){0,0,0,255});
@@ -840,10 +836,10 @@ void screen::drawPopUpWindow(){
 void screen::progressPopUp(){
     Rectangle popUpBox = {screenWidth/3, screenHeight/3, screenWidth/3, screenHeight/3};
     DrawRectangleRec(popUpBox, (Color){0,0,0,255});
-    DrawText(TextFormat("  This part of the game is still\nunder construction. Check back \n     soon for more updates!"), screenWidth/3 + 50, screenHeight/3 + 50, 25, (Color){255,255,255,255});
+    DrawText(TextFormat("  This part of the game is still\nunder construction. Check back \n     soon for more updates!"), screenWidth/3 + screenWidth/30, screenHeight/3 + screenHeight/15, 25, (Color){255,255,255,255});
     Rectangle notificationBox = {screenWidth/2 - 43, screenHeight/2 + 45, 100, 55};
     DrawRectangleRounded(notificationBox, 0.45f, 8, (Color){255,255,255,255});
-    DrawText(TextFormat("OK!"), notificationBox.x + 35, notificationBox.y + 20, 20, (Color){0,0,0,255});
+    DrawText(TextFormat("OK!"), notificationBox.x + notificationBox.x/19, notificationBox.y + notificationBox.y/30, 20, (Color){0,0,0,255});
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), notificationBox)) {
         exitPopUp = false;
     }
@@ -861,7 +857,7 @@ void screen::progressPopUp(){
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void screen::instructionsPage(Texture2D instructionsTexture){
     DrawTexture(instructionsTexture, 70, 70, (Color){255, 255, 255, 255});
-    Rectangle exit = {screenWidth - 170, 85, 55, 55};
+    Rectangle exit = {screenWidth - screenWidth/8.5, screenHeight/10.5, 55, 55};
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), exit)) {
         instructionsPopUp = !instructionsPopUp;
     }
@@ -880,9 +876,9 @@ void screen::instructionsPage(Texture2D instructionsTexture){
 void screen::drawFuturePopUp(){
     Rectangle popUpBox = {screenWidth/12, screenHeight/5, screenWidth/1.2, screenHeight/1.5};
     DrawRectangleRec(popUpBox, (Color){0,0,0,255});
-    DrawText(TextFormat("We still have some exciting plans for the game, including making upgrades (with cosmetic\nchanges) for the ship that the player can purchase with materials and gold they collect\nfrom defeating enemies. We have this whole idea to create a player hub known as,\nTortuga, where the player can acquire challenges and when they complete those\nchallenges they will receive gold and materials. There will also be a store to buy materials\nwith gold and a harbor to purchase upgrades and cosmetic changes for the player\'s ship.\nWe also wanted to create several levels with different enemies that spawn. The interesting\nthing is that each type of enemy would behave different and have a different way of\nattacking the player, from dropping fire barrels to ramming the player\'s ship. Even\nthough we still have more work to do in the future, we both learned a lot from this project\nthat we will take with us into our lives, whether its CS related or not. For instance, coding"), popUpBox.x + 50, popUpBox.y + 90, 25, (Color){255,255,255,255});
-    Rectangle notificationBox = {screenWidth - popUpBox.x - 50, popUpBox.y, 55, 55};
-    DrawText(TextFormat("in the middle of the summer without an AC is not fun for anyone unless you have popsicles."),popUpBox.x + 50, popUpBox.y + 495, 25, (Color){255,255,255,255});
+    DrawText(TextFormat("We still have some exciting plans for the game, including making upgrades (with cosmetic\nchanges) for the ship that the player can purchase with materials and gold they collect\nfrom defeating enemies. We have this whole idea to create a player hub known as,\nTortuga, where the player can acquire challenges and when they complete those\nchallenges they will receive gold and materials. There will also be a store to buy materials\nwith gold and a harbor to purchase upgrades and cosmetic changes for the player\'s ship.\nWe also wanted to create several levels with different enemies that spawn. The interesting\nthing is that each type of enemy would behave different and have a different way of\nattacking the player, from dropping fire barrels to ramming the player\'s ship. Even\nthough we still have more work to do in the future, we both learned a lot from this project\nthat we will take with us into our lives, whether its CS related or not. For instance, coding"), popUpBox.x + popUpBox.x/3, popUpBox.y + popUpBox.y/2, 25, (Color){255,255,255,255});
+    Rectangle notificationBox = {screenWidth - popUpBox.x * 1.4, popUpBox.y, 55, 55};
+    DrawText(TextFormat("in the middle of the summer without an AC is not fun for anyone unless you have popsicles."), popUpBox.x * 1.35, popUpBox.y * 3.75, 25, (Color){255,255,255,255});
     
     DrawText(TextFormat("x"), notificationBox.x, notificationBox.y, 50, (Color){255,255,255,255});
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), notificationBox)) {

@@ -22,7 +22,6 @@
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 enemyRed::enemyRed() : enemy() {
-
     /* Enemy Red ship initial stats */
     acceleration = 0.012;
     deceleration = 0.01;

@@ -22,7 +22,6 @@
  * @notes:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 player::player() : ship() {
-
     /* Player ship initial stats */
     acceleration = 0.015;
     deceleration = 0.01;

@@ -18,7 +18,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Fri Sep 16 14:20:20 2022
+# Make data base, printed on Sun Sep 25 22:03:03 2022
 
 # Variables
 
@@ -39,7 +39,6 @@ LDLIBS = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework
 # makefile
 CURDIR := /Users/audreyyang/Desktop/pirateGame
 # makefile
- 
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
@@ -66,6 +65,8 @@ UNAMEOS = $(shell uname)
 # makefile (from `Makefile', line 18)
 PROJECT_VERSION = 1.0
 # environment
+LaunchInstanceID = 890B6A72-0122-4195-A379-E16C4F02B526
+# environment
 ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 189)
 INCLUDE_PATHS = -I. -I$(RAYLIB_INCLUDE_PATH)
@@ -74,7 +75,7 @@ LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.mXJRkIC4QP/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.Dc36d9ucPE/Listeners
 # automatic
 %F = $(notdir $%)
 # makefile (from `Makefile', line 319)
@@ -92,7 +93,7 @@ HOME = /Users/audreyyang
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/e7f30e38c5a4efafeec8ad52861eb772a9ee4dfb
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/74b1f979648cc44d385a2286793c226e611f59e7
 # environment
 LOGNAME = audreyyang
 # environment
@@ -132,7 +133,7 @@ TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.71.1-main.sock
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.71.2-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -142,7 +143,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.84444981.84444987
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.84733092.84733098
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -163,6 +164,8 @@ MAKEFILES :=
 PROJECT_NAME = mysticPirates
 # environment
 LC_ALL = C
+# environment
+SECURITYSESSIONID = 186a5
 # automatic
 ^F = $(notdir $^)
 # default
@@ -176,9 +179,9 @@ MAKELEVEL := 1
 # environment
 LANG = C
 # environment
-VSCODE_PID = 99872
+VSCODE_PID = 793
 # variable set hash-table stats:
-# Load=77/1024=8%, Rehash=0, Collisions=10/184=5%
+# Load=79/1024=8%, Rehash=0, Collisions=10/186=5%
 
 # Pattern-specific Variable Values
 
@@ -218,7 +221,7 @@ all:
 # Not a target:
 enemyRed.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-12 22:09:40
+#  Last modified 2022-09-13 06:09:40
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -233,7 +236,7 @@ enemyRed.cpp:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-15 22:43:41
+#  Last modified 2022-09-16 06:43:41
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -242,7 +245,7 @@ Makefile:
 # Not a target:
 main.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-12 00:42:50
+#  Last modified 2022-09-12 08:42:50
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -251,7 +254,7 @@ main.cpp:
 # Not a target:
 ship.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-11 00:28:54
+#  Last modified 2022-09-11 08:28:54
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -260,7 +263,7 @@ ship.cpp:
 # Not a target:
 player.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-11 11:46:24
+#  Last modified 2022-09-11 19:46:24
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -275,7 +278,7 @@ player.cpp:
 # Not a target:
 enemy.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-01 20:38:42
+#  Last modified 2022-09-02 04:38:42
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -284,7 +287,7 @@ enemy.cpp:
 # Not a target:
 screen.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-15 00:27:50
+#  Last modified 2022-09-17 03:16:19
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -304,13 +307,12 @@ clean:
 mysticPirates: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 #  Command-line target.
 #  Implicit rule search has not been done.
-#  Last modified 2022-09-15 22:43:09
+#  Last modified 2022-09-17 03:16:29
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `Makefile', line 339):
- 
 	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 	
 
@@ -322,16 +324,16 @@ mysticPirates: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 
 # No general (`VPATH' variable) search path.
 
+ 
 # # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Sep 16 14:20:20 2022
+# Finished Make data base on Sun Sep 25 22:03:03 2022
 
- 
 
-# Make data base, printed on Fri Sep 16 14:20:20 2022
+# Make data base, printed on Sun Sep 25 22:03:03 2022
 
 # Variables
 
@@ -378,6 +380,8 @@ UNAMEOS = $(shell uname)
 # makefile (from `Makefile', line 18)
 PROJECT_VERSION = 1.0
 # environment
+LaunchInstanceID = 890B6A72-0122-4195-A379-E16C4F02B526
+# environment
 ELECTRON_RUN_AS_NODE = 1
 # makefile (from `Makefile', line 189)
 INCLUDE_PATHS = -I. -I$(RAYLIB_INCLUDE_PATH)
@@ -386,7 +390,7 @@ LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.mXJRkIC4QP/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.Dc36d9ucPE/Listeners
 # automatic
 %F = $(notdir $%)
 # makefile (from `Makefile', line 319)
@@ -404,7 +408,7 @@ HOME = /Users/audreyyang
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/e7f30e38c5a4efafeec8ad52861eb772a9ee4dfb
+VSCODE_CODE_CACHE_PATH = /Users/audreyyang/Library/Application Support/Code/CachedData/74b1f979648cc44d385a2286793c226e611f59e7
 # environment
 LOGNAME = audreyyang
 # environment
@@ -444,7 +448,7 @@ TMPDIR = /var/folders/g4/b16n242j6174cyfsd5nkzfmc0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.71.1-main.sock
+VSCODE_IPC_HOOK = /Users/audreyyang/Library/Application Support/Code/1.71.2-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -454,7 +458,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.84444981.84444987
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.84733092.84733098
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -474,8 +478,9 @@ MAKEFILES :=
 # makefile (from `Makefile', line 17)
 PROJECT_NAME = mysticPirates
 # environment
- 
 LC_ALL = C
+# environment
+SECURITYSESSIONID = 186a5
 # automatic
 ^F = $(notdir $^)
 # default
@@ -489,9 +494,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 99872
+VSCODE_PID = 793
 # variable set hash-table stats:
-# Load=77/1024=8%, Rehash=0, Collisions=10/187=5%
+# Load=79/1024=8%, Rehash=0, Collisions=10/189=5%
 
 # Pattern-specific Variable Values
 
@@ -564,7 +569,7 @@ enemyRed.cpp:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-15 22:43:41
+#  Last modified 2022-09-16 06:43:41
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -636,8 +641,9 @@ mysticPirates: main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp
 # # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+ 
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Sep 16 14:20:20 2022
+# Finished Make data base on Sun Sep 25 22:03:03 2022
 
  

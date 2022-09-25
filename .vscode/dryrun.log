@@ -1,10 +1,8 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/audreyyang/Desktop/pirateGame'
 /Library/Developer/CommandLineTools/usr/bin/make mysticPirates
- 
 make[1]: Entering directory `/Users/audreyyang/Desktop/pirateGame'
-make[1]: `mysticPirates' is up to date.
+clang++ -o mysticPirates main.cpp screen.cpp ship.cpp player.cpp enemy.cpp enemyRed.cpp -s -O1 -I. -I../../../raylib/src -L. -L../../../raylib/src -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo -DPLATFORM_DESKTOP
 make[1]: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
- 
 make: Leaving directory `/Users/audreyyang/Desktop/pirateGame'
  
